@@ -1,0 +1,8 @@
+app:
+  name: distributed-intelligent-campus-iot-environment
+  environment: development
+
+mqtt:
+  broker: localhost
+  port: 1883
+  topic_prefix: campus/iot
