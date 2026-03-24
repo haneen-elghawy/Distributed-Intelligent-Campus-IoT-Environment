@@ -1,6 +1,9 @@
+import logging
 import os
 import sqlite3
 from pathlib import Path
+
+logger = logging.getLogger("persistence.sqlite")
 
 
 def _get_db_path(db_path=None):
@@ -37,6 +40,7 @@ def init_db(db_path=None):
             """
         )
         conn.commit()
+    logger.info("Database initialized at %s", path)
 
 
 def is_db_empty(db_path=None):
@@ -90,6 +94,8 @@ def load_previous_state(rooms, db_path=None):
             FROM rooms
             """
         ).fetchall()
+
+    logger.info("Loaded state for %d rooms", len(rows))
 
     room_rows = {
         row[0]: {

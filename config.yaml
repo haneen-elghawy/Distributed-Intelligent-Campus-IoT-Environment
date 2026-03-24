@@ -5,4 +5,34 @@ app:
 mqtt:
   broker: localhost
   port: 1883
-  topic_prefix: campus/iot
+  topic_prefix: campus
+
+simulation:
+  publish_interval: 5
+  time_acceleration: 1
+  startup_jitter: 5
+
+fleet:
+  num_floors: 10
+  rooms_per_floor: 20
+
+environment:
+  outside_temp: 30
+  outside_temp_amplitude: 5
+  outside_humidity: 60
+  outside_humidity_amplitude: 10
+
+thermal:
+  alpha: 0.01
+  beta: 0.5
+
+persistence:
+  save_interval_seconds: 30
+  db_path: data/campus_iot.db
+
+faults:
+  fault_rate: 0.02
+  sensor_drift_rate: 0.02
+  frozen_sensor_rate: 0.02
+  telemetry_delay_rate: 0.02
+  node_dropout_rate: 0.02

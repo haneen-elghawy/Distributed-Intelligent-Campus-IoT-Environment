@@ -3,6 +3,7 @@ from .publisher import (
 	disconnect_mqtt,
 	publish_heartbeat,
 	publish_telemetry,
+	register_rooms,
 )
 
 __all__ = [
@@ -10,4 +11,5 @@ __all__ = [
 	"disconnect_mqtt",
 	"publish_telemetry",
 	"publish_heartbeat",
+	"register_rooms",
 ]

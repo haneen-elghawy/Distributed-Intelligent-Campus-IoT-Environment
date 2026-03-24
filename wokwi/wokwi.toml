@@ -1,0 +1,8 @@
+[wokwi]
+version = 1
+firmware = "micropython-20231227-v1.22.0.bin"
+elf = ""
+
+[[net.forward]]
+from = "host:1883"
+to = "test.mosquitto.org:1883"
