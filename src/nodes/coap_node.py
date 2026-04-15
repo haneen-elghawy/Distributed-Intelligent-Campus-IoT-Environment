@@ -1,104 +1,71 @@
 """
 src/nodes/coap_node.py
-Composite node that pairs a physics room model with a CoAP server.
+Lifecycle wrapper that pairs a Room with its aiocoap server instance.
 
 CoAP rooms: rooms 11-20 on every floor.
-The node wraps :class:`~src.coap.server.RoomCoAPServer` and drives it from
-whatever physics/engine object is provided, forwarding state updates as
-CoAP Observe notifications.
+
+Each CoapNode:
+- Starts an aiocoap server on room.coap_port
+- Holds the shared TelemetryResource so the engine can trigger Observe pushes
+- Exposes notify() (called after each physics tick) and stop()
 """
 from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Optional
+from typing import TYPE_CHECKING
 
-from src.coap.server import RoomCoAPServer
+from ..coap.server import TelemetryResource, run_coap_server
 
-logger = logging.getLogger(__name__)
+if TYPE_CHECKING:
+    import aiocoap
+    from src.models.room import Room
+
+logger = logging.getLogger("nodes.coap_node")
 
 
-class CoAPRoomNode:
-    """Lifecycle manager for a CoAP-enabled room node.
+class CoapNode:
+    """One aiocoap server instance bound to a single Room.
 
     Parameters
     ----------
-    floor:
-        1-based floor index (1-10).
-    room:
-        Room number within the floor (11-20 for CoAP rooms).
-    room_model:
-        An object with a ``get_state() -> dict`` method supplied by the
-        physics engine.  Pass ``None`` during standalone testing.
-    publish_interval:
-        Seconds between push-notifications when no external trigger fires.
+    room :
+        The :class:`~src.models.room.Room` object this node represents.
+        ``room.coap_port`` and ``room.node_id`` must already be set by fleet.py.
     """
 
-    def __init__(
-        self,
-        floor: int,
-        room: int,
-        room_model: Optional[Any] = None,
-        *,
-        publish_interval: float = 5.0,
-    ) -> None:
-        self.floor = floor
+    def __init__(self, room: "Room") -> None:
         self.room = room
-        self._model = room_model
-        self._interval = publish_interval
-        self._server = RoomCoAPServer(floor=floor, room=room)
-        self._task: Optional[asyncio.Task] = None
+        self.telemetry: TelemetryResource = TelemetryResource(room)
+        self._protocol: "aiocoap.Context | None" = None
 
     # ------------------------------------------------------------------
     # Lifecycle
     # ------------------------------------------------------------------
 
     async def start(self) -> None:
-        """Start the underlying CoAP server and the polling loop."""
-        await self._server.start()
-        self._task = asyncio.create_task(self._poll_loop(), name=self._task_name())
+        """Bind UDP port and expose CoAP resources."""
+        self._protocol = await run_coap_server(self.room, self.telemetry)
         logger.info(
-            "CoAP room node started  floor=%d  room=%d  port=%d",
-            self.floor, self.room, self._server.port,
+            "CoAP node %s started on port %d",
+            self.room.node_id, self.room.coap_port,
         )
 
     async def stop(self) -> None:
-        """Cancel the poll loop and shut down the CoAP server."""
-        if self._task is not None:
-            self._task.cancel()
-            try:
-                await self._task
-            except asyncio.CancelledError:
-                pass
-        await self._server.stop()
-        logger.info(
-            "CoAP room node stopped  floor=%d  room=%d", self.floor, self.room
-        )
+        """Shut down the aiocoap server context."""
+        if self._protocol is not None:
+            await self._protocol.shutdown()
+            logger.info("CoAP node %s stopped", self.room.node_id)
+            self._protocol = None
 
     # ------------------------------------------------------------------
-    # State push (called externally by the engine)
+    # Physics-engine integration
     # ------------------------------------------------------------------
 
-    def push_state(self, state: dict) -> None:
-        """Push an already-computed state snapshot immediately."""
-        self._server.push(state)
+    async def notify(self) -> None:
+        """Call after each physics tick to push RFC 7641 Observe notifications.
 
-    # ------------------------------------------------------------------
-    # Internal poll loop (fallback when no external push is available)
-    # ------------------------------------------------------------------
-
-    async def _poll_loop(self) -> None:
-        while True:
-            await asyncio.sleep(self._interval)
-            if self._model is not None:
-                try:
-                    state = self._model.get_state()
-                    self._server.push(state)
-                except Exception as exc:  # noqa: BLE001
-                    logger.warning(
-                        "CoAP poll error  floor=%d  room=%d  exc=%s",
-                        self.floor, self.room, exc,
-                    )
-
-    def _task_name(self) -> str:
-        return f"coap-poll-f{self.floor:02d}-r{self.room:02d}"
+        Internally delegates to :meth:`TelemetryResource.notify_watchers`,
+        which only triggers a push when the rounded temperature has changed.
+        """
+        await self.telemetry.notify_watchers()
