@@ -1,3 +1,24 @@
+"""
+src/engine/runtime.py
+Phase 2 unified async runtime — 100 MQTT nodes + 100 CoAP nodes.
+
+Each node runs in its own asyncio coroutine, gathered concurrently by main().
+Physics ticks, fault simulation, SQLite persistence and telemetry publishing
+all happen inside the per-node coroutines.
+
+Environment variables (all have defaults)
+-----------------------------------------
+PUBLISH_INTERVAL            seconds between ticks         (default 5)
+STARTUP_JITTER              max random startup delay (s)  (default = PUBLISH_INTERVAL)
+SQLITE_SAVE_INTERVAL_SECONDS persist cadence per room      (default 30)
+TIME_ACCELERATION           virtual-clock speed multiplier (default 1)
+OUTSIDE_TEMP / _AMPLITUDE   day/night outside temperature
+OUTSIDE_HUMIDITY / _AMPLITUDE
+TEMP_ALERT_HIGH             upper alert threshold °C       (default 35.0)
+TEMP_ALERT_LOW              lower alert threshold °C       (default 15.5)
+"""
+from __future__ import annotations
+
 import asyncio
 import datetime
 import logging
@@ -6,9 +27,14 @@ import os
 import random
 import time
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from ..utils.logging_config import setup_logging
-from .fleet import rooms
-from ..mqtt import connect_mqtt, disconnect_mqtt, publish_heartbeat, publish_telemetry, register_rooms
+from .fleet import mqtt_rooms, coap_rooms, rooms
+from ..nodes.mqtt_node import MqttNode
+from ..nodes.coap_node import CoapNode
 from ..persistence import (
     init_db,
     initialize_defaults,
@@ -19,105 +45,186 @@ from ..persistence import (
 
 logger = logging.getLogger("engine.runtime")
 
-# Simulation start time (for time acceleration)
-_sim_start_real = None
-_sim_start_virtual = None
+# ---------------------------------------------------------------------------
+# Alert thresholds
+# ---------------------------------------------------------------------------
+TEMP_ALERT_HIGH: float = float(os.getenv("TEMP_ALERT_HIGH", "35.0"))
+TEMP_ALERT_LOW:  float = float(os.getenv("TEMP_ALERT_LOW",  "15.5"))
+
+# ---------------------------------------------------------------------------
+# Virtual-clock state (module-level; shared across all coroutines)
+# ---------------------------------------------------------------------------
+_sim_start_real:    float | None            = None
+_sim_start_virtual: datetime.datetime | None = None
 
 
-def get_virtual_time():
-    """Return a virtual datetime that respects the time acceleration factor."""
-    time_accel = float(os.getenv("TIME_ACCELERATION", "1"))
+# ---------------------------------------------------------------------------
+# Time & environment helpers  (same physics as Phase 1)
+# ---------------------------------------------------------------------------
+
+def get_virtual_time() -> datetime.datetime:
+    """Return a virtual datetime that respects the TIME_ACCELERATION factor."""
+    accel = float(os.getenv("TIME_ACCELERATION", "1"))
     global _sim_start_real, _sim_start_virtual
     if _sim_start_real is None:
-        _sim_start_real = time.time()
+        _sim_start_real    = time.time()
         _sim_start_virtual = datetime.datetime.now()
-    elapsed_real = time.time() - _sim_start_real
-    elapsed_virtual = elapsed_real * time_accel
+    elapsed_virtual = (time.time() - _sim_start_real) * accel
     return _sim_start_virtual + datetime.timedelta(seconds=elapsed_virtual)
 
 
-def get_outside_temperature(hour):
-    """Simulate outside temperature with a day/night cycle using a sine curve.
-    Peaks around 14:00, lowest around 04:00."""
-    base_temp = float(os.getenv("OUTSIDE_TEMP", "30"))
-    amplitude = float(os.getenv("OUTSIDE_TEMP_AMPLITUDE", "5"))
-    # Sine curve: peak at hour 14, trough at hour 2
-    return base_temp + amplitude * math.sin(math.pi * (hour - 8) / 12)
+def get_outside_temperature(hour: float) -> float:
+    """Day/night temperature cycle — peaks ~14:00, troughs ~02:00."""
+    base = float(os.getenv("OUTSIDE_TEMP", "30"))
+    amp  = float(os.getenv("OUTSIDE_TEMP_AMPLITUDE", "5"))
+    return base + amp * math.sin(math.pi * (hour - 8) / 12)
 
 
-def get_outside_humidity(hour):
-    """Simulate outside humidity with inverse day/night cycle.
-    Higher at night, lower during hot daytime."""
-    base_humidity = float(os.getenv("OUTSIDE_HUMIDITY", "60"))
-    amplitude = float(os.getenv("OUTSIDE_HUMIDITY_AMPLITUDE", "10"))
-    # Inverse of temperature: high at night, low at midday
-    return base_humidity - amplitude * math.sin(math.pi * (hour - 8) / 12)
+def get_outside_humidity(hour: float) -> float:
+    """Inverse day/night humidity cycle — high at night, low midday."""
+    base = float(os.getenv("OUTSIDE_HUMIDITY", "60"))
+    amp  = float(os.getenv("OUTSIDE_HUMIDITY_AMPLITUDE", "10"))
+    return base - amp * math.sin(math.pi * (hour - 8) / 12)
 
 
-async def run_room(room):
-    publish_interval = float(os.getenv("PUBLISH_INTERVAL", "5"))
-    persist_interval_seconds = int(os.getenv("SQLITE_SAVE_INTERVAL_SECONDS", "30"))
-    max_jitter = float(os.getenv("STARTUP_JITTER", str(publish_interval)))
-    last_persist_time = 0
+def _tick_physics(room) -> float:
+    """Advance one physics step for *room* and return the current timestamp."""
+    vt   = get_virtual_time()
+    hour = vt.hour + vt.minute / 60.0
+    room.update_occupancy(hour)
+    room.update_hvac()
+    room.update_temperature(get_outside_temperature(hour))
+    room.update_light(hour)
+    room.update_humidity(get_outside_humidity(hour))
+    now = time.time()
+    room.apply_sensor_faults(now=now)
+    room.validate_state()
+    room.last_update = now
+    return now
 
-    # Startup jitter: prevent thundering herd
+
+# ---------------------------------------------------------------------------
+# Per-node coroutines
+# ---------------------------------------------------------------------------
+
+async def run_mqtt_node(node: MqttNode) -> None:
+    """Coroutine that owns one MQTT room for the simulation lifetime.
+
+    Sequence per tick
+    -----------------
+    1. Advance physics (temperature, humidity, occupancy, …)
+    2. Persist to SQLite every SQLITE_SAVE_INTERVAL_SECONDS
+    3. Skip publish if fault simulation says "dropout"
+    4. Inject telemetry delay if fault simulation says so
+    5. Publish telemetry at QoS 1
+    6. Publish high/low temperature alerts at QoS 2
+    """
+    interval         = float(os.getenv("PUBLISH_INTERVAL", "5"))
+    persist_interval = int(os.getenv("SQLITE_SAVE_INTERVAL_SECONDS", "30"))
+    max_jitter       = float(os.getenv("STARTUP_JITTER", str(interval)))
+    last_persist     = 0.0
+
+    # Startup jitter — stagger 100 connects to avoid thundering herd
     await asyncio.sleep(random.uniform(0, max_jitter))
+    await node.start()
 
     while True:
-        start = time.time()
+        tick_start = time.time()
+        now        = _tick_physics(node.room)
 
-        virtual_now = get_virtual_time()
-        current_hour = virtual_now.hour + virtual_now.minute / 60.0
-        outside_temp = get_outside_temperature(current_hour)
-        outside_humidity = get_outside_humidity(current_hour)
+        # SQLite persistence (off the event loop thread)
+        if now - last_persist >= persist_interval:
+            await asyncio.to_thread(persist_room_state, node.room)
+            last_persist = now
 
-        room.update_occupancy(current_hour)
-        room.update_hvac()
-        room.update_temperature(outside_temp)
-        room.update_light(current_hour)
-        room.update_humidity(outside_humidity)
-        now = time.time()
-        room.apply_sensor_faults(now=now)
-        room.validate_state()
-        room.last_update = now
+        # Telemetry publish (subject to fault simulation)
+        faults = node.room.get_telemetry_faults(now=now)
+        if not faults["dropout"]:
+            if faults["delay_seconds"] > 0:
+                await asyncio.sleep(faults["delay_seconds"])
 
-        telemetry_faults = room.get_telemetry_faults(now=now)
+            await node.publish_telemetry()
 
-        if now - last_persist_time >= persist_interval_seconds:
-            await asyncio.to_thread(persist_room_state, room)
-            last_persist_time = now
+            # Temperature threshold alerts — QoS 2 (Exactly Once)
+            temp = node.room.temperature
+            if temp >= TEMP_ALERT_HIGH:
+                await node.publish_alert("HIGH_TEMP", round(temp, 1))
+            elif temp <= TEMP_ALERT_LOW:
+                await node.publish_alert("LOW_TEMP", round(temp, 1))
 
-        if not telemetry_faults["dropout"]:
-            if telemetry_faults["delay_seconds"] > 0:
-                await asyncio.sleep(telemetry_faults["delay_seconds"])
-
-            await publish_telemetry(room)
-            await publish_heartbeat(room)
-
-        processing_time = time.time() - start
-        await asyncio.sleep(max(0, publish_interval - processing_time))
+        elapsed = time.time() - tick_start
+        await asyncio.sleep(max(0.0, interval - elapsed))
 
 
-async def main():
+async def run_coap_node(node: CoapNode) -> None:
+    """Coroutine that owns one CoAP room for the simulation lifetime.
+
+    Sequence per tick
+    -----------------
+    1. Advance physics
+    2. Persist to SQLite every SQLITE_SAVE_INTERVAL_SECONDS
+    3. Call node.notify() → triggers RFC 7641 Observe push if temp changed
+    """
+    interval         = float(os.getenv("PUBLISH_INTERVAL", "5"))
+    persist_interval = int(os.getenv("SQLITE_SAVE_INTERVAL_SECONDS", "30"))
+    max_jitter       = float(os.getenv("STARTUP_JITTER", str(interval)))
+    last_persist     = 0.0
+
+    # Startup jitter
+    await asyncio.sleep(random.uniform(0, max_jitter))
+    await node.start()
+
+    while True:
+        tick_start = time.time()
+        now        = _tick_physics(node.room)
+
+        # SQLite persistence
+        if now - last_persist >= persist_interval:
+            await asyncio.to_thread(persist_room_state, node.room)
+            last_persist = now
+
+        # Notify CoAP observers (no-op if temperature unchanged)
+        await node.notify()
+
+        elapsed = time.time() - tick_start
+        await asyncio.sleep(max(0.0, interval - elapsed))
+
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
+async def main() -> None:
+    """Initialise infrastructure then gather all 200 node coroutines."""
     setup_logging()
 
-    logger.info("Initializing database...")
+    logger.info("Phase 2 runtime — initializing DB …")
     await asyncio.to_thread(init_db)
-    db_empty = await asyncio.to_thread(is_db_empty)
 
-    if db_empty:
+    if await asyncio.to_thread(is_db_empty):
         await asyncio.to_thread(initialize_defaults, rooms)
-        logger.info("Initialized defaults for %d rooms", len(rooms))
+        logger.info("DB initialised with defaults for %d rooms", len(rooms))
     else:
         await asyncio.to_thread(load_previous_state, rooms)
-        logger.info("Loaded previous state for %d rooms", len(rooms))
+        logger.info("DB: loaded previous state for %d rooms", len(rooms))
 
-    register_rooms(rooms)
-    await connect_mqtt()
-    logger.info("MQTT connected — starting simulation with %d rooms", len(rooms))
+    # Build node objects (no I/O yet; start() happens inside coroutines)
+    mqtt_nodes = [MqttNode(r) for r in mqtt_rooms]
+    coap_nodes = [CoapNode(r) for r in coap_rooms]
+
+    logger.info(
+        "Launching %d MQTT nodes + %d CoAP nodes concurrently",
+        len(mqtt_nodes), len(coap_nodes),
+    )
+
+    tasks: list[asyncio.coroutine] = (
+        [run_mqtt_node(n) for n in mqtt_nodes] +
+        [run_coap_node(n) for n in coap_nodes]
+    )
+
     try:
-        tasks = [run_room(room) for room in rooms]
         await asyncio.gather(*tasks)
+    except asyncio.CancelledError:
+        logger.info("Runtime cancelled — shutting down")
     finally:
-        logger.info("Shutting down...")
-        await disconnect_mqtt()
+        logger.info("Phase 2 runtime stopped.")
