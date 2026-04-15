@@ -71,6 +71,11 @@ class Room:
         self.frozen_value = None
         self.dropout_until = 0.0
 
+        # Phase 2 additions
+        self.protocol = "mqtt"   # "mqtt" | "coap" — overridden by fleet.py
+        self.coap_port = None    # UDP port; set only for CoAP rooms
+        self.node_id = None      # unique string e.g. "b01-f02-r011"
+
     @property
     def room_key(self):
         return f"{self.building_id}-f{self.floor_id:02d}-r{self.floor_id * 100 + self.room_id:03d}"
