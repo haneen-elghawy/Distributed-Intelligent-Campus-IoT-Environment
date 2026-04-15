@@ -1,2 +1,5 @@
-
 gmqtt==0.7.0
+aiocoap[linkheader]==0.4.10
+cryptography>=42.0.0
+pyyaml>=6.0.1
+python-dotenv>=1.0.1
