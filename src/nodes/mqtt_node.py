@@ -27,6 +27,13 @@ from typing import TYPE_CHECKING
 
 from gmqtt import Client
 
+from ..utils.topics import (
+    alert_topic,
+    cmd_topic,
+    status_topic,
+    telemetry_topic,
+)
+
 if TYPE_CHECKING:
     from src.models.room import Room
 
@@ -88,8 +95,9 @@ class MqttNode:
     async def start(self) -> None:
         """Build the client, connect, subscribe, announce online."""
         client_id = f"campus-mqtt-{self.room.node_id}"
-        base = _topic_base(self.room)
-        will_topic = f"{base}/status"
+        will_topic = status_topic(
+            self.room.building_id, self.room.floor_id, self.room.room_id
+        )
 
         self.client = Client(
             client_id,
@@ -115,12 +123,13 @@ class MqttNode:
         await self.client.connect(BROKER, PORT, keepalive=30)
 
         # Subscribe to command topic at QoS 2 (Exactly Once)
-        cmd_topic = f"{base}/cmd"
-        self.client.subscribe(cmd_topic, qos=2)
+        _cmd = cmd_topic(self.room.building_id, self.room.floor_id, self.room.room_id)
+        self.client.subscribe(_cmd, qos=2)
 
         # Announce online presence (retained so late subscribers see it)
+        _status = status_topic(self.room.building_id, self.room.floor_id, self.room.room_id)
         self.client.publish(
-            f"{base}/status",
+            _status,
             json.dumps({
                 "node_id": self.room.node_id,
                 "status": "online",
@@ -132,7 +141,7 @@ class MqttNode:
 
         logger.info(
             "MQTT node %s connected → broker=%s:%d  cmd=%s",
-            self.room.node_id, BROKER, PORT, cmd_topic,
+            self.room.node_id, BROKER, PORT, _cmd,
         )
 
     async def disconnect(self) -> None:
@@ -160,7 +169,7 @@ class MqttNode:
             "hvac_mode": self.room.hvac_mode,
         })
         self.client.publish(
-            f"{_topic_base(self.room)}/telemetry",
+            telemetry_topic(self.room.building_id, self.room.floor_id, self.room.room_id),
             payload,
             qos=1,
         )
@@ -176,7 +185,7 @@ class MqttNode:
             "ts": int(time.time()),
         })
         self.client.publish(
-            f"{_topic_base(self.room)}/alert",
+            alert_topic(self.room.building_id, self.room.floor_id, self.room.room_id),
             payload,
             qos=2,
         )

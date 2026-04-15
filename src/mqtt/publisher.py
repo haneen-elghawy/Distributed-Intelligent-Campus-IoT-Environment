@@ -7,6 +7,12 @@ import uuid
 
 from gmqtt import Client
 
+from ..utils.topics import (
+    telemetry_topic as _tt,
+    status_topic    as _st,
+    cmd_topic       as _ct,
+)
+
 logger = logging.getLogger("mqtt.publisher")
 
 _mqtt_client = None
@@ -15,26 +21,18 @@ _room_registry = {}
 _command_callbacks = []
 
 
-def _building_suffix(building_id):
-    return building_id.replace("b", "")
-
-
 def _room_number(floor_id, room_id):
     return floor_id * 100 + room_id
 
 
 def _telemetry_topic(room):
-    return (
-        f"campus/bldg_{_building_suffix(room.building_id)}/"
-        f"floor_{room.floor_id:02d}/room_{_room_number(room.floor_id, room.room_id):03d}/telemetry"
-    )
+    """Phase 2: campus/b01/f{FF}/r{RRR}/telemetry"""
+    return _tt(room.building_id, room.floor_id, room.room_id)
 
 
 def _heartbeat_topic(room):
-    return (
-        f"campus/bldg_{_building_suffix(room.building_id)}/"
-        f"floor_{room.floor_id:02d}/room_{_room_number(room.floor_id, room.room_id):03d}/heartbeat"
-    )
+    """Phase 2: campus/b01/f{FF}/r{RRR}/status  (was /heartbeat)"""
+    return _st(room.building_id, room.floor_id, room.room_id)
 
 
 def _telemetry_payload(room):
@@ -66,16 +64,17 @@ def _on_message(client, topic, payload, qos, properties):
         logger.warning("Received malformed command on %s", topic)
         return 0
 
-    # Extract room key from topic: campus/bldg_XX/floor_XX/room_XXX/command
+    # Extract room key from topic: campus/b01/f{FF}/r{RRR}/cmd
     parts = topic.split("/")
-    if len(parts) < 5 or parts[-1] != "command":
+    if len(parts) < 5 or parts[-1] != "cmd":
         return 0
 
-    # Build room_key from topic parts
-    bldg = parts[1].replace("bldg_", "b")
-    floor_str = parts[2].replace("floor_", "")
-    room_str = parts[3].replace("room_", "")
-    room_key = f"{bldg}-f{floor_str}-r{room_str}"
+    # Build room_key from Phase 2 topic parts
+    # parts: ['campus', 'b01', 'f01', 'r101', 'cmd']
+    bldg      = parts[1]                      # 'b01'
+    floor_str = parts[2].lstrip('f')          # '01'
+    room_str  = parts[3].lstrip('r')          # '101'
+    room_key  = f"{bldg}-f{floor_str}-r{room_str}"
 
     room = _room_registry.get(room_key)
     if room is None:
@@ -147,8 +146,8 @@ async def connect_mqtt():
         _mqtt_client = client
         logger.info("MQTT connected as %s", client_id)
 
-        # Subscribe to command topics for all rooms
-        command_topic = "campus/+/+/+/command"
+        # Subscribe to command topics for all rooms (Phase 2 naming: /cmd)
+        command_topic = "campus/+/+/+/cmd"
         client.subscribe(command_topic, qos=1)
         logger.info("Subscribed to %s", command_topic)
 

@@ -22,6 +22,8 @@ import aiocoap
 import aiocoap.resource as resource
 from aiocoap import Code, Message
 
+from ..utils.topics import coap_uri as _coap_uri
+
 if TYPE_CHECKING:
     from src.models.room import Room
 
@@ -181,8 +183,9 @@ async def run_coap_server(
         root,
         bind=("0.0.0.0", room.coap_port),
     )
+    uri = _coap_uri("sim-engine", room.coap_port, room.floor_id, room.room_id)
     logger.info(
-        "CoAP server %s  UDP port=%d  paths=%s/*/telemetry|actuators/hvac",
-        room.node_id, room.coap_port, "/".join(uri_prefix),
+        "CoAP server %s  UDP port=%d  observe_uri=%s",
+        room.node_id, room.coap_port, uri,
     )
     return context
