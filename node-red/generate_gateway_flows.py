@@ -38,7 +38,7 @@ def flows_for_floor(floor: int) -> list[dict]:
             "type": "tab",
             "label": f"Floor {ff} Gateway",
             "disabled": False,
-            "info": "Phase 2 — Flows A–D + offline CoAP autonomy",
+            "info": "Phase 2 — Flows A–E (CoAP alert ingress), edge thinning, cmd routing",
         },
         {
             "id": broker_id,
@@ -507,6 +507,94 @@ return null;
             "name": "Offline CoAP PUT",
             "x": 680,
             "y": y_off,
+            "wires": [],
+        },
+    ]
+
+    # --- Flow E: CoAP POST /alerts (CON) from sim-engine → 2.04 ACK + MQTT QoS 2 ---
+    y_al = y_off + 140
+    srv_al = f"coap-srv-alerts-{ff}"
+    coap_in_al = f"coap-in-alerts-{ff}"
+    fn_al = f"fn-alerts-{ff}"
+    coap_ack = f"coap-ack-alerts-{ff}"
+    mq_al = f"mqtt-alerts-{ff}"
+    nodes += [
+        {
+            "id": srv_al,
+            "type": "coap-server",
+            "name": "Gateway alert listener",
+            "port": "$(COAP_LISTEN_PORT)",
+        },
+        {
+            "id": coap_in_al,
+            "type": "coap in",
+            "z": tab_id,
+            "method": "POST",
+            "name": "E: POST /alerts",
+            "server": srv_al,
+            "url": "/alerts",
+            "x": 140,
+            "y": y_al,
+            "wires": [[fn_al]],
+        },
+        {
+            "id": fn_al,
+            "type": "function",
+            "z": tab_id,
+            "name": "E: ACK + MQTT alert",
+            "func": r"""
+let p = msg.payload;
+if (Buffer.isBuffer(p)) { p = p.toString(); }
+if (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }
+if (!p || !p.node_id) return null;
+const m = String(p.node_id).match(/^b01-f(\d{2})-r(\d{3})$/);
+if (!m) return null;
+const ack = RED.util.cloneMessage(msg);
+ack.payload = '';
+ack.statusCode = '2.04';
+const out = RED.util.cloneMessage(msg);
+out.topic = `campus/b01/f${m[1]}/r${m[2]}/alert`;
+out.payload = p;
+out.qos = 2;
+return [ack, out];
+""".strip(),
+            "outputs": 2,
+            "timeout": 0,
+            "noerr": 0,
+            "initialize": "",
+            "finalize": "",
+            "libs": [],
+            "x": 400,
+            "y": y_al,
+            "wires": [[coap_ack], [mq_al]],
+        },
+        {
+            "id": coap_ack,
+            "type": "coap response",
+            "z": tab_id,
+            "name": "E: CON ACK",
+            "statusCode": "",
+            "contentFormat": "application/json",
+            "x": 640,
+            "y": y_al - 40,
+            "wires": [],
+        },
+        {
+            "id": mq_al,
+            "type": "mqtt out",
+            "z": tab_id,
+            "name": "E: HiveMQ alert QoS2",
+            "topic": "",
+            "qos": "2",
+            "retain": "false",
+            "respTopic": "",
+            "contentType": "",
+            "userProps": "",
+            "correl": "",
+            "expiry": "",
+            "broker": broker_id,
+            "x": 640,
+            "y": y_al + 40,
             "wires": [],
         },
     ]

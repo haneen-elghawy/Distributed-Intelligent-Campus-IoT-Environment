@@ -4,7 +4,7 @@
     "type": "tab",
     "label": "Floor 07 Gateway",
     "disabled": false,
-    "info": "Phase 2 \u2014 Flows A\u2013D + offline CoAP autonomy"
+    "info": "Phase 2 \u2014 Flows A\u2013E (CoAP alert ingress), edge thinning, cmd routing"
   },
   {
     "id": "broker-07",
@@ -1155,6 +1155,80 @@
     "name": "Offline CoAP PUT",
     "x": 680,
     "y": 1140,
+    "wires": []
+  },
+  {
+    "id": "coap-srv-alerts-07",
+    "type": "coap-server",
+    "name": "Gateway alert listener",
+    "port": "$(COAP_LISTEN_PORT)"
+  },
+  {
+    "id": "coap-in-alerts-07",
+    "type": "coap in",
+    "z": "tab-floor07",
+    "method": "POST",
+    "name": "E: POST /alerts",
+    "server": "coap-srv-alerts-07",
+    "url": "/alerts",
+    "x": 140,
+    "y": 1280,
+    "wires": [
+      [
+        "fn-alerts-07"
+      ]
+    ]
+  },
+  {
+    "id": "fn-alerts-07",
+    "type": "function",
+    "z": "tab-floor07",
+    "name": "E: ACK + MQTT alert",
+    "func": "let p = msg.payload;\nif (Buffer.isBuffer(p)) { p = p.toString(); }\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || !p.node_id) return null;\nconst m = String(p.node_id).match(/^b01-f(\\d{2})-r(\\d{3})$/);\nif (!m) return null;\nconst ack = RED.util.cloneMessage(msg);\nack.payload = '';\nack.statusCode = '2.04';\nconst out = RED.util.cloneMessage(msg);\nout.topic = `campus/b01/f${m[1]}/r${m[2]}/alert`;\nout.payload = p;\nout.qos = 2;\nreturn [ack, out];",
+    "outputs": 2,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 400,
+    "y": 1280,
+    "wires": [
+      [
+        "coap-ack-alerts-07"
+      ],
+      [
+        "mqtt-alerts-07"
+      ]
+    ]
+  },
+  {
+    "id": "coap-ack-alerts-07",
+    "type": "coap response",
+    "z": "tab-floor07",
+    "name": "E: CON ACK",
+    "statusCode": "",
+    "contentFormat": "application/json",
+    "x": 640,
+    "y": 1240,
+    "wires": []
+  },
+  {
+    "id": "mqtt-alerts-07",
+    "type": "mqtt out",
+    "z": "tab-floor07",
+    "name": "E: HiveMQ alert QoS2",
+    "topic": "",
+    "qos": "2",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-07",
+    "x": 640,
+    "y": 1320,
     "wires": []
   }
 ]

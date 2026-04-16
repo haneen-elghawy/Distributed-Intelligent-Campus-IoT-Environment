@@ -171,6 +171,7 @@ class MqttNode:
             "light_level": self.room.light,
             "lighting_dimmer": self.room.lighting_dimmer,
             "hvac_mode": self.room.hvac_mode,
+            "hvac_status": self.room.hvac_status,
         })
         self.client.publish(
             telemetry_topic(self.room.building_id, self.room.floor_id, self.room.room_id),
@@ -267,6 +268,7 @@ class MqttNode:
             except (ValueError, TypeError):
                 pass
 
+        room.sync_actuator_state()
         return 0
 
     # ------------------------------------------------------------------

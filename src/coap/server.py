@@ -83,13 +83,15 @@ class TelemetryResource(resource.ObservableResource):
     def _build_payload(self) -> str:
         r = self.room
         return json.dumps({
-            "node_id":     r.node_id,
-            "ts":          int(time.time()),
-            "temperature": round(r.temperature, 1),
-            "humidity":    r.humidity,
-            "occupancy":   r.occupancy,
-            "light_level": r.light,
-            "hvac_mode":   r.hvac_mode,
+            "node_id":         r.node_id,
+            "ts":              int(time.time()),
+            "temperature":     round(r.temperature, 1),
+            "humidity":        r.humidity,
+            "occupancy":       r.occupancy,
+            "light_level":     r.light,
+            "lighting_dimmer": r.lighting_dimmer,
+            "hvac_mode":       r.hvac_mode,
+            "hvac_status":     r.hvac_status,
         })
 
 
@@ -140,6 +142,7 @@ class HvacActuatorResource(resource.Resource):
             except (ValueError, TypeError):
                 pass
 
+        self.room.sync_actuator_state()
         return Message(code=Code.CHANGED)
 
 

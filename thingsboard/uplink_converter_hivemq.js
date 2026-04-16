@@ -97,6 +97,7 @@ return {
         light_level: data.light_level,
         lighting_dimmer: data.lighting_dimmer,
         hvac_mode: data.hvac_mode,
+        hvac_status: data.hvac_status,
         connection_status: "online",
         device_status: "Online",
       },

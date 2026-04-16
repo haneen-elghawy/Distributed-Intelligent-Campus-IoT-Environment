@@ -85,6 +85,7 @@ services:
       HIVEMQ_PORT: 1883
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5683"
+      COAP_LISTEN_PORT: "5686"
       MQTT_USER: floor01
       MQTT_PASS: floor01pass
       FLOWS: flows.json
@@ -107,6 +108,7 @@ services:
       HIVEMQ_PORT: 1883
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5693"
+      COAP_LISTEN_PORT: "5686"
       MQTT_USER: floor02
       MQTT_PASS: floor02pass
       FLOWS: flows.json
@@ -129,6 +131,7 @@ services:
       HIVEMQ_PORT: 1883
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5703"
+      COAP_LISTEN_PORT: "5686"
       MQTT_USER: floor03
       MQTT_PASS: floor03pass
       FLOWS: flows.json
@@ -151,6 +154,7 @@ services:
       HIVEMQ_PORT: 1883
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5713"
+      COAP_LISTEN_PORT: "5686"
       MQTT_USER: floor04
       MQTT_PASS: floor04pass
       FLOWS: flows.json
@@ -173,6 +177,7 @@ services:
       HIVEMQ_PORT: 1883
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5723"
+      COAP_LISTEN_PORT: "5686"
       MQTT_USER: floor05
       MQTT_PASS: floor05pass
       FLOWS: flows.json
@@ -195,6 +200,7 @@ services:
       HIVEMQ_PORT: 1883
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5733"
+      COAP_LISTEN_PORT: "5686"
       MQTT_USER: floor06
       MQTT_PASS: floor06pass
       FLOWS: flows.json
@@ -217,6 +223,7 @@ services:
       HIVEMQ_PORT: 1883
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5743"
+      COAP_LISTEN_PORT: "5686"
       MQTT_USER: floor07
       MQTT_PASS: floor07pass
       FLOWS: flows.json
@@ -239,6 +246,7 @@ services:
       HIVEMQ_PORT: 1883
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5753"
+      COAP_LISTEN_PORT: "5686"
       MQTT_USER: floor08
       MQTT_PASS: floor08pass
       FLOWS: flows.json
@@ -261,6 +269,7 @@ services:
       HIVEMQ_PORT: 1883
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5763"
+      COAP_LISTEN_PORT: "5686"
       MQTT_USER: floor09
       MQTT_PASS: floor09pass
       FLOWS: flows.json
@@ -283,6 +292,7 @@ services:
       HIVEMQ_PORT: 1883
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5773"
+      COAP_LISTEN_PORT: "5686"
       MQTT_USER: floor10
       MQTT_PASS: floor10pass
       FLOWS: flows.json

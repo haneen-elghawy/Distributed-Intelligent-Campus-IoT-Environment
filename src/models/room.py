@@ -43,8 +43,9 @@ class Room:
         self.light = 300
         self.lighting_dimmer = 0
 
-        # Actuators
+        # Actuators (commanded mode + virtual actuator snapshot for telemetry)
         self.hvac_mode = "OFF"
+        self.hvac_status = "off"  # virtual actuator: off|eco|cooling|heating|idle
         self.target_temp = 22.0
 
         self.last_update = time.time()
@@ -115,6 +116,17 @@ class Room:
         self.humidity += leakage + occ_effect + hvac_effect
         self.humidity = round(max(0.0, min(100.0, self.humidity)), 1)
 
+    def sync_actuator_state(self) -> None:
+        """Refresh :attr:`hvac_status` from :attr:`hvac_mode` for dashboards / gateways."""
+        mapping = {
+            "OFF": "off",
+            "ECO": "eco",
+            "COOLING": "cooling",
+            "HEATING": "heating",
+            "ON": "idle",
+        }
+        self.hvac_status = mapping.get(self.hvac_mode, str(self.hvac_mode).lower())
+
     def update_hvac(self):
         deadband = 0.5
         if self.hvac_mode == "OFF":
@@ -134,6 +146,7 @@ class Room:
             elif self.temperature < self.target_temp - deadband:
                 pass  # stay in ECO, apply half power heating
             # ECO mode stays until explicitly changed via command
+        self.sync_actuator_state()
 
     def update_temperature(self, outside_temp):
         alpha = self.alpha
