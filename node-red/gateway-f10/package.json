@@ -1,0 +1,8 @@
+{
+  "name": "gateway-f10",
+  "private": true,
+  "description": "Node-RED floor gateway \u2014 installs CoAP nodes on container start",
+  "dependencies": {
+    "node-red-contrib-coap": "^0.9.0"
+  }
+}

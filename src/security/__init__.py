@@ -1,1 +1,1 @@
-# src/security package
+"""TLS / certificate helpers for Phase 2."""

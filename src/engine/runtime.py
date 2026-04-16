@@ -51,6 +51,11 @@ logger = logging.getLogger("engine.runtime")
 TEMP_ALERT_HIGH: float = float(os.getenv("TEMP_ALERT_HIGH", "35.0"))
 TEMP_ALERT_LOW:  float = float(os.getenv("TEMP_ALERT_LOW",  "15.5"))
 
+# CoAP CON alerts → floor gateway ``POST /alerts`` (Step 13b). Disable if no gateway listener.
+COAP_ALERTS_ENABLED: bool = os.getenv("COAP_ALERTS_ENABLED", "false").lower() in ("1", "true", "yes")
+COAP_ALERT_GATEWAY_PORT: int = int(os.getenv("COAP_ALERT_GATEWAY_PORT", "5686"))
+COAP_ALERT_COOLDOWN_S: float = float(os.getenv("COAP_ALERT_COOLDOWN_S", "120"))
+
 # ---------------------------------------------------------------------------
 # Virtual-clock state (module-level; shared across all coroutines)
 # ---------------------------------------------------------------------------
@@ -185,6 +190,18 @@ async def run_coap_node(node: CoapNode) -> None:
 
         # Notify CoAP observers (no-op if temperature unchanged)
         await node.notify()
+
+        if COAP_ALERTS_ENABLED:
+            gw_host = os.getenv(
+                "COAP_ALERT_GATEWAY_HOST_TEMPLATE",
+                "gateway-f{floor:02d}",
+            ).format(floor=node.room.floor_id)
+            await node.maybe_send_temperature_alert(
+                temp_high=TEMP_ALERT_HIGH,
+                cooldown_s=COAP_ALERT_COOLDOWN_S,
+                gateway_host=gw_host,
+                gateway_port=COAP_ALERT_GATEWAY_PORT,
+            )
 
         elapsed = time.time() - tick_start
         await asyncio.sleep(max(0.0, interval - elapsed))

@@ -1,0 +1,2 @@
+# Capture HiveMQ Control Center or mosquitto_sub logs showing QoS 2 PUBREL/PUBCOMP
+# for commands to campus/.../cmd, then paste evidence here for the Phase 2 report.

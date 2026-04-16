@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<hivemq xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="config.xsd">
+
+  <listeners>
+    <tcp-listener>
+      <port>1883</port>
+      <bind-address>0.0.0.0</bind-address>
+    </tcp-listener>
+
+    <tls-tcp-listener>
+      <port>8883</port>
+      <bind-address>0.0.0.0</bind-address>
+      <tls>
+        <keystore>
+          <path>/opt/hivemq/certs/hivemq.p12</path>
+          <password>hivemq_keystore_pass</password>
+          <private-key-password>hivemq_keystore_pass</private-key-password>
+        </keystore>
+        <client-authentication-mode>NONE</client-authentication-mode>
+      </tls>
+    </tls-tcp-listener>
+  </listeners>
+
+  <mqtt>
+    <session-expiry>
+      <max-interval>3600</max-interval>
+    </session-expiry>
+    <message-expiry>
+      <max-interval>300</max-interval>
+    </message-expiry>
+    <keep-alive>
+      <max-keep-alive>60</max-keep-alive>
+    </keep-alive>
+    <quality-of-service>
+      <max-qos>2</max-qos>
+    </quality-of-service>
+  </mqtt>
+
+</hivemq>

@@ -23,3 +23,12 @@ Thumbs.db
 # Phase 2 Guide
 docs/phase2guide.part1.md
 docs/phase2guide.part2.md
+
+# HiveMQ TLS material (keep CA cert if you want it tracked; keys/PKCS12 must not be committed)
+hivemq/certs/*.key
+hivemq/certs/*.p12
+hivemq/certs/*.csr
+hivemq/certs/*.srl
+
+# Node-RED runtime (npm install in container)
+node-red/gateway-*/node_modules

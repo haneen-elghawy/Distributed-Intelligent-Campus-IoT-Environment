@@ -1,30 +1,296 @@
 version: "3.9"
 
-services:
-  mosquitto:
-    image: eclipse-mosquitto:2
-    container_name: campus-mosquitto
-    ports:
-      - "1883:1883"
-    volumes:
-      - ./mosquitto/config:/mosquitto/config
-      - mosquitto_data:/mosquitto/data
-      - mosquitto_log:/mosquitto/log
-    restart: unless-stopped
-
-  app:
-    build: .
-    container_name: campus-iot-app
-    env_file:
-      - .env
-    environment:
-      MQTT_BROKER: mosquitto
-    volumes:
-      - ./data:/app/data
-    depends_on:
-      - mosquitto
-    command: python -m src
+networks:
+  campus-net:
+    driver: bridge
 
 volumes:
-  mosquitto_data:
-  mosquitto_log:
+  hivemq_data:
+  thingsboard_data:
+  thingsboard_logs:
+  sim_data:
+
+services:
+
+  # ─── HiveMQ Backbone Broker ──────────────────────────────────────────────
+  hivemq:
+    image: hivemq/hivemq-ce:latest
+    container_name: campus-hivemq
+    hostname: hivemq
+    ports:
+      - "1883:1883"   # MQTT plain (internal dev)
+      - "8883:8883"   # MQTT TLS
+      - "8080:8080"   # HiveMQ Control Center UI
+    volumes:
+      - ./hivemq/config:/opt/hivemq/conf
+      - ./hivemq/extensions:/opt/hivemq/extensions
+      - ./hivemq/certs:/opt/hivemq/certs
+      - hivemq_data:/opt/hivemq/data
+    networks:
+      - campus-net
+    restart: unless-stopped
+
+  # ─── ThingsBoard Cloud Layer ─────────────────────────────────────────────
+  thingsboard:
+    image: thingsboard/tb-postgres:latest
+    container_name: campus-thingsboard
+    hostname: thingsboard
+    ports:
+      - "9090:9090"    # ThingsBoard Web UI
+      - "1884:1883"    # TB internal MQTT (mapped to host 1884 to avoid conflict)
+      # Host 15683: container 5683 — avoids conflict with sim-engine UDP 5683–5782
+      - "15683:5683/udp"
+    environment:
+      TB_QUEUE_TYPE: in-memory
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/thingsboard
+    volumes:
+      - thingsboard_data:/data
+      - thingsboard_logs:/var/log/thingsboard
+    networks:
+      - campus-net
+    restart: unless-stopped
+
+  # ─── Python World Engine ─────────────────────────────────────────────────
+  sim-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: campus-sim-engine
+    hostname: sim-engine
+    env_file: .env
+    environment:
+      HIVEMQ_BROKER: hivemq
+      HIVEMQ_PORT_PLAIN: 1883
+    volumes:
+      - sim_data:/app/data
+      - ./hivemq/certs:/app/hivemq/certs:ro
+    networks:
+      - campus-net
+    depends_on:
+      - hivemq
+    command: python -m src
+    restart: unless-stopped
+    # Expose CoAP UDP ports for all 100 CoAP rooms (5683-5782)
+    ports:
+      - "5683-5782:5683-5782/udp"
+
+  # ─── Floor Gateways (Node-RED) ───────────────────────────────────────────
+  gateway-f01:
+    image: nodered/node-red:latest
+    container_name: campus-gateway-f01
+    hostname: gateway-f01
+    environment:
+      FLOOR: "01"
+      HIVEMQ_HOST: hivemq
+      HIVEMQ_PORT: 1883
+      SIM_ENGINE_HOST: sim-engine
+      COAP_PORT_START: "5683"
+      MQTT_USER: floor01
+      MQTT_PASS: floor01pass
+      FLOWS: flows.json
+    volumes:
+      - ./node-red/gateway-f01:/data
+    networks:
+      - campus-net
+    depends_on:
+      - hivemq
+      - sim-engine
+    restart: unless-stopped
+
+  gateway-f02:
+    image: nodered/node-red:latest
+    container_name: campus-gateway-f02
+    hostname: gateway-f02
+    environment:
+      FLOOR: "02"
+      HIVEMQ_HOST: hivemq
+      HIVEMQ_PORT: 1883
+      SIM_ENGINE_HOST: sim-engine
+      COAP_PORT_START: "5693"
+      MQTT_USER: floor02
+      MQTT_PASS: floor02pass
+      FLOWS: flows.json
+    volumes:
+      - ./node-red/gateway-f02:/data
+    networks:
+      - campus-net
+    depends_on:
+      - hivemq
+      - sim-engine
+    restart: unless-stopped
+
+  gateway-f03:
+    image: nodered/node-red:latest
+    container_name: campus-gateway-f03
+    hostname: gateway-f03
+    environment:
+      FLOOR: "03"
+      HIVEMQ_HOST: hivemq
+      HIVEMQ_PORT: 1883
+      SIM_ENGINE_HOST: sim-engine
+      COAP_PORT_START: "5703"
+      MQTT_USER: floor03
+      MQTT_PASS: floor03pass
+      FLOWS: flows.json
+    volumes:
+      - ./node-red/gateway-f03:/data
+    networks:
+      - campus-net
+    depends_on:
+      - hivemq
+      - sim-engine
+    restart: unless-stopped
+
+  gateway-f04:
+    image: nodered/node-red:latest
+    container_name: campus-gateway-f04
+    hostname: gateway-f04
+    environment:
+      FLOOR: "04"
+      HIVEMQ_HOST: hivemq
+      HIVEMQ_PORT: 1883
+      SIM_ENGINE_HOST: sim-engine
+      COAP_PORT_START: "5713"
+      MQTT_USER: floor04
+      MQTT_PASS: floor04pass
+      FLOWS: flows.json
+    volumes:
+      - ./node-red/gateway-f04:/data
+    networks:
+      - campus-net
+    depends_on:
+      - hivemq
+      - sim-engine
+    restart: unless-stopped
+
+  gateway-f05:
+    image: nodered/node-red:latest
+    container_name: campus-gateway-f05
+    hostname: gateway-f05
+    environment:
+      FLOOR: "05"
+      HIVEMQ_HOST: hivemq
+      HIVEMQ_PORT: 1883
+      SIM_ENGINE_HOST: sim-engine
+      COAP_PORT_START: "5723"
+      MQTT_USER: floor05
+      MQTT_PASS: floor05pass
+      FLOWS: flows.json
+    volumes:
+      - ./node-red/gateway-f05:/data
+    networks:
+      - campus-net
+    depends_on:
+      - hivemq
+      - sim-engine
+    restart: unless-stopped
+
+  gateway-f06:
+    image: nodered/node-red:latest
+    container_name: campus-gateway-f06
+    hostname: gateway-f06
+    environment:
+      FLOOR: "06"
+      HIVEMQ_HOST: hivemq
+      HIVEMQ_PORT: 1883
+      SIM_ENGINE_HOST: sim-engine
+      COAP_PORT_START: "5733"
+      MQTT_USER: floor06
+      MQTT_PASS: floor06pass
+      FLOWS: flows.json
+    volumes:
+      - ./node-red/gateway-f06:/data
+    networks:
+      - campus-net
+    depends_on:
+      - hivemq
+      - sim-engine
+    restart: unless-stopped
+
+  gateway-f07:
+    image: nodered/node-red:latest
+    container_name: campus-gateway-f07
+    hostname: gateway-f07
+    environment:
+      FLOOR: "07"
+      HIVEMQ_HOST: hivemq
+      HIVEMQ_PORT: 1883
+      SIM_ENGINE_HOST: sim-engine
+      COAP_PORT_START: "5743"
+      MQTT_USER: floor07
+      MQTT_PASS: floor07pass
+      FLOWS: flows.json
+    volumes:
+      - ./node-red/gateway-f07:/data
+    networks:
+      - campus-net
+    depends_on:
+      - hivemq
+      - sim-engine
+    restart: unless-stopped
+
+  gateway-f08:
+    image: nodered/node-red:latest
+    container_name: campus-gateway-f08
+    hostname: gateway-f08
+    environment:
+      FLOOR: "08"
+      HIVEMQ_HOST: hivemq
+      HIVEMQ_PORT: 1883
+      SIM_ENGINE_HOST: sim-engine
+      COAP_PORT_START: "5753"
+      MQTT_USER: floor08
+      MQTT_PASS: floor08pass
+      FLOWS: flows.json
+    volumes:
+      - ./node-red/gateway-f08:/data
+    networks:
+      - campus-net
+    depends_on:
+      - hivemq
+      - sim-engine
+    restart: unless-stopped
+
+  gateway-f09:
+    image: nodered/node-red:latest
+    container_name: campus-gateway-f09
+    hostname: gateway-f09
+    environment:
+      FLOOR: "09"
+      HIVEMQ_HOST: hivemq
+      HIVEMQ_PORT: 1883
+      SIM_ENGINE_HOST: sim-engine
+      COAP_PORT_START: "5763"
+      MQTT_USER: floor09
+      MQTT_PASS: floor09pass
+      FLOWS: flows.json
+    volumes:
+      - ./node-red/gateway-f09:/data
+    networks:
+      - campus-net
+    depends_on:
+      - hivemq
+      - sim-engine
+    restart: unless-stopped
+
+  gateway-f10:
+    image: nodered/node-red:latest
+    container_name: campus-gateway-f10
+    hostname: gateway-f10
+    environment:
+      FLOOR: "10"
+      HIVEMQ_HOST: hivemq
+      HIVEMQ_PORT: 1883
+      SIM_ENGINE_HOST: sim-engine
+      COAP_PORT_START: "5773"
+      MQTT_USER: floor10
+      MQTT_PASS: floor10pass
+      FLOWS: flows.json
+    volumes:
+      - ./node-red/gateway-f10:/data
+    networks:
+      - campus-net
+    depends_on:
+      - hivemq
+      - sim-engine
+    restart: unless-stopped

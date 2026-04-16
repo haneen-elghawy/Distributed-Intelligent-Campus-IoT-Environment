@@ -1,0 +1,1160 @@
+[
+  {
+    "id": "tab-floor09",
+    "type": "tab",
+    "label": "Floor 09 Gateway",
+    "disabled": false,
+    "info": "Phase 2 \u2014 Flows A\u2013D + offline CoAP autonomy"
+  },
+  {
+    "id": "broker-09",
+    "type": "mqtt-broker",
+    "name": "HiveMQ",
+    "broker": "$(HIVEMQ_HOST)",
+    "port": "$(HIVEMQ_PORT)",
+    "clientid": "nodered-gw-f$(FLOOR)",
+    "autoConnect": true,
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthRetain": "false",
+    "birthPayload": "",
+    "birthPayloadType": "str",
+    "closeTopic": "",
+    "closeQos": "0",
+    "closeRetain": "false",
+    "closePayload": "",
+    "closePayloadType": "str",
+    "willTopic": "",
+    "willQos": "0",
+    "willRetain": "false",
+    "willPayload": "",
+    "willPayloadType": "str",
+    "sessionExpiry": "",
+    "credentials": {
+      "user": "$(MQTT_USER)",
+      "password": "$(MQTT_PASS)"
+    }
+  },
+  {
+    "id": "mqtt-in-tel-09",
+    "type": "mqtt in",
+    "z": "tab-floor09",
+    "name": "A: telemetry",
+    "topic": "campus/b01/f09/+/telemetry",
+    "qos": "1",
+    "datatype": "json",
+    "broker": "broker-09",
+    "nl": false,
+    "rap": false,
+    "inputs": 0,
+    "x": 140,
+    "y": 60,
+    "wires": [
+      [
+        "fn-a-parse-09"
+      ]
+    ]
+  },
+  {
+    "id": "fn-a-parse-09",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "A: store + status topic",
+    "func": "let p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || !p.node_id) return null;\nconst rooms = flow.get('floor_rooms') || {};\nrooms[p.node_id] = {\n    temperature: p.temperature,\n    humidity: p.humidity,\n    occupancy: p.occupancy,\n    ts: p.ts,\n    source: 'mqtt'\n};\nflow.set('floor_rooms', rooms);\nmsg.topic = msg.topic.replace(/\\/telemetry$/, '/status');\nmsg.payload = p;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 60,
+    "wires": [
+      [
+        "mqtt-out-stat-09"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-out-stat-09",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "A: status mirror",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 620,
+    "y": 60,
+    "wires": []
+  },
+  {
+    "id": "inj-coap-09-0",
+    "type": "inject",
+    "z": "tab-floor09",
+    "name": "Start observe r911",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.5,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 130,
+    "y": 180,
+    "wires": [
+      [
+        "coap-obs-09-0"
+      ]
+    ]
+  },
+  {
+    "id": "coap-obs-09-0",
+    "type": "coap request",
+    "z": "tab-floor09",
+    "method": "GET",
+    "observe": true,
+    "url": "coap://$(SIM_ENGINE_HOST):5763/f09/r911/telemetry",
+    "content-format": "application/json",
+    "raw-buffer": false,
+    "name": "Observe r911",
+    "x": 360,
+    "y": 180,
+    "wires": [
+      [
+        "fn-bridge-09-0"
+      ]
+    ]
+  },
+  {
+    "id": "fn-bridge-09-0",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "B: bridge r911",
+    "func": "let p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || !p.node_id) return null;\nconst rooms = flow.get('floor_rooms') || {};\nrooms[p.node_id] = {\n    temperature: p.temperature,\n    humidity: p.humidity,\n    occupancy: p.occupancy,\n    ts: p.ts,\n    source: 'coap'\n};\nflow.set('floor_rooms', rooms);\nconst r = p.node_id.split('-r')[1];\nconst f = process.env.FLOOR;\nmsg.topic = `campus/b01/f${f}/r${r}/telemetry`;\nmsg.qos = 1;\nmsg.payload = p;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 580,
+    "y": 180,
+    "wires": [
+      [
+        "mqtt-out-bridge-09-0"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-out-bridge-09-0",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "MQTT r911",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 820,
+    "y": 180,
+    "wires": []
+  },
+  {
+    "id": "inj-coap-09-1",
+    "type": "inject",
+    "z": "tab-floor09",
+    "name": "Start observe r912",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.55,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 130,
+    "y": 250,
+    "wires": [
+      [
+        "coap-obs-09-1"
+      ]
+    ]
+  },
+  {
+    "id": "coap-obs-09-1",
+    "type": "coap request",
+    "z": "tab-floor09",
+    "method": "GET",
+    "observe": true,
+    "url": "coap://$(SIM_ENGINE_HOST):5764/f09/r912/telemetry",
+    "content-format": "application/json",
+    "raw-buffer": false,
+    "name": "Observe r912",
+    "x": 360,
+    "y": 250,
+    "wires": [
+      [
+        "fn-bridge-09-1"
+      ]
+    ]
+  },
+  {
+    "id": "fn-bridge-09-1",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "B: bridge r912",
+    "func": "let p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || !p.node_id) return null;\nconst rooms = flow.get('floor_rooms') || {};\nrooms[p.node_id] = {\n    temperature: p.temperature,\n    humidity: p.humidity,\n    occupancy: p.occupancy,\n    ts: p.ts,\n    source: 'coap'\n};\nflow.set('floor_rooms', rooms);\nconst r = p.node_id.split('-r')[1];\nconst f = process.env.FLOOR;\nmsg.topic = `campus/b01/f${f}/r${r}/telemetry`;\nmsg.qos = 1;\nmsg.payload = p;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 580,
+    "y": 250,
+    "wires": [
+      [
+        "mqtt-out-bridge-09-1"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-out-bridge-09-1",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "MQTT r912",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 820,
+    "y": 250,
+    "wires": []
+  },
+  {
+    "id": "inj-coap-09-2",
+    "type": "inject",
+    "z": "tab-floor09",
+    "name": "Start observe r913",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.6,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 130,
+    "y": 320,
+    "wires": [
+      [
+        "coap-obs-09-2"
+      ]
+    ]
+  },
+  {
+    "id": "coap-obs-09-2",
+    "type": "coap request",
+    "z": "tab-floor09",
+    "method": "GET",
+    "observe": true,
+    "url": "coap://$(SIM_ENGINE_HOST):5765/f09/r913/telemetry",
+    "content-format": "application/json",
+    "raw-buffer": false,
+    "name": "Observe r913",
+    "x": 360,
+    "y": 320,
+    "wires": [
+      [
+        "fn-bridge-09-2"
+      ]
+    ]
+  },
+  {
+    "id": "fn-bridge-09-2",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "B: bridge r913",
+    "func": "let p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || !p.node_id) return null;\nconst rooms = flow.get('floor_rooms') || {};\nrooms[p.node_id] = {\n    temperature: p.temperature,\n    humidity: p.humidity,\n    occupancy: p.occupancy,\n    ts: p.ts,\n    source: 'coap'\n};\nflow.set('floor_rooms', rooms);\nconst r = p.node_id.split('-r')[1];\nconst f = process.env.FLOOR;\nmsg.topic = `campus/b01/f${f}/r${r}/telemetry`;\nmsg.qos = 1;\nmsg.payload = p;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 580,
+    "y": 320,
+    "wires": [
+      [
+        "mqtt-out-bridge-09-2"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-out-bridge-09-2",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "MQTT r913",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 820,
+    "y": 320,
+    "wires": []
+  },
+  {
+    "id": "inj-coap-09-3",
+    "type": "inject",
+    "z": "tab-floor09",
+    "name": "Start observe r914",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.65,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 130,
+    "y": 390,
+    "wires": [
+      [
+        "coap-obs-09-3"
+      ]
+    ]
+  },
+  {
+    "id": "coap-obs-09-3",
+    "type": "coap request",
+    "z": "tab-floor09",
+    "method": "GET",
+    "observe": true,
+    "url": "coap://$(SIM_ENGINE_HOST):5766/f09/r914/telemetry",
+    "content-format": "application/json",
+    "raw-buffer": false,
+    "name": "Observe r914",
+    "x": 360,
+    "y": 390,
+    "wires": [
+      [
+        "fn-bridge-09-3"
+      ]
+    ]
+  },
+  {
+    "id": "fn-bridge-09-3",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "B: bridge r914",
+    "func": "let p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || !p.node_id) return null;\nconst rooms = flow.get('floor_rooms') || {};\nrooms[p.node_id] = {\n    temperature: p.temperature,\n    humidity: p.humidity,\n    occupancy: p.occupancy,\n    ts: p.ts,\n    source: 'coap'\n};\nflow.set('floor_rooms', rooms);\nconst r = p.node_id.split('-r')[1];\nconst f = process.env.FLOOR;\nmsg.topic = `campus/b01/f${f}/r${r}/telemetry`;\nmsg.qos = 1;\nmsg.payload = p;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 580,
+    "y": 390,
+    "wires": [
+      [
+        "mqtt-out-bridge-09-3"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-out-bridge-09-3",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "MQTT r914",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 820,
+    "y": 390,
+    "wires": []
+  },
+  {
+    "id": "inj-coap-09-4",
+    "type": "inject",
+    "z": "tab-floor09",
+    "name": "Start observe r915",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.7,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 130,
+    "y": 460,
+    "wires": [
+      [
+        "coap-obs-09-4"
+      ]
+    ]
+  },
+  {
+    "id": "coap-obs-09-4",
+    "type": "coap request",
+    "z": "tab-floor09",
+    "method": "GET",
+    "observe": true,
+    "url": "coap://$(SIM_ENGINE_HOST):5767/f09/r915/telemetry",
+    "content-format": "application/json",
+    "raw-buffer": false,
+    "name": "Observe r915",
+    "x": 360,
+    "y": 460,
+    "wires": [
+      [
+        "fn-bridge-09-4"
+      ]
+    ]
+  },
+  {
+    "id": "fn-bridge-09-4",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "B: bridge r915",
+    "func": "let p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || !p.node_id) return null;\nconst rooms = flow.get('floor_rooms') || {};\nrooms[p.node_id] = {\n    temperature: p.temperature,\n    humidity: p.humidity,\n    occupancy: p.occupancy,\n    ts: p.ts,\n    source: 'coap'\n};\nflow.set('floor_rooms', rooms);\nconst r = p.node_id.split('-r')[1];\nconst f = process.env.FLOOR;\nmsg.topic = `campus/b01/f${f}/r${r}/telemetry`;\nmsg.qos = 1;\nmsg.payload = p;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 580,
+    "y": 460,
+    "wires": [
+      [
+        "mqtt-out-bridge-09-4"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-out-bridge-09-4",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "MQTT r915",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 820,
+    "y": 460,
+    "wires": []
+  },
+  {
+    "id": "inj-coap-09-5",
+    "type": "inject",
+    "z": "tab-floor09",
+    "name": "Start observe r916",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.75,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 130,
+    "y": 530,
+    "wires": [
+      [
+        "coap-obs-09-5"
+      ]
+    ]
+  },
+  {
+    "id": "coap-obs-09-5",
+    "type": "coap request",
+    "z": "tab-floor09",
+    "method": "GET",
+    "observe": true,
+    "url": "coap://$(SIM_ENGINE_HOST):5768/f09/r916/telemetry",
+    "content-format": "application/json",
+    "raw-buffer": false,
+    "name": "Observe r916",
+    "x": 360,
+    "y": 530,
+    "wires": [
+      [
+        "fn-bridge-09-5"
+      ]
+    ]
+  },
+  {
+    "id": "fn-bridge-09-5",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "B: bridge r916",
+    "func": "let p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || !p.node_id) return null;\nconst rooms = flow.get('floor_rooms') || {};\nrooms[p.node_id] = {\n    temperature: p.temperature,\n    humidity: p.humidity,\n    occupancy: p.occupancy,\n    ts: p.ts,\n    source: 'coap'\n};\nflow.set('floor_rooms', rooms);\nconst r = p.node_id.split('-r')[1];\nconst f = process.env.FLOOR;\nmsg.topic = `campus/b01/f${f}/r${r}/telemetry`;\nmsg.qos = 1;\nmsg.payload = p;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 580,
+    "y": 530,
+    "wires": [
+      [
+        "mqtt-out-bridge-09-5"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-out-bridge-09-5",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "MQTT r916",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 820,
+    "y": 530,
+    "wires": []
+  },
+  {
+    "id": "inj-coap-09-6",
+    "type": "inject",
+    "z": "tab-floor09",
+    "name": "Start observe r917",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.8,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 130,
+    "y": 600,
+    "wires": [
+      [
+        "coap-obs-09-6"
+      ]
+    ]
+  },
+  {
+    "id": "coap-obs-09-6",
+    "type": "coap request",
+    "z": "tab-floor09",
+    "method": "GET",
+    "observe": true,
+    "url": "coap://$(SIM_ENGINE_HOST):5769/f09/r917/telemetry",
+    "content-format": "application/json",
+    "raw-buffer": false,
+    "name": "Observe r917",
+    "x": 360,
+    "y": 600,
+    "wires": [
+      [
+        "fn-bridge-09-6"
+      ]
+    ]
+  },
+  {
+    "id": "fn-bridge-09-6",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "B: bridge r917",
+    "func": "let p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || !p.node_id) return null;\nconst rooms = flow.get('floor_rooms') || {};\nrooms[p.node_id] = {\n    temperature: p.temperature,\n    humidity: p.humidity,\n    occupancy: p.occupancy,\n    ts: p.ts,\n    source: 'coap'\n};\nflow.set('floor_rooms', rooms);\nconst r = p.node_id.split('-r')[1];\nconst f = process.env.FLOOR;\nmsg.topic = `campus/b01/f${f}/r${r}/telemetry`;\nmsg.qos = 1;\nmsg.payload = p;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 580,
+    "y": 600,
+    "wires": [
+      [
+        "mqtt-out-bridge-09-6"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-out-bridge-09-6",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "MQTT r917",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 820,
+    "y": 600,
+    "wires": []
+  },
+  {
+    "id": "inj-coap-09-7",
+    "type": "inject",
+    "z": "tab-floor09",
+    "name": "Start observe r918",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.8500000000000001,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 130,
+    "y": 670,
+    "wires": [
+      [
+        "coap-obs-09-7"
+      ]
+    ]
+  },
+  {
+    "id": "coap-obs-09-7",
+    "type": "coap request",
+    "z": "tab-floor09",
+    "method": "GET",
+    "observe": true,
+    "url": "coap://$(SIM_ENGINE_HOST):5770/f09/r918/telemetry",
+    "content-format": "application/json",
+    "raw-buffer": false,
+    "name": "Observe r918",
+    "x": 360,
+    "y": 670,
+    "wires": [
+      [
+        "fn-bridge-09-7"
+      ]
+    ]
+  },
+  {
+    "id": "fn-bridge-09-7",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "B: bridge r918",
+    "func": "let p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || !p.node_id) return null;\nconst rooms = flow.get('floor_rooms') || {};\nrooms[p.node_id] = {\n    temperature: p.temperature,\n    humidity: p.humidity,\n    occupancy: p.occupancy,\n    ts: p.ts,\n    source: 'coap'\n};\nflow.set('floor_rooms', rooms);\nconst r = p.node_id.split('-r')[1];\nconst f = process.env.FLOOR;\nmsg.topic = `campus/b01/f${f}/r${r}/telemetry`;\nmsg.qos = 1;\nmsg.payload = p;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 580,
+    "y": 670,
+    "wires": [
+      [
+        "mqtt-out-bridge-09-7"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-out-bridge-09-7",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "MQTT r918",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 820,
+    "y": 670,
+    "wires": []
+  },
+  {
+    "id": "inj-coap-09-8",
+    "type": "inject",
+    "z": "tab-floor09",
+    "name": "Start observe r919",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.9,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 130,
+    "y": 740,
+    "wires": [
+      [
+        "coap-obs-09-8"
+      ]
+    ]
+  },
+  {
+    "id": "coap-obs-09-8",
+    "type": "coap request",
+    "z": "tab-floor09",
+    "method": "GET",
+    "observe": true,
+    "url": "coap://$(SIM_ENGINE_HOST):5771/f09/r919/telemetry",
+    "content-format": "application/json",
+    "raw-buffer": false,
+    "name": "Observe r919",
+    "x": 360,
+    "y": 740,
+    "wires": [
+      [
+        "fn-bridge-09-8"
+      ]
+    ]
+  },
+  {
+    "id": "fn-bridge-09-8",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "B: bridge r919",
+    "func": "let p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || !p.node_id) return null;\nconst rooms = flow.get('floor_rooms') || {};\nrooms[p.node_id] = {\n    temperature: p.temperature,\n    humidity: p.humidity,\n    occupancy: p.occupancy,\n    ts: p.ts,\n    source: 'coap'\n};\nflow.set('floor_rooms', rooms);\nconst r = p.node_id.split('-r')[1];\nconst f = process.env.FLOOR;\nmsg.topic = `campus/b01/f${f}/r${r}/telemetry`;\nmsg.qos = 1;\nmsg.payload = p;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 580,
+    "y": 740,
+    "wires": [
+      [
+        "mqtt-out-bridge-09-8"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-out-bridge-09-8",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "MQTT r919",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 820,
+    "y": 740,
+    "wires": []
+  },
+  {
+    "id": "inj-coap-09-9",
+    "type": "inject",
+    "z": "tab-floor09",
+    "name": "Start observe r920",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.95,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 130,
+    "y": 810,
+    "wires": [
+      [
+        "coap-obs-09-9"
+      ]
+    ]
+  },
+  {
+    "id": "coap-obs-09-9",
+    "type": "coap request",
+    "z": "tab-floor09",
+    "method": "GET",
+    "observe": true,
+    "url": "coap://$(SIM_ENGINE_HOST):5772/f09/r920/telemetry",
+    "content-format": "application/json",
+    "raw-buffer": false,
+    "name": "Observe r920",
+    "x": 360,
+    "y": 810,
+    "wires": [
+      [
+        "fn-bridge-09-9"
+      ]
+    ]
+  },
+  {
+    "id": "fn-bridge-09-9",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "B: bridge r920",
+    "func": "let p = msg.payload;\nif (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { return null; } }\nif (!p || !p.node_id) return null;\nconst rooms = flow.get('floor_rooms') || {};\nrooms[p.node_id] = {\n    temperature: p.temperature,\n    humidity: p.humidity,\n    occupancy: p.occupancy,\n    ts: p.ts,\n    source: 'coap'\n};\nflow.set('floor_rooms', rooms);\nconst r = p.node_id.split('-r')[1];\nconst f = process.env.FLOOR;\nmsg.topic = `campus/b01/f${f}/r${r}/telemetry`;\nmsg.qos = 1;\nmsg.payload = p;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 580,
+    "y": 810,
+    "wires": [
+      [
+        "mqtt-out-bridge-09-9"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-out-bridge-09-9",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "MQTT r920",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 820,
+    "y": 810,
+    "wires": []
+  },
+  {
+    "id": "inj-60-09",
+    "type": "inject",
+    "z": "tab-floor09",
+    "name": "Every 60s",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "60",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 140,
+    "y": 920,
+    "wires": [
+      [
+        "fn-thin-09"
+      ]
+    ]
+  },
+  {
+    "id": "fn-thin-09",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "C: edge-thinning",
+    "func": "const floorRooms = flow.get('floor_rooms') || {};\nconst temps = Object.values(floorRooms).map(r => r.temperature).filter(v => v != null);\nconst humids = Object.values(floorRooms).map(r => r.humidity).filter(v => v != null);\nconst occupied = Object.values(floorRooms).filter(r => r.occupancy === true).length;\nconst summary = {\n    floor: process.env.FLOOR,\n    ts: Date.now(),\n    avg_temperature: temps.length ? (temps.reduce((a,b)=>a+b,0)/temps.length).toFixed(1) : null,\n    avg_humidity: humids.length ? (humids.reduce((a,b)=>a+b,0)/humids.length).toFixed(1) : null,\n    occupied_rooms: occupied,\n    total_rooms: Object.keys(floorRooms).length\n};\nmsg.payload = summary;\nmsg.topic = `campus/b01/f${process.env.FLOOR}/floor-summary`;\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 920,
+    "wires": [
+      [
+        "mqtt-sum-09"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-sum-09",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "C: floor-summary",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 620,
+    "y": 920,
+    "wires": []
+  },
+  {
+    "id": "mqtt-in-cmd-09",
+    "type": "mqtt in",
+    "z": "tab-floor09",
+    "name": "D: commands",
+    "topic": "campus/b01/f09/+/cmd",
+    "qos": "2",
+    "datatype": "utf8",
+    "broker": "broker-09",
+    "nl": false,
+    "rap": false,
+    "inputs": 0,
+    "x": 140,
+    "y": 1020,
+    "wires": [
+      [
+        "fn-route-09"
+      ]
+    ]
+  },
+  {
+    "id": "fn-route-09",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "D: cmd-router",
+    "func": "const topic = msg.topic;\nconst parts = topic.split('/');\nif (parts.length < 5) return null;\nconst roomStr = parts[3];\nconst floorStr = parts[2];\nconst rfull = parseInt(roomStr.replace(/^r/, ''), 10);\nconst roomNum = rfull % 100;\nconst coapStart = parseInt(process.env.COAP_PORT_START || '5683', 10);\nconst coapPort = coapStart + (roomNum - 11);\nflow.set('last_cmd_topic', topic);\nif (roomNum >= 11 && roomNum <= 20) {\n    msg.url = `coap://${process.env.SIM_ENGINE_HOST}:${coapPort}/${floorStr}/${roomStr}/actuators/hvac`;\n    msg.method = 'PUT';\n    if (typeof msg.payload === 'object') {\n        msg.payload = JSON.stringify(msg.payload);\n    }\n    return [msg, null];\n}\nreturn [null, null];",
+    "outputs": 2,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 380,
+    "y": 1020,
+    "wires": [
+      [
+        "coap-put-09"
+      ],
+      []
+    ]
+  },
+  {
+    "id": "coap-put-09",
+    "type": "coap request",
+    "z": "tab-floor09",
+    "method": "PUT",
+    "observe": false,
+    "url": "",
+    "content-format": "application/json",
+    "raw-buffer": false,
+    "name": "D: CoAP PUT hvac",
+    "x": 620,
+    "y": 1020,
+    "wires": [
+      [
+        "fn-ack-09"
+      ]
+    ]
+  },
+  {
+    "id": "fn-ack-09",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "D: cmd-response",
+    "func": "const t = flow.get('last_cmd_topic');\nif (!t) return null;\nconst parts = t.split('/');\nconst roomStr = parts[3];\nconst floorStr = parts[2];\nmsg.topic = `campus/b01/${floorStr}/${roomStr}/cmd-response`;\nconst code = msg.statusCode;\nconst ok = code == null || String(code).startsWith('2.');\nmsg.payload = { ok, coap_status: code, ts: Date.now() };\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 860,
+    "y": 1020,
+    "wires": [
+      [
+        "mqtt-ack-09"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-ack-09",
+    "type": "mqtt out",
+    "z": "tab-floor09",
+    "name": "D: cmd-response MQTT",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-09",
+    "x": 1100,
+    "y": 1020,
+    "wires": []
+  },
+  {
+    "id": "st-broker-09",
+    "type": "status",
+    "z": "tab-floor09",
+    "name": "Broker status",
+    "scope": [
+      "broker-09"
+    ],
+    "x": 140,
+    "y": 1140,
+    "wires": [
+      [
+        "fn-offline-09"
+      ]
+    ]
+  },
+  {
+    "id": "fn-offline-09",
+    "type": "function",
+    "z": "tab-floor09",
+    "name": "Offline: unoccupied \u2192 HVAC OFF",
+    "func": "const text = (msg.status && msg.status.text) ? String(msg.status.text) : '';\nif (!text.toLowerCase().includes('disconnect') && !text.toLowerCase().includes('lost')) {\n    return null;\n}\nconst F = process.env.FLOOR;\nconst start = parseInt(process.env.COAP_PORT_START || '5683', 10);\nconst rooms = flow.get('floor_rooms') || {};\nfor (let roomId = 11; roomId <= 20; roomId++) {\n    const rnum = parseInt(F, 10) * 100 + roomId;\n    const rid = `b01-f${F}-r${rnum}`;\n    const rec = rooms[rid];\n    if (rec && rec.occupancy === false) {\n        const port = start + (roomId - 11);\n        node.send({\n            url: `coap://${process.env.SIM_ENGINE_HOST}:${port}/f${F}/r${rnum}/actuators/hvac`,\n            method: 'PUT',\n            payload: JSON.stringify({ hvac_mode: 'OFF' }),\n        });\n    }\n}\nreturn null;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 400,
+    "y": 1140,
+    "wires": [
+      [
+        "coap-off-09"
+      ]
+    ]
+  },
+  {
+    "id": "coap-off-09",
+    "type": "coap request",
+    "z": "tab-floor09",
+    "method": "PUT",
+    "observe": false,
+    "url": "",
+    "content-format": "application/json",
+    "raw-buffer": false,
+    "name": "Offline CoAP PUT",
+    "x": 680,
+    "y": 1140,
+    "wires": []
+  }
+]

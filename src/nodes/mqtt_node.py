@@ -13,7 +13,7 @@ Each node has:
 - Per-floor credentials from env (MQTT_USER_FLOOR01 / MQTT_PASS_FLOOR01)
 - DUP-flag deduplication (MD5 hash of topic+payload, 60-second TTL)
 
-TLS is added in Step 9; plain port 1883 is used here.
+TLS: set ``MQTT_USE_TLS=true`` and provide ``hivemq/certs/ca.crt`` (see Step 9).
 """
 from __future__ import annotations
 
@@ -22,7 +22,9 @@ import hashlib
 import json
 import logging
 import os
+import ssl
 import time
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from gmqtt import Client
@@ -43,8 +45,10 @@ logger = logging.getLogger("nodes.mqtt_node")
 # Module-level config (overridable via .env)
 # ---------------------------------------------------------------------------
 BROKER: str = os.getenv("HIVEMQ_BROKER", "hivemq")
-PORT: int = int(os.getenv("HIVEMQ_PORT_PLAIN", "1883"))   # TLS added in Step 9
 INTERVAL: float = float(os.getenv("PUBLISH_INTERVAL", "5"))
+
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+_DEFAULT_CA = _REPO_ROOT / "hivemq" / "certs" / "ca.crt"
 
 
 # ---------------------------------------------------------------------------
@@ -140,8 +144,8 @@ class MqttNode:
         )
 
         logger.info(
-            "MQTT node %s connected → broker=%s:%d  cmd=%s",
-            self.room.node_id, BROKER, PORT, _cmd,
+            "MQTT node %s connected → broker=%s:%d tls=%s  cmd=%s",
+            self.room.node_id, BROKER, port, use_tls, _cmd,
         )
 
     async def disconnect(self) -> None:
@@ -208,15 +212,14 @@ class MqttNode:
         """Inbound command handler.
 
         Applies hvac_mode / target_temp / lighting_dimmer from JSON payload.
-        Duplicate messages (DUP flag) are silently dropped within a 60-second
-        window using an MD5 fingerprint of topic + raw payload as the key.
+        Identical replays (same topic + raw payload) are dropped within a 60-second
+        window using an MD5 fingerprint — covers MQTT QoS 2 redeliveries (DUP=1)
+        and rapid duplicate publishes.
         """
-        # --- DUP deduplication ---
-        dup_flag = getattr(properties, "dup", False) if properties else False
         msg_key = hashlib.md5(
             topic.encode() + (payload if isinstance(payload, bytes) else payload.encode())
         ).hexdigest()
-        if dup_flag and self._is_duplicate(msg_key):
+        if self._is_duplicate(msg_key):
             return 0
 
         # --- Decode ---
@@ -271,7 +274,11 @@ class MqttNode:
     # ------------------------------------------------------------------
 
     def _is_duplicate(self, msg_key: str) -> bool:
-        """Return True and log a warning if *msg_key* was seen within 60 s."""
+        """Return True and log a warning if *msg_key* was seen within 60 s.
+
+        On first sight of *msg_key*, record timestamp and return False so the
+        handler still processes the message.
+        """
         now = time.time()
         # Purge expired entries (60-second sliding window)
         self._seen_msg_ids = {

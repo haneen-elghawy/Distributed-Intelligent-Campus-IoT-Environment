@@ -1,0 +1,2 @@
+# Paste sim-engine / gateway logs showing CoAP CON POST /alerts and 2.xx ACK
+# (after enabling COAP_ALERTS_ENABLED and a gateway listener on POST /alerts).

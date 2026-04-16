@@ -1,0 +1,2 @@
+# Populate by running (stack up, HiveMQ on LATENCY_BROKER / LATENCY_PORT):
+#   python scripts/latency_test.py --save docs/rtt_results.txt
