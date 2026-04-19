@@ -14,7 +14,7 @@ Embed **screenshots and log excerpts** in the PDF where indicated below (HiveMQ 
 
 ## 1. Architecture and end-to-end data paths
 
-**World engine (`sim-engine`):** A single `asyncio` process runs 100 `gmqtt` clients and 100 `aiocoap` servers. Room physics from Phase 1 feeds telemetry on both transports. Virtual actuators (`hvac_status`, dimmer, etc.) update from MQTT command topics and CoAP `PUT` actuator resources (see `src/models/room.py`, `src/nodes/mqtt_node.py`, `src/coap/server.py`).
+**World engine (`sim-engine`):** A single `asyncio` process runs 100 `gmqtt` clients and 100 `aiocoap` servers. Room physics from Phase 1 feeds telemetry on both transports using a deterministic thermal update with explicit `delta_t` scaling in the room model. Virtual actuators (`hvac_status`, dimmer, etc.) update from MQTT command topics and CoAP `PUT` actuator resources (see `src/models/room.py`, `src/nodes/mqtt_node.py`, `src/coap/server.py`).
 
 **Gateways:** Ten Node-RED instances (`gateway-f01` … `gateway-f10`) each subscribe to floor-scoped MQTT, observe CoAP resources on `sim-engine`, apply **60-second averaging** before publishing upstream, map MQTT commands to CoAP `PUT`, and expose a CoAP **alert** listener for reliability signaling from the sim (Flow E in generated `flows.json`).
 
@@ -64,6 +64,12 @@ The MQTT command path deduplicates by **hash of topic + raw payload** so retrans
 
 **Evidence:** Log lines showing a duplicate delivery followed by a single actuator transition, or debug logging of the dedup cache hit.
 
+### 4.4 Fleet heartbeat signaling
+
+In addition to retained online/offline status per room, each MQTT node emits a per-tick **healthy heartbeat** to a fleet monitoring topic (`campus/fleet/heartbeat` by default, configurable via `FLEET_HEARTBEAT_TOPIC`). This heartbeat is published once per simulation tick when telemetry is emitted.
+
+**Evidence:** Subscriber output (or broker trace) showing periodic heartbeat payloads with `node_id`, `status=healthy`, `protocol`, and `ts`.
+
 ### 4.2 QoS 2 delivery guarantees
 
 Gateway Flow E publishes alert forwarding to MQTT at **QoS 2** where configured; use `scripts/stress_mqtt_qos2.sh` (or `mosquitto_sub` / `mosquitto_pub` with `-q 2`) to demonstrate complete four-way handshake and no duplicate application at the subscriber.
@@ -108,4 +114,4 @@ This confirms presence of compose file, HiveMQ config, RBAC extension, ten gatew
 
 ## 7. Conclusion
 
-Phase 2 delivers a **fully wired** multi-protocol campus simulation: Python asyncio scale-out, Node-RED edge processing, ThingsBoard mind layer, and broker ACL/TLS hooks. Final **PDF evidence** consists of this narrative plus embedded screenshots (HiveMQ clients, TB dashboard, latency numbers, and reliability logs) captured from your deployment host.
+Phase 2 delivers a **fully wired** multi-protocol campus simulation: Python asyncio scale-out, deterministic `delta_t`-aware room physics (thermal leakage + actuator impact), deterministic occupancy/light correlation, Node-RED edge processing, ThingsBoard mind layer, and broker ACL/TLS hooks. Final **PDF evidence** consists of this narrative plus embedded screenshots (HiveMQ clients, TB dashboard, latency numbers, and reliability logs) captured from your deployment host.

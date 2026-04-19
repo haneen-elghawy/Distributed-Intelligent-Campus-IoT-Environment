@@ -92,13 +92,13 @@ def get_outside_humidity(hour: float) -> float:
     return base - amp * math.sin(math.pi * (hour - 8) / 12)
 
 
-def _tick_physics(room) -> float:
+def _tick_physics(room, delta_t: float) -> float:
     """Advance one physics step for *room* and return the current timestamp."""
     vt   = get_virtual_time()
     hour = vt.hour + vt.minute / 60.0
     room.update_occupancy(hour)
     room.update_hvac()
-    room.update_temperature(get_outside_temperature(hour))
+    room.update_temperature(get_outside_temperature(hour), delta_t=delta_t)
     room.update_light(hour)
     room.update_humidity(get_outside_humidity(hour))
     now = time.time()
@@ -135,7 +135,7 @@ async def run_mqtt_node(node: MqttNode) -> None:
 
     while True:
         tick_start = time.time()
-        now        = _tick_physics(node.room)
+        now        = _tick_physics(node.room, delta_t=interval)
 
         # SQLite persistence (off the event loop thread)
         if now - last_persist >= persist_interval:
@@ -149,6 +149,7 @@ async def run_mqtt_node(node: MqttNode) -> None:
                 await asyncio.sleep(faults["delay_seconds"])
 
             await node.publish_telemetry()
+            await node.publish_heartbeat()
 
             # Temperature threshold alerts — QoS 2 (Exactly Once)
             temp = node.room.temperature
@@ -181,7 +182,7 @@ async def run_coap_node(node: CoapNode) -> None:
 
     while True:
         tick_start = time.time()
-        now        = _tick_physics(node.room)
+        now        = _tick_physics(node.room, delta_t=interval)
 
         # SQLite persistence
         if now - last_persist >= persist_interval:

@@ -46,6 +46,9 @@ logger = logging.getLogger("nodes.mqtt_node")
 # ---------------------------------------------------------------------------
 BROKER: str = os.getenv("HIVEMQ_BROKER", "hivemq")
 INTERVAL: float = float(os.getenv("PUBLISH_INTERVAL", "5"))
+PORT: int = int(os.getenv("HIVEMQ_PORT", "1883"))
+USE_TLS: bool = os.getenv("MQTT_USE_TLS", "false").lower() in ("1", "true", "yes")
+HEARTBEAT_TOPIC: str = os.getenv("FLEET_HEARTBEAT_TOPIC", "campus/fleet/heartbeat")
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _DEFAULT_CA = _REPO_ROOT / "hivemq" / "certs" / "ca.crt"
@@ -124,7 +127,10 @@ class MqttNode:
 
         self.client.on_message = self._on_message
 
-        await self.client.connect(BROKER, PORT, keepalive=30)
+        ssl_context = None
+        if USE_TLS:
+            ssl_context = ssl.create_default_context(cafile=str(_DEFAULT_CA))
+        await self.client.connect(BROKER, PORT, keepalive=30, ssl=ssl_context)
 
         # Subscribe to command topic at QoS 2 (Exactly Once)
         _cmd = cmd_topic(self.room.building_id, self.room.floor_id, self.room.room_id)
@@ -145,7 +151,7 @@ class MqttNode:
 
         logger.info(
             "MQTT node %s connected → broker=%s:%d tls=%s  cmd=%s",
-            self.room.node_id, BROKER, port, use_tls, _cmd,
+            self.room.node_id, BROKER, PORT, USE_TLS, _cmd,
         )
 
     async def disconnect(self) -> None:
@@ -197,6 +203,18 @@ class MqttNode:
         logger.warning(
             "ALERT QoS2  %s: %s=%s", self.room.node_id, alert_type, value
         )
+
+    async def publish_heartbeat(self) -> None:
+        """Publish per-tick health signal for fleet monitoring."""
+        if not self.client:
+            return
+        payload = json.dumps({
+            "node_id": self.room.node_id,
+            "status": "healthy",
+            "protocol": self.room.protocol,
+            "ts": int(time.time()),
+        })
+        self.client.publish(HEARTBEAT_TOPIC, payload, qos=1)
 
     # ------------------------------------------------------------------
     # Command handling

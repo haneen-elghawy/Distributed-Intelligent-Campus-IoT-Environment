@@ -53,6 +53,8 @@ class Room:
         # Configurable thermal constants
         self.alpha = _env_float("THERMAL_ALPHA", 0.01)
         self.beta = _env_float("THERMAL_BETA", 0.5)
+        self.occupied_light_threshold = _env_int("OCCUPIED_LIGHT_THRESHOLD", 250)
+        self.occupancy_heat_gain = _env_float("OCCUPANCY_HEAT_GAIN", 0.1)
 
         # fault rates can be configured from the env.
         base_fault_rate = _env_float("FAULT_RATE", 0.02)
@@ -82,13 +84,9 @@ class Room:
         return f"{self.building_id}-f{self.floor_id:02d}-r{self.floor_id * 100 + self.room_id:03d}"
 
     def update_occupancy(self, hour):
-        if 8.0 <= hour < 18.0:
-            p_occupied = 0.7
-        elif 7.0 <= hour < 8.0 or 18.0 <= hour < 19.0:
-            p_occupied = 0.3
-        else:
-            p_occupied = 0.05
-        self.occupancy = random.random() < p_occupied
+        # Deterministic occupancy schedule instead of stochastic sampling.
+        # Core office hours are occupied; shoulder and night are unoccupied.
+        self.occupancy = 8.0 <= hour < 18.0
 
     def update_light(self, hour):
         if 6.0 <= hour <= 20.0:
@@ -102,6 +100,8 @@ class Room:
             self.lighting_dimmer = 0
             artificial = 0
         self.light = max(0, min(1000, int(natural_light + artificial)))
+        if self.occupancy and self.light < self.occupied_light_threshold:
+            self.light = self.occupied_light_threshold
 
     def update_humidity(self, outside_humidity):
         gamma = 0.01
@@ -148,7 +148,7 @@ class Room:
             # ECO mode stays until explicitly changed via command
         self.sync_actuator_state()
 
-    def update_temperature(self, outside_temp):
+    def update_temperature(self, outside_temp, delta_t=1.0):
         alpha = self.alpha
         if self.hvac_mode == "COOLING":
             hvac_power = -1.0
@@ -164,11 +164,11 @@ class Room:
         else:
             hvac_power = 0.0
 
-        leakage = alpha * (outside_temp - self.temperature)
-        change = self.beta * hvac_power
+        leakage = alpha * (outside_temp - self.temperature) * delta_t
+        change = self.beta * hvac_power * delta_t
 
         if self.occupancy:
-            self.temperature += 0.1
+            self.temperature += self.occupancy_heat_gain * delta_t
         self.temperature += leakage + change
 
     def validate_state(self):

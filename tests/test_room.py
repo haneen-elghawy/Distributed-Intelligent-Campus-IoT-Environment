@@ -100,6 +100,21 @@ class TestTemperatureUpdate(unittest.TestCase):
         # ECO should cool less aggressively than COOLING
         self.assertGreater(room_eco.temperature, room_full.temperature)
 
+    def test_delta_t_scales_temperature_change(self):
+        room_fast = Room("b01", 1, 1)
+        room_fast.temperature = 22.0
+        room_fast.hvac_mode = "OFF"
+        room_fast.occupancy = False
+        room_fast.update_temperature(outside_temp=30, delta_t=5.0)
+
+        room_slow = Room("b01", 1, 1)
+        room_slow.temperature = 22.0
+        room_slow.hvac_mode = "OFF"
+        room_slow.occupancy = False
+        room_slow.update_temperature(outside_temp=30, delta_t=1.0)
+
+        self.assertGreater(room_fast.temperature - 22.0, room_slow.temperature - 22.0)
+
 
 class TestHVAC(unittest.TestCase):
     def test_cooling_activates(self):
@@ -149,19 +164,15 @@ class TestHVAC(unittest.TestCase):
 
 
 class TestOccupancy(unittest.TestCase):
-    def test_high_occupancy_work_hours(self):
+    def test_work_hours_occupied(self):
         room = Room("b01", 1, 1)
-        occupied_count = sum(
-            1 for _ in range(1000) if (room.update_occupancy(12.0) or True) and room.occupancy
-        )
-        self.assertGreater(occupied_count, 500)
+        room.update_occupancy(12.0)
+        self.assertTrue(room.occupancy)
 
-    def test_low_occupancy_night(self):
+    def test_night_unoccupied(self):
         room = Room("b01", 1, 1)
-        occupied_count = sum(
-            1 for _ in range(1000) if (room.update_occupancy(3.0) or True) and room.occupancy
-        )
-        self.assertLess(occupied_count, 150)
+        room.update_occupancy(3.0)
+        self.assertFalse(room.occupancy)
 
 
 class TestLight(unittest.TestCase):
@@ -200,6 +211,13 @@ class TestLight(unittest.TestCase):
         room.occupancy = True
         room.update_light(13.0)  # peak natural light + artificial
         self.assertLessEqual(room.light, 1000)
+
+    def test_occupied_light_respects_threshold(self):
+        room = Room("b01", 1, 1)
+        room.occupancy = True
+        room.occupied_light_threshold = 350
+        room.update_light(2.0)
+        self.assertGreaterEqual(room.light, 350)
 
 
 class TestHumidity(unittest.TestCase):
