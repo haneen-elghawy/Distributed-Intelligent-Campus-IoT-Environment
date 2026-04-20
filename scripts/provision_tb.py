@@ -7,16 +7,16 @@ with the appropriate transports.
 
 Authentication
 --------------
-Device and tenant APIs are **tenant-scoped**. By default this script uses the built-in tenant
-admin (``tenant@thingsboard.org`` / ``tenant``). You can override with ``TB_USERNAME`` /
-``TB_PASSWORD`` (e.g. service account). The **sysadmin** account is primarily for platform UI;
-if you force sysadmin here, device calls may return403 unless your TB version allows it.
+Uses your tenant admin account. Override with environment variables if needed:
+    TB_USERNAME   (default: tenant@campus.io)
+    TB_PASSWORD   (default: Tenant123!)
+    TB_URL        (default: http://localhost:9090)
 
 Usage::
     pip install requests
-    python scripts/provision_tb.py
-    python scripts/provision_tb.py --assets-only   # devices must exist
-    python scripts/provision_tb.py --devices-only
+    python provision_tb.py
+    python provision_tb.py --assets-only    # devices must already exist
+    python provision_tb.py --devices-only
 """
 from __future__ import annotations
 
@@ -24,24 +24,28 @@ import argparse
 import os
 import sys
 from typing import Any
+from urllib.parse import quote
 
 import requests
 
-TB_URL = os.getenv("TB_URL", "http://localhost:9090").rstrip("/")
-TB_USERNAME = os.getenv("TB_USERNAME", "tenant@thingsboard.org")
-TB_PASSWORD = os.getenv("TB_PASSWORD", "tenant")
+TB_URL      = os.getenv("TB_URL",      "http://localhost:9090").rstrip("/")
+TB_USERNAME = os.getenv("TB_USERNAME", "tenant@campus.io")   # ← your tenant admin email
+TB_PASSWORD = os.getenv("TB_PASSWORD", "Tenant123!")          # ← your tenant admin password
 TB_VERIFY_SSL = os.getenv("TB_VERIFY_SSL", "true").lower() in ("1", "true", "yes")
 
 PROFILE_MQTT = "MQTT-ThermalSensor"
 PROFILE_COAP = "CoAP-ThermalSensor"
 
 
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
 class ThingsBoardError(RuntimeError):
     """Raised for API errors with server detail when available."""
 
 
 def _req_exc(resp: requests.Response, what: str) -> ThingsBoardError:
-    detail = ""
     try:
         detail = resp.json()
     except Exception:
@@ -65,7 +69,7 @@ def get_token(session: requests.Session) -> str:
     return token
 
 
-def headers(session: requests.Session, token: str) -> dict[str, str]:
+def auth_headers(token: str) -> dict[str, str]:
     return {
         "X-Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
@@ -73,14 +77,17 @@ def headers(session: requests.Session, token: str) -> dict[str, str]:
     }
 
 
+# ---------------------------------------------------------------------------
+# Device profiles
+# ---------------------------------------------------------------------------
+
 def get_profile_id(session: requests.Session, token: str, name: str) -> dict[str, Any]:
     page = 0
-    page_size = 50
     while True:
         r = session.get(
             f"{TB_URL}/api/deviceProfiles",
-            params={"pageSize": page_size, "page": page, "sortProperty": "name", "sortOrder": "ASC"},
-            headers=headers(session, token),
+            params={"pageSize": 50, "page": page, "sortProperty": "name", "sortOrder": "ASC"},
+            headers=auth_headers(token),
             timeout=60,
         )
         if not r.ok:
@@ -88,21 +95,25 @@ def get_profile_id(session: requests.Session, token: str, name: str) -> dict[str
         payload = r.json()
         for p in payload.get("data", []):
             if p.get("name") == name:
-                pid = p.get("id", {})
-                return {"id": pid["id"], "entityType": "DEVICE_PROFILE"}
+                return {"id": p["id"]["id"], "entityType": "DEVICE_PROFILE"}
         if not payload.get("hasNext", False):
             break
         page += 1
     raise ThingsBoardError(
-        f'Device profile "{name}" not found. Create it in the UI (Step 11a) and re-run.'
+        f'Device profile "{name}" not found. '
+        f'Create it in the UI (Step 11a) and re-run.'
     )
 
+
+# ---------------------------------------------------------------------------
+# Asset profiles
+# ---------------------------------------------------------------------------
 
 def get_default_asset_profile_id(session: requests.Session, token: str) -> dict[str, Any]:
     r = session.get(
         f"{TB_URL}/api/assetProfiles",
         params={"pageSize": 50, "page": 0, "sortProperty": "name", "sortOrder": "ASC"},
-        headers=headers(session, token),
+        headers=auth_headers(token),
         timeout=60,
     )
     if not r.ok:
@@ -112,15 +123,18 @@ def get_default_asset_profile_id(session: requests.Session, token: str) -> dict[
         raise ThingsBoardError("No asset profiles found; create a default asset profile in ThingsBoard.")
     preferred = next((p for p in rows if str(p.get("name", "")).lower() == "default"), None)
     pick = preferred or rows[0]
-    pid = pick.get("id", {})
-    return {"id": pid["id"], "entityType": "ASSET_PROFILE"}
+    return {"id": pick["id"]["id"], "entityType": "ASSET_PROFILE"}
 
+
+# ---------------------------------------------------------------------------
+# Devices
+# ---------------------------------------------------------------------------
 
 def get_device_by_name(session: requests.Session, token: str, name: str) -> dict[str, Any] | None:
+    # Prefer the path-parameter endpoint for compatibility across TB versions.
     r = session.get(
-        f"{TB_URL}/api/tenant/device",
-        params={"deviceName": name},
-        headers=headers(session, token),
+        f"{TB_URL}/api/tenant/device/{quote(name, safe='')}",
+        headers=auth_headers(token),
         timeout=60,
     )
     if r.status_code == 404:
@@ -140,15 +154,10 @@ def create_device(
     existing = get_device_by_name(session, token, name)
     if existing:
         return existing
-    body = {
-        "name": name,
-        "type": profile_tb_name,
-        "deviceProfileId": profile_id,
-    }
     r = session.post(
         f"{TB_URL}/api/device",
-        json=body,
-        headers=headers(session, token),
+        json={"name": name, "type": profile_tb_name, "deviceProfileId": profile_id},
+        headers=auth_headers(token),
         timeout=60,
     )
     if not r.ok:
@@ -156,11 +165,14 @@ def create_device(
     return r.json()
 
 
+# ---------------------------------------------------------------------------
+# Assets
+# ---------------------------------------------------------------------------
+
 def get_asset_by_name(session: requests.Session, token: str, name: str) -> dict[str, Any] | None:
     r = session.get(
-        f"{TB_URL}/api/tenant/asset",
-        params={"assetName": name},
-        headers=headers(session, token),
+        f"{TB_URL}/api/tenant/asset/{quote(name, safe='')}",
+        headers=auth_headers(token),
         timeout=60,
     )
     if r.status_code == 404:
@@ -180,21 +192,20 @@ def create_asset(
     existing = get_asset_by_name(session, token, name)
     if existing:
         return existing
-    body = {
-        "name": name,
-        "type": asset_type,
-        "assetProfileId": asset_profile_id,
-    }
     r = session.post(
         f"{TB_URL}/api/asset",
-        json=body,
-        headers=headers(session, token),
+        json={"name": name, "type": asset_type, "assetProfileId": asset_profile_id},
+        headers=auth_headers(token),
         timeout=60,
     )
     if not r.ok:
         raise _req_exc(r, f'Create asset "{name}"')
     return r.json()
 
+
+# ---------------------------------------------------------------------------
+# Relations
+# ---------------------------------------------------------------------------
 
 def save_relation(
     session: requests.Session,
@@ -207,19 +218,19 @@ def save_relation(
 ) -> None:
     body = {
         "from": {"entityType": from_type, "id": from_id},
-        "to": {"entityType": to_type, "id": to_id},
+        "to":   {"entityType": to_type,   "id": to_id},
         "type": relation_type,
         "typeGroup": "COMMON",
     }
     r = session.post(
         f"{TB_URL}/api/relation",
         json=body,
-        headers=headers(session, token),
+        headers=auth_headers(token),
         timeout=60,
     )
     if r.status_code in (200, 201, 204):
         return
-    # Idempotent: duplicate relation may return error — ignore if already exists
+    # Idempotent: ignore if relation already exists
     if r.status_code == 400:
         try:
             err = r.json().get("message", "")
@@ -230,23 +241,35 @@ def save_relation(
     raise _req_exc(r, "save_relation")
 
 
-def provision_all_devices(session: requests.Session, token: str) -> dict[str, dict[str, Any]]:
+# ---------------------------------------------------------------------------
+# Provisioning logic
+# ---------------------------------------------------------------------------
+
+def provision_all_devices(
+    session: requests.Session, token: str
+) -> dict[str, dict[str, Any]]:
+    print("Fetching device profile IDs...")
     mqtt_prof = get_profile_id(session, token, PROFILE_MQTT)
     coap_prof = get_profile_id(session, token, PROFILE_COAP)
+
     devices: dict[str, dict[str, Any]] = {}
-    for floor in range(1, 11):
-        for room in range(1, 21):
+    total = 0
+    for floor in range(1, 11):          # Floors 1–10
+        for room in range(1, 21):       # Rooms 1–20
             room_num = floor * 100 + room
-            node_id = f"b01-f{floor:02d}-r{room_num:03d}"
+            node_id  = f"b01-f{floor:02d}-r{room_num:03d}"
             if room <= 10:
                 profile_name = PROFILE_MQTT
-                prof_id = mqtt_prof
+                prof_id      = mqtt_prof
             else:
                 profile_name = PROFILE_COAP
-                prof_id = coap_prof
+                prof_id      = coap_prof
+
             dev = create_device(session, token, node_id, profile_name, prof_id)
             devices[node_id] = dev
-            print(f"Device OK  {node_id}  ({profile_name})  id={dev['id']['id']}")
+            total += 1
+            print(f"  ✅ [{total:>3}/200] {node_id}  ({profile_name})  id={dev['id']['id']}")
+
     return devices
 
 
@@ -255,107 +278,111 @@ def create_asset_hierarchy(
     token: str,
     devices: dict[str, dict[str, Any]],
 ) -> None:
+    print("\nFetching default asset profile ID...")
     ap_id = get_default_asset_profile_id(session, token)
 
+    # Campus
     campus = create_asset(session, token, "Campus-B01", "Campus", ap_id)
-    building = create_asset(session, token, "Building-01", "Building", ap_id)
-    save_relation(
-        session,
-        token,
-        "ASSET",
-        campus["id"]["id"],
-        "ASSET",
-        building["id"]["id"],
-    )
-    print("Linked Campus-B01 Contains Building-01")
+    print(f"  ✅ Asset: Campus-B01  id={campus['id']['id']}")
 
+    # Building
+    building = create_asset(session, token, "Building-01", "Building", ap_id)
+    save_relation(session, token, "ASSET", campus["id"]["id"], "ASSET", building["id"]["id"])
+    print(f"  ✅ Asset: Building-01  (linked to Campus-B01)")
+
+    # Floors
     floor_assets: dict[int, dict[str, Any]] = {}
     for floor in range(1, 11):
         fl_name = f"Floor-{floor:02d}"
         fl = create_asset(session, token, fl_name, "Floor", ap_id)
         floor_assets[floor] = fl
-        save_relation(
-            session,
-            token,
-            "ASSET",
-            building["id"]["id"],
-            "ASSET",
-            fl["id"]["id"],
-        )
-        print(f"Linked Building-01 Contains {fl_name}")
+        save_relation(session, token, "ASSET", building["id"]["id"], "ASSET", fl["id"]["id"])
+        print(f"  ✅ Asset: {fl_name}  (linked to Building-01)")
 
+    # Rooms + device links
+    print("\nLinking rooms to floors and devices...")
     for floor in range(1, 11):
         fl = floor_assets[floor]
         for room in range(1, 21):
             room_num = floor * 100 + room
-            node_id = f"b01-f{floor:02d}-r{room_num:03d}"
+            node_id  = f"b01-f{floor:02d}-r{room_num:03d}"
+
             room_asset = create_asset(session, token, node_id, "Room", ap_id)
-            save_relation(
-                session,
-                token,
-                "ASSET",
-                fl["id"]["id"],
-                "ASSET",
-                room_asset["id"]["id"],
-            )
+            # Floor → Room
+            save_relation(session, token, "ASSET", fl["id"]["id"], "ASSET", room_asset["id"]["id"])
+
+            # Room → Device
             dev = devices.get(node_id)
             if not dev:
-                raise ThingsBoardError(f"Missing device in map for {node_id}; run device provisioning first.")
-            save_relation(
-                session,
-                token,
-                "ASSET",
-                room_asset["id"]["id"],
-                "DEVICE",
-                dev["id"]["id"],
-            )
-            print(f"Linked Floor-{floor:02d} Contains room asset {node_id}; room Contains device")
+                raise ThingsBoardError(
+                    f'Device "{node_id}" missing from map. Run without --assets-only first.'
+                )
+            save_relation(session, token, "ASSET", room_asset["id"]["id"], "DEVICE", dev["id"]["id"])
+            print(f"    ✅ Floor-{floor:02d} → {node_id} (room asset + device link)")
 
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="ThingsBoard CE campus provisioning")
-    parser.add_argument("--devices-only", action="store_true", help="Only create/update200 devices")
-    parser.add_argument("--assets-only", action="store_true", help="Only create assets & relations (devices must exist)")
+    parser.add_argument("--devices-only", action="store_true",
+                        help="Only create/update 200 devices")
+    parser.add_argument("--assets-only",  action="store_true",
+                        help="Only create assets & relations (devices must already exist)")
     args = parser.parse_args()
+
+    print(f"Connecting to ThingsBoard at {TB_URL}")
+    print(f"Authenticating as: {TB_USERNAME}\n")
 
     session = requests.Session()
     session.verify = TB_VERIFY_SSL
 
     try:
         token = get_token(session)
+        print("✅ Login successful\n")
     except ThingsBoardError as e:
-        print(e, file=sys.stderr)
+        print(f"❌ {e}", file=sys.stderr)
         print(
-            "Hint: use tenant admin (default tenant@thingsboard.org / tenant) or set TB_USERNAME/TB_PASSWORD.",
+            "\nHint: Make sure TB_USERNAME and TB_PASSWORD match your tenant admin account.\n"
+            "      Edit the defaults at the top of this script if needed.",
             file=sys.stderr,
         )
         return 1
 
     try:
         if args.assets_only:
+            # Load existing devices from ThingsBoard
             devices: dict[str, dict[str, Any]] = {}
+            print("Loading existing devices...")
             for floor in range(1, 11):
                 for room in range(1, 21):
                     room_num = floor * 100 + room
-                    node_id = f"b01-f{floor:02d}-r{room_num:03d}"
+                    node_id  = f"b01-f{floor:02d}-r{room_num:03d}"
                     d = get_device_by_name(session, token, node_id)
                     if not d:
-                        raise ThingsBoardError(f'Device "{node_id}" not found; run without --assets-only first.')
+                        raise ThingsBoardError(
+                            f'Device "{node_id}" not found. Run without --assets-only first.'
+                        )
                     devices[node_id] = d
             create_asset_hierarchy(session, token, devices)
+
         elif args.devices_only:
             provision_all_devices(session, token)
+
         else:
             devs = provision_all_devices(session, token)
             create_asset_hierarchy(session, token, devs)
+
     except ThingsBoardError as e:
-        print(e, file=sys.stderr)
+        print(f"\n❌ {e}", file=sys.stderr)
         return 1
     except requests.RequestException as e:
-        print(f"HTTP error: {e}", file=sys.stderr)
+        print(f"\n❌ HTTP error: {e}", file=sys.stderr)
         return 1
 
-    print("Done.")
+    print("\n✅ All done! 200 devices and full asset hierarchy provisioned.")
     return 0
 
 
