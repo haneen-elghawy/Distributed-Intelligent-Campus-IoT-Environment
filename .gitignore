@@ -32,3 +32,4 @@ hivemq/certs/*.srl
 
 # Node-RED runtime (npm install in container)
 node-red/gateway-*/node_modules
+phase2guide.part2.md
