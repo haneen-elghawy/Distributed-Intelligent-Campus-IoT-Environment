@@ -1,0 +1,79 @@
+{
+  "ruleChain": {
+    "name": "Campus Temperature Alarms (Root export name)",
+    "firstRuleNodeId": null,
+    "root": false,
+    "debugMode": true,
+    "configuration": null,
+    "additionalInfo": {
+      "description": "Duplicate of rule_chain_campus_alarms for Phase 2 deliverable \"rule_chain_root.json\". Step 11e: import in ThingsBoard, wire Root Post-telemetry to this rule chain. Optional in UI: add a second script filter for occupancy *changes* (needs state) per instructor."
+    }
+  },
+  "metadata": {
+    "firstNodeIndex": 0,
+    "nodes": [
+      {
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgTimeseriesNode",
+        "name": "Save Timeseries",
+        "debugMode": false,
+        "configuration": {
+          "defaultTTL": 0
+        },
+        "additionalInfo": {
+          "layoutX": 304,
+          "layoutY": 199
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "Temp out of range",
+        "debugMode": false,
+        "configuration": {
+          "scriptLang": "JS",
+          "jsScript": "return typeof msg.temperature !== 'undefined' && (msg.temperature > 35 || msg.temperature < 16);"
+        },
+        "additionalInfo": {
+          "layoutX": 527,
+          "layoutY": 199
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.action.TbCreateAlarmNode",
+        "name": "Create TEMPERATURE_THRESHOLD",
+        "debugMode": false,
+        "configuration": {
+          "alarmType": "TEMPERATURE_THRESHOLD",
+          "alarmSeverity": "CRITICAL",
+          "propagate": true,
+          "relationTypes": [],
+          "propagateToOwner": false,
+          "propagateToTenant": false,
+          "dynamicSeverity": false,
+          "dynSeverity": null,
+          "clearRules": [],
+          "scriptLang": "JS",
+          "alarmDetailsBuildJs": "return JSON.stringify({ temperature: msg.temperature, ts: metadata.ts });",
+          "alarmDetailsBuildTbel": null,
+          "useMessageAlarmData": false
+        },
+        "additionalInfo": {
+          "layoutX": 750,
+          "layoutY": 199
+        }
+      }
+    ],
+    "connections": [
+      {
+        "fromIndex": 0,
+        "toIndex": 1,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 2,
+        "type": "Success"
+      }
+    ],
+    "ruleChainConnections": null
+  }
+}

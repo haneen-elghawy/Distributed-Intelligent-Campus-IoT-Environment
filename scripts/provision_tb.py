@@ -17,11 +17,16 @@ Usage::
     python provision_tb.py
     python provision_tb.py --assets-only    # devices must already exist
     python provision_tb.py --devices-only
+    python provision_tb.py --purge          # delete all campus devices + assets, then exit
+    python provision_tb.py --reset          # purge then full re-provision
+
+UI-only ThingsBoard (Step 11a / 11d / 11e) is documented in ``docs/thingsboard_step11.md``.
 """
 from __future__ import annotations
 
 import argparse
 import os
+import re
 import sys
 from typing import Any
 from urllib.parse import quote
@@ -130,6 +135,34 @@ def get_default_asset_profile_id(session: requests.Session, token: str) -> dict[
 # Devices
 # ---------------------------------------------------------------------------
 
+def _find_device_via_tenant_list(session: requests.Session, token: str, name: str) -> dict[str, Any] | None:
+    """Resolve device by exact name. TB 4.x sometimes 404s on GET /api/tenant/device/{name}."""
+    page = 0
+    while True:
+        r = session.get(
+            f"{TB_URL}/api/tenant/devices",
+            params={
+                "page": page,
+                "pageSize": 100,
+                "textSearch": name,
+                "sortProperty": "name",
+                "sortOrder": "ASC",
+            },
+            headers=auth_headers(token),
+            timeout=60,
+        )
+        if not r.ok:
+            return None
+        payload = r.json()
+        for d in payload.get("data", []):
+            if d.get("name") == name:
+                return d
+        if not payload.get("hasNext", False):
+            break
+        page += 1
+    return None
+
+
 def get_device_by_name(session: requests.Session, token: str, name: str) -> dict[str, Any] | None:
     # Prefer the path-parameter endpoint for compatibility across TB versions.
     r = session.get(
@@ -137,11 +170,11 @@ def get_device_by_name(session: requests.Session, token: str, name: str) -> dict
         headers=auth_headers(token),
         timeout=60,
     )
-    if r.status_code == 404:
-        return None
-    if not r.ok:
+    if r.status_code == 200:
+        return r.json()
+    if r.status_code != 404:
         raise _req_exc(r, f'Get device "{name}"')
-    return r.json()
+    return _find_device_via_tenant_list(session, token, name)
 
 
 def create_device(
@@ -160,14 +193,53 @@ def create_device(
         headers=auth_headers(token),
         timeout=60,
     )
-    if not r.ok:
-        raise _req_exc(r, f'Create device "{name}"')
-    return r.json()
+    if r.ok:
+        return r.json()
+    # Re-run: previous GET failed on TB 4.x but create reports duplicate
+    if r.status_code == 400:
+        try:
+            err = r.json()
+            msg = (err.get("message") or "").lower()
+            if "already exists" in msg or err.get("errorCode") == 31:
+                retry = _find_device_via_tenant_list(session, token, name)
+                if retry:
+                    return retry
+        except Exception:
+            pass
+    raise _req_exc(r, f'Create device "{name}"')
 
 
 # ---------------------------------------------------------------------------
 # Assets
 # ---------------------------------------------------------------------------
+
+def _find_asset_via_tenant_list(session: requests.Session, token: str, name: str) -> dict[str, Any] | None:
+    """Resolve asset by exact name. TB 4.x sometimes 404s on GET /api/tenant/asset/{name}."""
+    page = 0
+    while True:
+        r = session.get(
+            f"{TB_URL}/api/tenant/assets",
+            params={
+                "page": page,
+                "pageSize": 100,
+                "textSearch": name,
+                "sortProperty": "name",
+                "sortOrder": "ASC",
+            },
+            headers=auth_headers(token),
+            timeout=60,
+        )
+        if not r.ok:
+            return None
+        payload = r.json()
+        for a in payload.get("data", []):
+            if a.get("name") == name:
+                return a
+        if not payload.get("hasNext", False):
+            break
+        page += 1
+    return None
+
 
 def get_asset_by_name(session: requests.Session, token: str, name: str) -> dict[str, Any] | None:
     r = session.get(
@@ -175,11 +247,11 @@ def get_asset_by_name(session: requests.Session, token: str, name: str) -> dict[
         headers=auth_headers(token),
         timeout=60,
     )
-    if r.status_code == 404:
-        return None
-    if not r.ok:
+    if r.status_code == 200:
+        return r.json()
+    if r.status_code != 404:
         raise _req_exc(r, f'Get asset "{name}"')
-    return r.json()
+    return _find_asset_via_tenant_list(session, token, name)
 
 
 def create_asset(
@@ -198,9 +270,19 @@ def create_asset(
         headers=auth_headers(token),
         timeout=60,
     )
-    if not r.ok:
-        raise _req_exc(r, f'Create asset "{name}"')
-    return r.json()
+    if r.ok:
+        return r.json()
+    if r.status_code == 400:
+        try:
+            err = r.json()
+            msg = (err.get("message") or "").lower()
+            if "already exists" in msg or err.get("errorCode") == 31:
+                retry = _find_asset_via_tenant_list(session, token, name)
+                if retry:
+                    return retry
+        except Exception:
+            pass
+    raise _req_exc(r, f'Create asset "{name}"')
 
 
 # ---------------------------------------------------------------------------
@@ -268,7 +350,7 @@ def provision_all_devices(
             dev = create_device(session, token, node_id, profile_name, prof_id)
             devices[node_id] = dev
             total += 1
-            print(f"  ✅ [{total:>3}/200] {node_id}  ({profile_name})  id={dev['id']['id']}")
+            print(f"  [OK] [{total:>3}/200] {node_id}  ({profile_name})  id={dev['id']['id']}")
 
     return devices
 
@@ -283,12 +365,12 @@ def create_asset_hierarchy(
 
     # Campus
     campus = create_asset(session, token, "Campus-B01", "Campus", ap_id)
-    print(f"  ✅ Asset: Campus-B01  id={campus['id']['id']}")
+    print(f"  [OK] Asset: Campus-B01  id={campus['id']['id']}")
 
     # Building
     building = create_asset(session, token, "Building-01", "Building", ap_id)
     save_relation(session, token, "ASSET", campus["id"]["id"], "ASSET", building["id"]["id"])
-    print(f"  ✅ Asset: Building-01  (linked to Campus-B01)")
+    print(f"  [OK] Asset: Building-01  (linked to Campus-B01)")
 
     # Floors
     floor_assets: dict[int, dict[str, Any]] = {}
@@ -297,7 +379,7 @@ def create_asset_hierarchy(
         fl = create_asset(session, token, fl_name, "Floor", ap_id)
         floor_assets[floor] = fl
         save_relation(session, token, "ASSET", building["id"]["id"], "ASSET", fl["id"]["id"])
-        print(f"  ✅ Asset: {fl_name}  (linked to Building-01)")
+        print(f"  [OK] Asset: {fl_name}  (linked to Building-01)")
 
     # Rooms + device links
     print("\nLinking rooms to floors and devices...")
@@ -318,7 +400,138 @@ def create_asset_hierarchy(
                     f'Device "{node_id}" missing from map. Run without --assets-only first.'
                 )
             save_relation(session, token, "ASSET", room_asset["id"]["id"], "DEVICE", dev["id"]["id"])
-            print(f"    ✅ Floor-{floor:02d} → {node_id} (room asset + device link)")
+            print(f"    [OK] Floor-{floor:02d} -> {node_id} (room asset + device link)")
+
+
+# ---------------------------------------------------------------------------
+# Purge (delete) — devices first, then assets leaf-to-root
+# ---------------------------------------------------------------------------
+
+# Room devices: b01-f01-r101; optional integration devices: b01-f01-floor-summary
+_CAMPUS_DEVICE_PAT = re.compile(r"^b01-f\d{2}-(r\d{3}|floor-summary)$")
+_CAMPUS_ROOM_ASSET_PAT = re.compile(r"^b01-f\d{2}-r\d{3}$")
+
+
+def _entity_uuid(tb_obj: dict[str, Any]) -> str:
+    eid = tb_obj.get("id")
+    if isinstance(eid, dict):
+        return str(eid["id"])
+    return str(eid)
+
+
+def _list_all_tenant_devices(session: requests.Session, token: str) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    page = 0
+    while True:
+        r = session.get(
+            f"{TB_URL}/api/tenant/devices",
+            params={
+                "page": page,
+                "pageSize": 500,
+                "sortProperty": "name",
+                "sortOrder": "ASC",
+            },
+            headers=auth_headers(token),
+            timeout=120,
+        )
+        if not r.ok:
+            raise _req_exc(r, "List all tenant devices")
+        payload = r.json()
+        out.extend(payload.get("data", []))
+        if not payload.get("hasNext", False):
+            break
+        page += 1
+    return out
+
+
+def _list_all_tenant_assets(session: requests.Session, token: str) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    page = 0
+    while True:
+        r = session.get(
+            f"{TB_URL}/api/tenant/assets",
+            params={
+                "page": page,
+                "pageSize": 500,
+                "sortProperty": "name",
+                "sortOrder": "ASC",
+            },
+            headers=auth_headers(token),
+            timeout=120,
+        )
+        if not r.ok:
+            raise _req_exc(r, "List all tenant assets")
+        payload = r.json()
+        out.extend(payload.get("data", []))
+        if not payload.get("hasNext", False):
+            break
+        page += 1
+    return out
+
+
+def _delete_device_id(session: requests.Session, token: str, name: str, eid: str) -> None:
+    r = session.delete(
+        f"{TB_URL}/api/device/{eid}",
+        headers=auth_headers(token),
+        timeout=60,
+    )
+    if r.status_code in (200, 204):
+        return
+    if r.status_code == 404:
+        return
+    raise _req_exc(r, f'Delete device "{name}"')
+
+
+def _delete_asset_id(session: requests.Session, token: str, name: str, eid: str) -> None:
+    r = session.delete(
+        f"{TB_URL}/api/asset/{eid}",
+        headers=auth_headers(token),
+        timeout=60,
+    )
+    if r.status_code in (200, 204):
+        return
+    if r.status_code == 404:
+        return
+    raise _req_exc(r, f'Delete asset "{name}"')
+
+
+def purge_campus(session: requests.Session, token: str) -> None:
+    """Delete campus room devices, floor-summary devices, then asset hierarchy (TB CE REST)."""
+    print("Purge: listing tenant devices...")
+    devices = _list_all_tenant_devices(session, token)
+    to_remove_dev = [d for d in devices if _CAMPUS_DEVICE_PAT.match((d.get("name") or ""))]
+    print(f"  Deleting {len(to_remove_dev)} device(s) (room + floor-summary)...")
+    for d in to_remove_dev:
+        name = d.get("name") or ""
+        _delete_device_id(session, token, name, _entity_uuid(d))
+        print(f"    [del] device {name}")
+
+    print("Purge: listing tenant assets...")
+    all_assets = _list_all_tenant_assets(session, token)
+    by_name = {a.get("name") or "": a for a in all_assets}
+
+    # Room assets (same names as room devices)
+    room_assets = [a for a in all_assets if _CAMPUS_ROOM_ASSET_PAT.match((a.get("name") or ""))]
+    print(f"  Deleting {len(room_assets)} room asset(s)...")
+    for a in room_assets:
+        name = a.get("name") or ""
+        _delete_asset_id(session, token, name, _entity_uuid(a))
+        print(f"    [del] asset {name}")
+
+    # Floor-01 .. Floor-10, Building-01, Campus-B01
+    for fl in range(1, 11):
+        fn = f"Floor-{fl:02d}"
+        a = by_name.get(fn) or get_asset_by_name(session, token, fn)
+        if a:
+            _delete_asset_id(session, token, fn, _entity_uuid(a))
+            print(f"    [del] asset {fn}")
+    for fixed in ("Building-01", "Campus-B01"):
+        a = by_name.get(fixed) or get_asset_by_name(session, token, fixed)
+        if a:
+            _delete_asset_id(session, token, fixed, _entity_uuid(a))
+            print(f"    [del] asset {fixed}")
+
+    print("[OK] Purge: campus entities removed from ThingsBoard (tenant).")
 
 
 # ---------------------------------------------------------------------------
@@ -331,7 +544,15 @@ def main() -> int:
                         help="Only create/update 200 devices")
     parser.add_argument("--assets-only",  action="store_true",
                         help="Only create assets & relations (devices must already exist)")
+    parser.add_argument("--purge", action="store_true",
+                        help="Delete campus devices and assets, then exit (no re-create)")
+    parser.add_argument("--reset", action="store_true",
+                        help="Purge all campus entities, then re-provision devices + assets")
     args = parser.parse_args()
+    if (args.purge or args.reset) and (args.devices_only or args.assets_only):
+        print("[ERROR] Do not combine --purge/--reset with --devices-only or --assets-only.",
+              file=sys.stderr)
+        return 1
 
     print(f"Connecting to ThingsBoard at {TB_URL}")
     print(f"Authenticating as: {TB_USERNAME}\n")
@@ -341,9 +562,9 @@ def main() -> int:
 
     try:
         token = get_token(session)
-        print("✅ Login successful\n")
+        print("[OK] Login successful\n")
     except ThingsBoardError as e:
-        print(f"❌ {e}", file=sys.stderr)
+        print(f"[ERROR] {e}", file=sys.stderr)
         print(
             "\nHint: Make sure TB_USERNAME and TB_PASSWORD match your tenant admin account.\n"
             "      Edit the defaults at the top of this script if needed.",
@@ -352,6 +573,18 @@ def main() -> int:
         return 1
 
     try:
+        if args.reset:
+            purge_campus(session, token)
+            devs = provision_all_devices(session, token)
+            create_asset_hierarchy(session, token, devs)
+            print("\n[OK] All done! 200 devices and full asset hierarchy provisioned.")
+            return 0
+
+        if args.purge:
+            purge_campus(session, token)
+            print("\n[OK] Purge finished. Re-run: python scripts/provision_tb.py")
+            return 0
+
         if args.assets_only:
             # Load existing devices from ThingsBoard
             devices: dict[str, dict[str, Any]] = {}
@@ -376,13 +609,13 @@ def main() -> int:
             create_asset_hierarchy(session, token, devs)
 
     except ThingsBoardError as e:
-        print(f"\n❌ {e}", file=sys.stderr)
+        print(f"\n[ERROR] {e}", file=sys.stderr)
         return 1
     except requests.RequestException as e:
-        print(f"\n❌ HTTP error: {e}", file=sys.stderr)
+        print(f"\n[ERROR] HTTP error: {e}", file=sys.stderr)
         return 1
 
-    print("\n✅ All done! 200 devices and full asset hierarchy provisioned.")
+    print("\n[OK] All done! 200 devices and full asset hierarchy provisioned.")
     return 0
 
 

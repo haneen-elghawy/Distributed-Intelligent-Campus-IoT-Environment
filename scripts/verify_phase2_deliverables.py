@@ -34,7 +34,8 @@ def main() -> int:
             cwd=str(ROOT),
         )
     need(reg, "Registry export")
-    need(ROOT / "thingsboard" / "rule_chain_campus_alarms.json", "Rule chain export")
+    need(ROOT / "thingsboard" / "rule_chain_campus_alarms.json", "Rule chain export (campus alarms)")
+    need(ROOT / "thingsboard" / "rule_chain_root.json", "Rule chain export (root name for rubric)")
     need(ROOT / "thingsboard" / "uplink_converter_hivemq.js", "TB uplink converter")
     need(ROOT / "scripts" / "provision_tb.py", "TB provision script")
     need(ROOT / "scripts" / "latency_test.py", "Latency benchmark")

@@ -17,31 +17,60 @@ Environment (optional)::
     LATENCY_ITERATIONS (default 20), LATENCY_GAP_S (default 2),
     RTT_TARGET_MS (default 500), LATENCY_WAIT_S (per-iteration timeout, default 30),
     MQTT_USE_TLS, HIVEMQ_CA_PATH (same as sim-engine when TLS enabled)
+    LATENCY_MQTT_VERSION: "311" (default, MQTT 3.1.1) or "50" (MQTT 5.0) — use 311 if
+    you see gmqtt log spam ``[TRYING WRITE TO CLOSED SOCKET]`` (broker often drops MQTT 5).
+    LATENCY_BROKER: default ``127.0.0.1`` (on Windows prefer this over ``localhost`` if Docker binds IPv4 only).
+    This script no longer falls back to ``HIVEMQ_BROKER`` from ``.env`` (that is ``hivemq`` for in-container use only).
+    LATENCY_CMD_QOS: 1 (default) for reliable RTT with gmqtt+HiveMQ; 2 to match the course spec
+    (QoS-2 command path) but may be less stable in this benchmark.
 """
 from __future__ import annotations
 
 import argparse
 import asyncio
 import json
+import logging
 import os
 import ssl
 import statistics
 import sys
 import time
+import uuid
 from pathlib import Path
 
 from gmqtt import Client
+from gmqtt.mqtt.constants import MQTTv311, MQTTv50
 
-BROKER = os.getenv("LATENCY_BROKER", os.getenv("HIVEMQ_BROKER", "localhost"))
+# Default to loopback. Do *not* use ``HIVEMQ_BROKER`` from .env here — that value is
+# ``hivemq`` for containers only; on the host it does not resolve. Override with
+# ``LATENCY_BROKER=127.0.0.1`` if needed (or if you run this script inside a container, use ``hivemq``).
+BROKER = os.getenv("LATENCY_BROKER", "127.0.0.1")
 PORT = int(os.getenv("LATENCY_PORT", os.getenv("HIVEMQ_PORT_PLAIN", "1883")))
 USER = os.getenv("LATENCY_USER", "thingsboard")
 PASSWORD = os.getenv("LATENCY_PASS", "tb_super_pass")
+CMD_QOS = int(os.getenv("LATENCY_CMD_QOS", "1"))
 CMD_TOPIC = os.getenv("LATENCY_CMD_TOPIC", "campus/b01/f01/r101/cmd")
 TEL_TOPIC = os.getenv("LATENCY_TEL_TOPIC", "campus/b01/f01/r101/telemetry")
 ITERATIONS = int(os.getenv("LATENCY_ITERATIONS", "20"))
 GAP_S = float(os.getenv("LATENCY_GAP_S", "2"))
 RTT_TARGET_MS = float(os.getenv("RTT_TARGET_MS", "500"))
 WAIT_S = float(os.getenv("LATENCY_WAIT_S", "30"))
+
+
+def _mqtt_version_from_env() -> int:
+    """Default MQTT 3.1.1 for HiveMQ CE compatibility; gmqtt's default MQTT 5 can be dropped by broker."""
+    v = (os.getenv("LATENCY_MQTT_VERSION", "311") or "311").strip().lower()
+    if v in ("5", "50", "mqtt5", "v5", "mqtt_5"):
+        return MQTTv50
+    return MQTTv311
+
+
+def _client_ok(client: Client) -> bool:
+    """True if gmqtt client reports an active connection (``is_connected`` is a property on Client)."""
+    try:
+        return bool(client.is_connected)
+    except Exception:  # noqa: BLE001
+        return True
 
 
 def _drain_queue(q: asyncio.Queue) -> None:
@@ -78,7 +107,9 @@ async def run_latency_test(
         q.put_nowait((now, data))
         return 0
 
-    client = Client("latency-tester-" + str(int(time.time())))
+    # Disable gmqtt's infinite reconnect loop (stops "CAN'T RECONNECT" + socket spam on failure).
+    client = Client("latency-tester-" + uuid.uuid4().hex[:20], clean_session=True)
+    client.reconnect_retries = 0
     client.set_auth_credentials(USER, PASSWORD)
     client.on_message = on_message
 
@@ -91,13 +122,48 @@ async def run_latency_test(
         )
         ssl_ctx.load_verify_locations(ca)
 
-    await client.connect(BROKER, port, ssl=ssl_ctx if use_tls else False, keepalive=60)
+    vnum = "5.0" if _mqtt_version_from_env() == MQTTv50 else "3.1.1"
+    print(f"MQTT RTT: broker={BROKER}:{port} user={USER!r} version={vnum} cmd_qos={CMD_QOS} topics cmd={CMD_TOPIC!r} tel={TEL_TOPIC!r}", flush=True)
+
+    await client.connect(
+        BROKER,
+        port,
+        ssl=ssl_ctx if use_tls else False,
+        keepalive=60,
+        version=_mqtt_version_from_env(),
+    )
     client.subscribe(TEL_TOPIC, qos=1)
+    await asyncio.sleep(0.3)  # allow SUBACK / session to settle
+    if not _client_ok(client):
+        print(
+            "Error: MQTT session closed immediately after connect/subscribe. "
+            "Is HiveMQ running? Set LATENCY_MQTT_VERSION=311 if needed. Check: docker ps, docker logs campus-hivemq",
+            file=sys.stderr,
+        )
+        try:
+            await client.disconnect()
+        except Exception:  # noqa: BLE001
+            pass
+        raise ConnectionError("HiveMQ session closed right after connect")
 
     results: list[float] = []
     lines: list[str] = []
 
     for i in range(iterations):
+        if not _client_ok(client):
+            err = (
+                f"Error: broker closed the connection before/during iter {i + 1}. "
+                f"If you saw gmqtt “[TRYING WRITE TO CLOSED SOCKET]”, set env LATENCY_MQTT_VERSION=311 "
+                f"(default is now 311). Run `docker compose up -d` (hivemq + sim-engine). "
+                f"Optional: LATENCY_USER=floor01 LATENCY_PASS=floor01pass. "
+            )
+            print(err, file=sys.stderr)
+            lines.append(err.strip())
+            try:
+                await client.disconnect()
+            except Exception:  # noqa: BLE001
+                pass
+            raise ConnectionError("MQTT no longer connected (see message above).")
         mode = "ECO" if i % 2 == 0 else "HEATING"
         _drain_queue(q)
         t0 = time.time()
@@ -180,6 +246,10 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    # Hides gmqtt [TRYING WRITE TO CLOSED SOCKET] warnings unless you need deep MQTT debug.
+    for _name in ("gmqtt", "gmqtt.mqtt.protocol", "gmqtt.mqtt.connection"):
+        logging.getLogger(_name).setLevel(logging.ERROR)
+
     try:
         asyncio.run(
             run_latency_test(
@@ -192,7 +262,7 @@ def main() -> int:
     except KeyboardInterrupt:
         print("Interrupted.", file=sys.stderr)
         return 130
-    except OSError as e:
+    except (OSError, ConnectionError) as e:
         print(f"Connection error: {e}", file=sys.stderr)
         return 1
     return 0
