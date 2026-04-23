@@ -15,6 +15,8 @@ where:
 """
 from __future__ import annotations
 
+import os
+
 
 def mqtt_base(building_id: str, floor_id: int, room_id: int) -> str:
     """Return the shared topic prefix for a room.
@@ -69,4 +71,5 @@ def coap_uri(host: str, port: int, floor_id: int, room_id: int) -> str:
             'coap://sim-engine:5683/f01/r111/telemetry'
     """
     rnum = floor_id * 100 + room_id
-    return f"coap://{host}:{port}/f{floor_id:02d}/r{rnum:03d}/telemetry"
+    scheme = os.getenv("COAP_SCHEME", "coap").strip().lower() or "coap"
+    return f"{scheme}://{host}:{port}/f{floor_id:02d}/r{rnum:03d}/telemetry"

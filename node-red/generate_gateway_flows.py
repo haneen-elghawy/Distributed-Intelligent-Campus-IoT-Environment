@@ -157,7 +157,7 @@ return msg;
         bridge_id = f"fn-bridge-{ff}-{i}"
         mq_out_t = f"mqtt-out-bridge-{ff}-{i}"
         y = y0 + i * 70
-        url = f"coap://$(SIM_ENGINE_HOST):{port}/f{ff}/r{rnum:03d}/telemetry"
+        url = f"$(COAP_SCHEME)://$(SIM_ENGINE_HOST):{port}/f{ff}/r{rnum:03d}/telemetry"
         nodes += [
             {
                 "id": inj_id,
@@ -361,7 +361,8 @@ const coapStart = parseInt(process.env.COAP_PORT_START || '5683', 10);
 const coapPort = coapStart + (roomNum - 11);
 flow.set('last_cmd_topic', topic);
 if (roomNum >= 11 && roomNum <= 20) {
-    msg.url = `coap://${process.env.SIM_ENGINE_HOST}:${coapPort}/${floorStr}/${roomStr}/actuators/hvac`;
+    const coapScheme = process.env.COAP_SCHEME || 'coap';
+    msg.url = `${coapScheme}://${process.env.SIM_ENGINE_HOST}:${coapPort}/${floorStr}/${roomStr}/actuators/hvac`;
     msg.method = 'PUT';
     if (typeof msg.payload === 'object') {
         msg.payload = JSON.stringify(msg.payload);
@@ -477,7 +478,7 @@ for (let roomId = 11; roomId <= 20; roomId++) {
     if (rec && rec.occupancy === false) {
         const port = start + (roomId - 11);
         node.send({
-            url: `coap://${process.env.SIM_ENGINE_HOST}:${port}/f${F}/r${rnum}/actuators/hvac`,
+            url: `${process.env.COAP_SCHEME || 'coap'}://${process.env.SIM_ENGINE_HOST}:${port}/f${F}/r${rnum}/actuators/hvac`,
             method: 'PUT',
             payload: JSON.stringify({ hvac_mode: 'OFF' }),
         });

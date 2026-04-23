@@ -15,10 +15,12 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
 import time
 from typing import TYPE_CHECKING
 
 import aiocoap
+import aiocoap.credentials as credentials
 import aiocoap.resource as resource
 from aiocoap import Code, Message
 
@@ -28,6 +30,8 @@ if TYPE_CHECKING:
     from src.models.room import Room
 
 logger = logging.getLogger("coap.server")
+
+_COAP_DTLS_TRANSPORT = "tinydtls_server"
 
 
 # ---------------------------------------------------------------------------
@@ -182,13 +186,46 @@ async def run_coap_server(
     root.add_resource(uri_prefix + ("telemetry",),         telemetry_resource)
     root.add_resource(uri_prefix + ("actuators", "hvac"),  HvacActuatorResource(room))
 
-    context = await aiocoap.Context.create_server_context(
-        root,
-        bind=("0.0.0.0", room.coap_port),
-    )
+    use_dtls = os.getenv("COAP_USE_DTLS", "false").lower() in ("1", "true", "yes")
+    if use_dtls:
+        available = list(aiocoap.defaults.get_default_servertransports())
+        if _COAP_DTLS_TRANSPORT not in available:
+            raise RuntimeError(
+                "COAP_USE_DTLS=true but DTLS backend is unavailable. "
+                f"Expected transport '{_COAP_DTLS_TRANSPORT}' in {available}. "
+                "Install aiocoap with DTLS-capable extras on this host/runtime."
+            )
+
+        psk_identity = os.getenv("COAP_DTLS_IDENTITY", "gateway-psk")
+        psk = os.getenv("COAP_DTLS_PSK", "change-me-psk")
+        dtls_host = os.getenv("COAP_DTLS_SERVER_HOSTNAME", "sim-engine")
+
+        server_credentials = credentials.CredentialsMap()
+        server_credentials.load_from_dict(
+            {
+                f"coaps://{dtls_host}/*": {
+                    "dtls": {
+                        "psk": {"ascii": psk},
+                        "client-identity": {"ascii": psk_identity},
+                    }
+                }
+            }
+        )
+        context = await aiocoap.Context.create_server_context(
+            root,
+            bind=("0.0.0.0", room.coap_port),
+            transports=[_COAP_DTLS_TRANSPORT],
+            server_credentials=server_credentials,
+        )
+    else:
+        context = await aiocoap.Context.create_server_context(
+            root,
+            bind=("0.0.0.0", room.coap_port),
+        )
+
     uri = _coap_uri("sim-engine", room.coap_port, room.floor_id, room.room_id)
     logger.info(
-        "CoAP server %s  UDP port=%d  observe_uri=%s",
-        room.node_id, room.coap_port, uri,
+        "CoAP server %s  UDP port=%d  observe_uri=%s  dtls=%s",
+        room.node_id, room.coap_port, uri, use_dtls,
     )
     return context
