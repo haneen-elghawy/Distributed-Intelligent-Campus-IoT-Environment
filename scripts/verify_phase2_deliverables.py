@@ -37,6 +37,7 @@ def main() -> int:
     need(ROOT / "thingsboard" / "rule_chain_campus_alarms.json", "Rule chain export (campus alarms)")
     need(ROOT / "thingsboard" / "rule_chain_root.json", "Rule chain export (root name for rubric)")
     need(ROOT / "thingsboard" / "uplink_converter_hivemq.js", "TB uplink converter")
+    need(ROOT / "thingsboard" / "dashboard_campus_noc.json", "Campus NOC dashboard (Step 12)")
     need(ROOT / "scripts" / "provision_tb.py", "TB provision script")
     need(ROOT / "scripts" / "latency_test.py", "Latency benchmark")
 
@@ -59,7 +60,7 @@ def main() -> int:
             print(" ", e, file=sys.stderr)
         return 1
 
-    print("OK — all required Phase 2 paths present.")
+    print("OK - all required Phase 2 paths present.")
     print("  Next: docker compose up -d")
     print("  Then: python scripts/generate_campus_registry.py (if JSON missing)")
     print("  Then: python scripts/latency_test.py --save docs/rtt_results.txt")

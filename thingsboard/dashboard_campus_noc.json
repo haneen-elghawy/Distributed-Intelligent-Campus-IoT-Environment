@@ -1,0 +1,447 @@
+{
+  "title": "Campus NOC",
+  "image": null,
+  "mobileHide": false,
+  "mobileOrder": null,
+  "configuration": {
+    "description": "SWAPD453 \u2014 Fleet grid, floor summary, and threshold alarms. Re-export from UI after import if you adjust aliases. Source: repo scripts/build_campus_noc_dashboard.py",
+    "widgets": {
+      "a1b2c3d4-e5f6-4789-a01b-2c3d4e5f6a00": {
+        "id": "a1b2c3d4-e5f6-4789-a01b-2c3d4e5f6a00",
+        "type": "latest",
+        "sizeX": 12,
+        "sizeY": 8,
+        "typeFullFqn": "system.cards.entities_table",
+        "config": {
+          "timewindow": {
+            "displayValue": "",
+            "selectedTab": 0,
+            "realtime": {
+              "realtimeType": 1,
+              "interval": 1000,
+              "timewindowMs": 86400000,
+              "quickInterval": "CURRENT_DAY"
+            },
+            "history": {
+              "historyType": 0,
+              "interval": 1000,
+              "timewindowMs": 60000
+            },
+            "aggregation": {
+              "type": "NONE",
+              "limit": 200
+            }
+          },
+          "showTitle": true,
+          "backgroundColor": "rgb(255, 255, 255)",
+          "color": "rgba(0, 0, 0, 0.87)",
+          "padding": "4px",
+          "settings": {
+            "enableSearch": true,
+            "displayPagination": true,
+            "defaultPageSize": 20,
+            "defaultSortOrder": "entityName",
+            "displayEntityName": true,
+            "displayEntityType": false,
+            "enableSelectColumnDisplay": false,
+            "enableStickyHeader": true,
+            "enableStickyAction": false,
+            "entitiesTitle": "Rooms",
+            "entityNameColumnTitle": "Device"
+          },
+          "title": "Fleet \u2014 room devices",
+          "dropShadow": true,
+          "enableFullscreen": true,
+          "titleStyle": {
+            "fontSize": "16px",
+            "fontWeight": 400,
+            "padding": "5px 10px 5px 10px"
+          },
+          "useDashboardTimewindow": false,
+          "showLegend": false,
+          "datasources": [
+            {
+              "type": "entity",
+              "name": null,
+              "entityAliasId": "d4e5f6a7-b8c9-4012-d34e-5f6a7b8c9d0a",
+              "filterId": null,
+              "dataKeys": [
+                {
+                  "name": "temperature",
+                  "type": "timeseries",
+                  "label": "Temperature",
+                  "color": "#4caf50",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.6394267984578837,
+                  "units": "\u00b0C",
+                  "decimals": 1
+                },
+                {
+                  "name": "humidity",
+                  "type": "timeseries",
+                  "label": "Humidity",
+                  "color": "#2196f3",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.0250107552226669,
+                  "units": "%",
+                  "decimals": 0
+                },
+                {
+                  "name": "hvac_mode",
+                  "type": "timeseries",
+                  "label": "HVAC mode",
+                  "color": "#9c27b0",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.2750293183691193
+                },
+                {
+                  "name": "occupancy",
+                  "type": "timeseries",
+                  "label": "Occupancy",
+                  "color": "#ff9800",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.2232107381488228
+                },
+                {
+                  "name": "device_status",
+                  "type": "timeseries",
+                  "label": "Status",
+                  "color": "#f44336",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.7364712141640124
+                }
+              ]
+            }
+          ],
+          "showTitleIcon": false,
+          "actions": {
+            "headerButton": [],
+            "actionCellButton": [],
+            "rowClick": []
+          }
+        }
+      },
+      "b2c3d4e5-f6a7-4890-b12c-3d4e5f6a7b00": {
+        "id": "b2c3d4e5-f6a7-4890-b12c-3d4e5f6a7b00",
+        "type": "latest",
+        "sizeX": 12,
+        "sizeY": 8,
+        "typeFullFqn": "system.cards.entities_table",
+        "config": {
+          "timewindow": {
+            "displayValue": "",
+            "selectedTab": 0,
+            "realtime": {
+              "realtimeType": 1,
+              "interval": 1000,
+              "timewindowMs": 86400000,
+              "quickInterval": "CURRENT_DAY"
+            },
+            "history": {
+              "historyType": 0,
+              "interval": 1000,
+              "timewindowMs": 60000
+            },
+            "aggregation": {
+              "type": "NONE",
+              "limit": 200
+            }
+          },
+          "showTitle": true,
+          "backgroundColor": "rgb(255, 255, 255)",
+          "color": "rgba(0, 0, 0, 0.87)",
+          "padding": "4px",
+          "settings": {
+            "enableSearch": true,
+            "displayPagination": true,
+            "defaultPageSize": 20,
+            "defaultSortOrder": "entityName",
+            "displayEntityName": true,
+            "displayEntityType": false,
+            "enableSelectColumnDisplay": false,
+            "enableStickyHeader": true,
+            "enableStickyAction": false,
+            "entitiesTitle": "Floor aggregates",
+            "entityNameColumnTitle": "Device"
+          },
+          "title": "Floor summary",
+          "dropShadow": true,
+          "enableFullscreen": true,
+          "titleStyle": {
+            "fontSize": "16px",
+            "fontWeight": 400,
+            "padding": "5px 10px 5px 10px"
+          },
+          "useDashboardTimewindow": false,
+          "showLegend": false,
+          "datasources": [
+            {
+              "type": "entity",
+              "name": null,
+              "entityAliasId": "e5f6a7b8-c9d0-4123-e45f-6a7b8c9d0e1a",
+              "filterId": null,
+              "dataKeys": [
+                {
+                  "name": "avg_temperature",
+                  "type": "timeseries",
+                  "label": "Avg temp",
+                  "color": "#4caf50",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.6766994874229113,
+                  "units": "\u00b0C",
+                  "decimals": 1
+                },
+                {
+                  "name": "avg_humidity",
+                  "type": "timeseries",
+                  "label": "Avg humidity",
+                  "color": "#2196f3",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.8921795677048454,
+                  "units": "%",
+                  "decimals": 0
+                },
+                {
+                  "name": "occupied_rooms",
+                  "type": "timeseries",
+                  "label": "Occupied",
+                  "color": "#607d8b",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.0869388326294162
+                }
+              ]
+            }
+          ],
+          "showTitleIcon": false,
+          "actions": {
+            "headerButton": [],
+            "actionCellButton": [],
+            "rowClick": []
+          }
+        }
+      },
+      "c3d4e5f6-a7b8-4901-c23d-4e5f6a7b8c00": {
+        "id": "c3d4e5f6-a7b8-4901-c23d-4e5f6a7b8c00",
+        "type": "alarm",
+        "sizeX": 12,
+        "sizeY": 8,
+        "typeFullFqn": "system.alarm_widgets.alarms_table",
+        "config": {
+          "timewindow": {
+            "realtime": {
+              "interval": 1000,
+              "timewindowMs": 86400000
+            },
+            "aggregation": {
+              "type": "NONE",
+              "limit": 200
+            }
+          },
+          "showTitle": true,
+          "backgroundColor": "rgb(255, 255, 255)",
+          "color": "rgba(0, 0, 0, 0.87)",
+          "padding": "4px",
+          "settings": {
+            "enableSelection": true,
+            "enableSearch": true,
+            "displayDetails": true,
+            "allowAcknowledgment": true,
+            "allowClear": true,
+            "allowAssign": true,
+            "displayComments": true,
+            "displayPagination": true,
+            "defaultPageSize": 10,
+            "defaultSortOrder": "-createdTime",
+            "alarmsTitle": "Temperature alarms"
+          },
+          "title": "Active alarms",
+          "dropShadow": true,
+          "useDashboardTimewindow": false,
+          "alarmSource": {
+            "type": "entity",
+            "name": "alarms",
+            "entityAliasId": "d4e5f6a7-b8c9-4012-d34e-5f6a7b8c9d0a",
+            "filterId": null,
+            "dataKeys": [
+              {
+                "name": "createdTime",
+                "type": "alarm",
+                "label": "Created",
+                "color": "#2196f3",
+                "settings": {},
+                "_hash": 0.4219218196852704
+              },
+              {
+                "name": "type",
+                "type": "alarm",
+                "label": "Type",
+                "color": "#f44336",
+                "settings": {},
+                "_hash": 0.0297972194380703
+              },
+              {
+                "name": "severity",
+                "type": "alarm",
+                "label": "Severity",
+                "color": "#ffc107",
+                "settings": {},
+                "_hash": 0.2186379748036034
+              },
+              {
+                "name": "status",
+                "type": "alarm",
+                "label": "Status",
+                "color": "#607d8b",
+                "settings": {},
+                "_hash": 0.5053552881033624
+              }
+            ]
+          },
+          "alarmsPollingInterval": 5,
+          "alarmFilterConfig": {
+            "statusList": [],
+            "severityList": [],
+            "typeList": [
+              "TEMPERATURE_THRESHOLD"
+            ],
+            "searchPropagatedAlarms": true
+          },
+          "alarmsMaxCountLoad": 0,
+          "alarmsFetchSize": 100
+        }
+      }
+    },
+    "states": {
+      "default": {
+        "name": "Campus NOC",
+        "root": true,
+        "layouts": {
+          "main": {
+            "widgets": {
+              "a1b2c3d4-e5f6-4789-a01b-2c3d4e5f6a00": {
+                "sizeX": 24,
+                "sizeY": 8,
+                "row": 0,
+                "col": 0
+              },
+              "b2c3d4e5-f6a7-4890-b12c-3d4e5f6a7b00": {
+                "sizeX": 12,
+                "sizeY": 7,
+                "row": 8,
+                "col": 0
+              },
+              "c3d4e5f6-a7b8-4901-c23d-4e5f6a7b8c00": {
+                "sizeX": 12,
+                "sizeY": 7,
+                "row": 8,
+                "col": 12
+              }
+            },
+            "gridSettings": {
+              "backgroundColor": "#eeeeee",
+              "color": "rgba(0,0,0,0.87)",
+              "columns": 24,
+              "margin": 10,
+              "outerMargin": true
+            }
+          }
+        }
+      }
+    },
+    "entityAliases": {
+      "d4e5f6a7-b8c9-4012-d34e-5f6a7b8c9d0a": {
+        "id": "d4e5f6a7-b8c9-4012-d34e-5f6a7b8c9d0a",
+        "alias": "All campus devices",
+        "filter": {
+          "type": "entityType",
+          "resolveMultiple": true,
+          "entityType": "DEVICE"
+        }
+      },
+      "e5f6a7b8-c9d0-4123-e45f-6a7b8c9d0e1a": {
+        "id": "e5f6a7b8-c9d0-4123-e45f-6a7b8c9d0e1a",
+        "alias": "Floor summary devices",
+        "filter": {
+          "type": "entityName",
+          "resolveMultiple": true,
+          "entityType": "DEVICE",
+          "entityNameFilter": "floor-summary"
+        }
+      }
+    },
+    "filters": {},
+    "timewindow": {
+      "displayValue": "",
+      "selectedTab": 0,
+      "realtime": {
+        "interval": 1000,
+        "timewindowMs": 60000
+      },
+      "history": {
+        "historyType": 0,
+        "interval": 1000,
+        "timewindowMs": 60000
+      },
+      "aggregation": {
+        "type": "AVG",
+        "limit": 25000
+      }
+    },
+    "settings": {
+      "stateControllerId": "default",
+      "showTitle": true,
+      "showEntitiesSelect": true,
+      "showDashboardTimewindow": true
+    }
+  },
+  "name": "Campus NOC",
+  "resources": []
+}

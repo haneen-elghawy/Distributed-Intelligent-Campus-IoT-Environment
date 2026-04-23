@@ -1,0 +1,7194 @@
+{
+  "schema": "campus-registry-v1",
+  "generated_at_utc": "2026-04-16T01:12:01.344244+00:00",
+  "device_count": 200,
+  "asset_count": 212,
+  "devices": [
+    {
+      "name": "b01-f01-r101",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 1,
+      "room_id": 1,
+      "room_number": 101
+    },
+    {
+      "name": "b01-f01-r102",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 1,
+      "room_id": 2,
+      "room_number": 102
+    },
+    {
+      "name": "b01-f01-r103",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 1,
+      "room_id": 3,
+      "room_number": 103
+    },
+    {
+      "name": "b01-f01-r104",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 1,
+      "room_id": 4,
+      "room_number": 104
+    },
+    {
+      "name": "b01-f01-r105",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 1,
+      "room_id": 5,
+      "room_number": 105
+    },
+    {
+      "name": "b01-f01-r106",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 1,
+      "room_id": 6,
+      "room_number": 106
+    },
+    {
+      "name": "b01-f01-r107",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 1,
+      "room_id": 7,
+      "room_number": 107
+    },
+    {
+      "name": "b01-f01-r108",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 1,
+      "room_id": 8,
+      "room_number": 108
+    },
+    {
+      "name": "b01-f01-r109",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 1,
+      "room_id": 9,
+      "room_number": 109
+    },
+    {
+      "name": "b01-f01-r110",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 1,
+      "room_id": 10,
+      "room_number": 110
+    },
+    {
+      "name": "b01-f01-r111",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 1,
+      "room_id": 11,
+      "room_number": 111
+    },
+    {
+      "name": "b01-f01-r112",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 1,
+      "room_id": 12,
+      "room_number": 112
+    },
+    {
+      "name": "b01-f01-r113",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 1,
+      "room_id": 13,
+      "room_number": 113
+    },
+    {
+      "name": "b01-f01-r114",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 1,
+      "room_id": 14,
+      "room_number": 114
+    },
+    {
+      "name": "b01-f01-r115",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 1,
+      "room_id": 15,
+      "room_number": 115
+    },
+    {
+      "name": "b01-f01-r116",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 1,
+      "room_id": 16,
+      "room_number": 116
+    },
+    {
+      "name": "b01-f01-r117",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 1,
+      "room_id": 17,
+      "room_number": 117
+    },
+    {
+      "name": "b01-f01-r118",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 1,
+      "room_id": 18,
+      "room_number": 118
+    },
+    {
+      "name": "b01-f01-r119",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 1,
+      "room_id": 19,
+      "room_number": 119
+    },
+    {
+      "name": "b01-f01-r120",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 1,
+      "room_id": 20,
+      "room_number": 120
+    },
+    {
+      "name": "b01-f02-r201",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 2,
+      "room_id": 1,
+      "room_number": 201
+    },
+    {
+      "name": "b01-f02-r202",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 2,
+      "room_id": 2,
+      "room_number": 202
+    },
+    {
+      "name": "b01-f02-r203",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 2,
+      "room_id": 3,
+      "room_number": 203
+    },
+    {
+      "name": "b01-f02-r204",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 2,
+      "room_id": 4,
+      "room_number": 204
+    },
+    {
+      "name": "b01-f02-r205",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 2,
+      "room_id": 5,
+      "room_number": 205
+    },
+    {
+      "name": "b01-f02-r206",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 2,
+      "room_id": 6,
+      "room_number": 206
+    },
+    {
+      "name": "b01-f02-r207",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 2,
+      "room_id": 7,
+      "room_number": 207
+    },
+    {
+      "name": "b01-f02-r208",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 2,
+      "room_id": 8,
+      "room_number": 208
+    },
+    {
+      "name": "b01-f02-r209",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 2,
+      "room_id": 9,
+      "room_number": 209
+    },
+    {
+      "name": "b01-f02-r210",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 2,
+      "room_id": 10,
+      "room_number": 210
+    },
+    {
+      "name": "b01-f02-r211",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 2,
+      "room_id": 11,
+      "room_number": 211
+    },
+    {
+      "name": "b01-f02-r212",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 2,
+      "room_id": 12,
+      "room_number": 212
+    },
+    {
+      "name": "b01-f02-r213",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 2,
+      "room_id": 13,
+      "room_number": 213
+    },
+    {
+      "name": "b01-f02-r214",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 2,
+      "room_id": 14,
+      "room_number": 214
+    },
+    {
+      "name": "b01-f02-r215",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 2,
+      "room_id": 15,
+      "room_number": 215
+    },
+    {
+      "name": "b01-f02-r216",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 2,
+      "room_id": 16,
+      "room_number": 216
+    },
+    {
+      "name": "b01-f02-r217",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 2,
+      "room_id": 17,
+      "room_number": 217
+    },
+    {
+      "name": "b01-f02-r218",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 2,
+      "room_id": 18,
+      "room_number": 218
+    },
+    {
+      "name": "b01-f02-r219",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 2,
+      "room_id": 19,
+      "room_number": 219
+    },
+    {
+      "name": "b01-f02-r220",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 2,
+      "room_id": 20,
+      "room_number": 220
+    },
+    {
+      "name": "b01-f03-r301",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 3,
+      "room_id": 1,
+      "room_number": 301
+    },
+    {
+      "name": "b01-f03-r302",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 3,
+      "room_id": 2,
+      "room_number": 302
+    },
+    {
+      "name": "b01-f03-r303",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 3,
+      "room_id": 3,
+      "room_number": 303
+    },
+    {
+      "name": "b01-f03-r304",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 3,
+      "room_id": 4,
+      "room_number": 304
+    },
+    {
+      "name": "b01-f03-r305",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 3,
+      "room_id": 5,
+      "room_number": 305
+    },
+    {
+      "name": "b01-f03-r306",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 3,
+      "room_id": 6,
+      "room_number": 306
+    },
+    {
+      "name": "b01-f03-r307",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 3,
+      "room_id": 7,
+      "room_number": 307
+    },
+    {
+      "name": "b01-f03-r308",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 3,
+      "room_id": 8,
+      "room_number": 308
+    },
+    {
+      "name": "b01-f03-r309",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 3,
+      "room_id": 9,
+      "room_number": 309
+    },
+    {
+      "name": "b01-f03-r310",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 3,
+      "room_id": 10,
+      "room_number": 310
+    },
+    {
+      "name": "b01-f03-r311",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 3,
+      "room_id": 11,
+      "room_number": 311
+    },
+    {
+      "name": "b01-f03-r312",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 3,
+      "room_id": 12,
+      "room_number": 312
+    },
+    {
+      "name": "b01-f03-r313",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 3,
+      "room_id": 13,
+      "room_number": 313
+    },
+    {
+      "name": "b01-f03-r314",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 3,
+      "room_id": 14,
+      "room_number": 314
+    },
+    {
+      "name": "b01-f03-r315",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 3,
+      "room_id": 15,
+      "room_number": 315
+    },
+    {
+      "name": "b01-f03-r316",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 3,
+      "room_id": 16,
+      "room_number": 316
+    },
+    {
+      "name": "b01-f03-r317",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 3,
+      "room_id": 17,
+      "room_number": 317
+    },
+    {
+      "name": "b01-f03-r318",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 3,
+      "room_id": 18,
+      "room_number": 318
+    },
+    {
+      "name": "b01-f03-r319",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 3,
+      "room_id": 19,
+      "room_number": 319
+    },
+    {
+      "name": "b01-f03-r320",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 3,
+      "room_id": 20,
+      "room_number": 320
+    },
+    {
+      "name": "b01-f04-r401",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 4,
+      "room_id": 1,
+      "room_number": 401
+    },
+    {
+      "name": "b01-f04-r402",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 4,
+      "room_id": 2,
+      "room_number": 402
+    },
+    {
+      "name": "b01-f04-r403",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 4,
+      "room_id": 3,
+      "room_number": 403
+    },
+    {
+      "name": "b01-f04-r404",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 4,
+      "room_id": 4,
+      "room_number": 404
+    },
+    {
+      "name": "b01-f04-r405",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 4,
+      "room_id": 5,
+      "room_number": 405
+    },
+    {
+      "name": "b01-f04-r406",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 4,
+      "room_id": 6,
+      "room_number": 406
+    },
+    {
+      "name": "b01-f04-r407",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 4,
+      "room_id": 7,
+      "room_number": 407
+    },
+    {
+      "name": "b01-f04-r408",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 4,
+      "room_id": 8,
+      "room_number": 408
+    },
+    {
+      "name": "b01-f04-r409",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 4,
+      "room_id": 9,
+      "room_number": 409
+    },
+    {
+      "name": "b01-f04-r410",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 4,
+      "room_id": 10,
+      "room_number": 410
+    },
+    {
+      "name": "b01-f04-r411",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 4,
+      "room_id": 11,
+      "room_number": 411
+    },
+    {
+      "name": "b01-f04-r412",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 4,
+      "room_id": 12,
+      "room_number": 412
+    },
+    {
+      "name": "b01-f04-r413",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 4,
+      "room_id": 13,
+      "room_number": 413
+    },
+    {
+      "name": "b01-f04-r414",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 4,
+      "room_id": 14,
+      "room_number": 414
+    },
+    {
+      "name": "b01-f04-r415",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 4,
+      "room_id": 15,
+      "room_number": 415
+    },
+    {
+      "name": "b01-f04-r416",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 4,
+      "room_id": 16,
+      "room_number": 416
+    },
+    {
+      "name": "b01-f04-r417",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 4,
+      "room_id": 17,
+      "room_number": 417
+    },
+    {
+      "name": "b01-f04-r418",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 4,
+      "room_id": 18,
+      "room_number": 418
+    },
+    {
+      "name": "b01-f04-r419",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 4,
+      "room_id": 19,
+      "room_number": 419
+    },
+    {
+      "name": "b01-f04-r420",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 4,
+      "room_id": 20,
+      "room_number": 420
+    },
+    {
+      "name": "b01-f05-r501",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 5,
+      "room_id": 1,
+      "room_number": 501
+    },
+    {
+      "name": "b01-f05-r502",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 5,
+      "room_id": 2,
+      "room_number": 502
+    },
+    {
+      "name": "b01-f05-r503",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 5,
+      "room_id": 3,
+      "room_number": 503
+    },
+    {
+      "name": "b01-f05-r504",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 5,
+      "room_id": 4,
+      "room_number": 504
+    },
+    {
+      "name": "b01-f05-r505",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 5,
+      "room_id": 5,
+      "room_number": 505
+    },
+    {
+      "name": "b01-f05-r506",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 5,
+      "room_id": 6,
+      "room_number": 506
+    },
+    {
+      "name": "b01-f05-r507",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 5,
+      "room_id": 7,
+      "room_number": 507
+    },
+    {
+      "name": "b01-f05-r508",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 5,
+      "room_id": 8,
+      "room_number": 508
+    },
+    {
+      "name": "b01-f05-r509",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 5,
+      "room_id": 9,
+      "room_number": 509
+    },
+    {
+      "name": "b01-f05-r510",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 5,
+      "room_id": 10,
+      "room_number": 510
+    },
+    {
+      "name": "b01-f05-r511",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 5,
+      "room_id": 11,
+      "room_number": 511
+    },
+    {
+      "name": "b01-f05-r512",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 5,
+      "room_id": 12,
+      "room_number": 512
+    },
+    {
+      "name": "b01-f05-r513",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 5,
+      "room_id": 13,
+      "room_number": 513
+    },
+    {
+      "name": "b01-f05-r514",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 5,
+      "room_id": 14,
+      "room_number": 514
+    },
+    {
+      "name": "b01-f05-r515",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 5,
+      "room_id": 15,
+      "room_number": 515
+    },
+    {
+      "name": "b01-f05-r516",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 5,
+      "room_id": 16,
+      "room_number": 516
+    },
+    {
+      "name": "b01-f05-r517",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 5,
+      "room_id": 17,
+      "room_number": 517
+    },
+    {
+      "name": "b01-f05-r518",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 5,
+      "room_id": 18,
+      "room_number": 518
+    },
+    {
+      "name": "b01-f05-r519",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 5,
+      "room_id": 19,
+      "room_number": 519
+    },
+    {
+      "name": "b01-f05-r520",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 5,
+      "room_id": 20,
+      "room_number": 520
+    },
+    {
+      "name": "b01-f06-r601",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 6,
+      "room_id": 1,
+      "room_number": 601
+    },
+    {
+      "name": "b01-f06-r602",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 6,
+      "room_id": 2,
+      "room_number": 602
+    },
+    {
+      "name": "b01-f06-r603",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 6,
+      "room_id": 3,
+      "room_number": 603
+    },
+    {
+      "name": "b01-f06-r604",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 6,
+      "room_id": 4,
+      "room_number": 604
+    },
+    {
+      "name": "b01-f06-r605",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 6,
+      "room_id": 5,
+      "room_number": 605
+    },
+    {
+      "name": "b01-f06-r606",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 6,
+      "room_id": 6,
+      "room_number": 606
+    },
+    {
+      "name": "b01-f06-r607",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 6,
+      "room_id": 7,
+      "room_number": 607
+    },
+    {
+      "name": "b01-f06-r608",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 6,
+      "room_id": 8,
+      "room_number": 608
+    },
+    {
+      "name": "b01-f06-r609",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 6,
+      "room_id": 9,
+      "room_number": 609
+    },
+    {
+      "name": "b01-f06-r610",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 6,
+      "room_id": 10,
+      "room_number": 610
+    },
+    {
+      "name": "b01-f06-r611",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 6,
+      "room_id": 11,
+      "room_number": 611
+    },
+    {
+      "name": "b01-f06-r612",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 6,
+      "room_id": 12,
+      "room_number": 612
+    },
+    {
+      "name": "b01-f06-r613",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 6,
+      "room_id": 13,
+      "room_number": 613
+    },
+    {
+      "name": "b01-f06-r614",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 6,
+      "room_id": 14,
+      "room_number": 614
+    },
+    {
+      "name": "b01-f06-r615",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 6,
+      "room_id": 15,
+      "room_number": 615
+    },
+    {
+      "name": "b01-f06-r616",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 6,
+      "room_id": 16,
+      "room_number": 616
+    },
+    {
+      "name": "b01-f06-r617",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 6,
+      "room_id": 17,
+      "room_number": 617
+    },
+    {
+      "name": "b01-f06-r618",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 6,
+      "room_id": 18,
+      "room_number": 618
+    },
+    {
+      "name": "b01-f06-r619",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 6,
+      "room_id": 19,
+      "room_number": 619
+    },
+    {
+      "name": "b01-f06-r620",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 6,
+      "room_id": 20,
+      "room_number": 620
+    },
+    {
+      "name": "b01-f07-r701",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 7,
+      "room_id": 1,
+      "room_number": 701
+    },
+    {
+      "name": "b01-f07-r702",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 7,
+      "room_id": 2,
+      "room_number": 702
+    },
+    {
+      "name": "b01-f07-r703",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 7,
+      "room_id": 3,
+      "room_number": 703
+    },
+    {
+      "name": "b01-f07-r704",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 7,
+      "room_id": 4,
+      "room_number": 704
+    },
+    {
+      "name": "b01-f07-r705",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 7,
+      "room_id": 5,
+      "room_number": 705
+    },
+    {
+      "name": "b01-f07-r706",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 7,
+      "room_id": 6,
+      "room_number": 706
+    },
+    {
+      "name": "b01-f07-r707",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 7,
+      "room_id": 7,
+      "room_number": 707
+    },
+    {
+      "name": "b01-f07-r708",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 7,
+      "room_id": 8,
+      "room_number": 708
+    },
+    {
+      "name": "b01-f07-r709",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 7,
+      "room_id": 9,
+      "room_number": 709
+    },
+    {
+      "name": "b01-f07-r710",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 7,
+      "room_id": 10,
+      "room_number": 710
+    },
+    {
+      "name": "b01-f07-r711",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 7,
+      "room_id": 11,
+      "room_number": 711
+    },
+    {
+      "name": "b01-f07-r712",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 7,
+      "room_id": 12,
+      "room_number": 712
+    },
+    {
+      "name": "b01-f07-r713",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 7,
+      "room_id": 13,
+      "room_number": 713
+    },
+    {
+      "name": "b01-f07-r714",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 7,
+      "room_id": 14,
+      "room_number": 714
+    },
+    {
+      "name": "b01-f07-r715",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 7,
+      "room_id": 15,
+      "room_number": 715
+    },
+    {
+      "name": "b01-f07-r716",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 7,
+      "room_id": 16,
+      "room_number": 716
+    },
+    {
+      "name": "b01-f07-r717",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 7,
+      "room_id": 17,
+      "room_number": 717
+    },
+    {
+      "name": "b01-f07-r718",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 7,
+      "room_id": 18,
+      "room_number": 718
+    },
+    {
+      "name": "b01-f07-r719",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 7,
+      "room_id": 19,
+      "room_number": 719
+    },
+    {
+      "name": "b01-f07-r720",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 7,
+      "room_id": 20,
+      "room_number": 720
+    },
+    {
+      "name": "b01-f08-r801",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 8,
+      "room_id": 1,
+      "room_number": 801
+    },
+    {
+      "name": "b01-f08-r802",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 8,
+      "room_id": 2,
+      "room_number": 802
+    },
+    {
+      "name": "b01-f08-r803",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 8,
+      "room_id": 3,
+      "room_number": 803
+    },
+    {
+      "name": "b01-f08-r804",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 8,
+      "room_id": 4,
+      "room_number": 804
+    },
+    {
+      "name": "b01-f08-r805",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 8,
+      "room_id": 5,
+      "room_number": 805
+    },
+    {
+      "name": "b01-f08-r806",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 8,
+      "room_id": 6,
+      "room_number": 806
+    },
+    {
+      "name": "b01-f08-r807",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 8,
+      "room_id": 7,
+      "room_number": 807
+    },
+    {
+      "name": "b01-f08-r808",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 8,
+      "room_id": 8,
+      "room_number": 808
+    },
+    {
+      "name": "b01-f08-r809",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 8,
+      "room_id": 9,
+      "room_number": 809
+    },
+    {
+      "name": "b01-f08-r810",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 8,
+      "room_id": 10,
+      "room_number": 810
+    },
+    {
+      "name": "b01-f08-r811",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 8,
+      "room_id": 11,
+      "room_number": 811
+    },
+    {
+      "name": "b01-f08-r812",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 8,
+      "room_id": 12,
+      "room_number": 812
+    },
+    {
+      "name": "b01-f08-r813",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 8,
+      "room_id": 13,
+      "room_number": 813
+    },
+    {
+      "name": "b01-f08-r814",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 8,
+      "room_id": 14,
+      "room_number": 814
+    },
+    {
+      "name": "b01-f08-r815",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 8,
+      "room_id": 15,
+      "room_number": 815
+    },
+    {
+      "name": "b01-f08-r816",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 8,
+      "room_id": 16,
+      "room_number": 816
+    },
+    {
+      "name": "b01-f08-r817",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 8,
+      "room_id": 17,
+      "room_number": 817
+    },
+    {
+      "name": "b01-f08-r818",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 8,
+      "room_id": 18,
+      "room_number": 818
+    },
+    {
+      "name": "b01-f08-r819",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 8,
+      "room_id": 19,
+      "room_number": 819
+    },
+    {
+      "name": "b01-f08-r820",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 8,
+      "room_id": 20,
+      "room_number": 820
+    },
+    {
+      "name": "b01-f09-r901",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 9,
+      "room_id": 1,
+      "room_number": 901
+    },
+    {
+      "name": "b01-f09-r902",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 9,
+      "room_id": 2,
+      "room_number": 902
+    },
+    {
+      "name": "b01-f09-r903",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 9,
+      "room_id": 3,
+      "room_number": 903
+    },
+    {
+      "name": "b01-f09-r904",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 9,
+      "room_id": 4,
+      "room_number": 904
+    },
+    {
+      "name": "b01-f09-r905",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 9,
+      "room_id": 5,
+      "room_number": 905
+    },
+    {
+      "name": "b01-f09-r906",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 9,
+      "room_id": 6,
+      "room_number": 906
+    },
+    {
+      "name": "b01-f09-r907",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 9,
+      "room_id": 7,
+      "room_number": 907
+    },
+    {
+      "name": "b01-f09-r908",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 9,
+      "room_id": 8,
+      "room_number": 908
+    },
+    {
+      "name": "b01-f09-r909",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 9,
+      "room_id": 9,
+      "room_number": 909
+    },
+    {
+      "name": "b01-f09-r910",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 9,
+      "room_id": 10,
+      "room_number": 910
+    },
+    {
+      "name": "b01-f09-r911",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 9,
+      "room_id": 11,
+      "room_number": 911
+    },
+    {
+      "name": "b01-f09-r912",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 9,
+      "room_id": 12,
+      "room_number": 912
+    },
+    {
+      "name": "b01-f09-r913",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 9,
+      "room_id": 13,
+      "room_number": 913
+    },
+    {
+      "name": "b01-f09-r914",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 9,
+      "room_id": 14,
+      "room_number": 914
+    },
+    {
+      "name": "b01-f09-r915",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 9,
+      "room_id": 15,
+      "room_number": 915
+    },
+    {
+      "name": "b01-f09-r916",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 9,
+      "room_id": 16,
+      "room_number": 916
+    },
+    {
+      "name": "b01-f09-r917",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 9,
+      "room_id": 17,
+      "room_number": 917
+    },
+    {
+      "name": "b01-f09-r918",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 9,
+      "room_id": 18,
+      "room_number": 918
+    },
+    {
+      "name": "b01-f09-r919",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 9,
+      "room_id": 19,
+      "room_number": 919
+    },
+    {
+      "name": "b01-f09-r920",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 9,
+      "room_id": 20,
+      "room_number": 920
+    },
+    {
+      "name": "b01-f10-r1001",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 10,
+      "room_id": 1,
+      "room_number": 1001
+    },
+    {
+      "name": "b01-f10-r1002",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 10,
+      "room_id": 2,
+      "room_number": 1002
+    },
+    {
+      "name": "b01-f10-r1003",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 10,
+      "room_id": 3,
+      "room_number": 1003
+    },
+    {
+      "name": "b01-f10-r1004",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 10,
+      "room_id": 4,
+      "room_number": 1004
+    },
+    {
+      "name": "b01-f10-r1005",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 10,
+      "room_id": 5,
+      "room_number": 1005
+    },
+    {
+      "name": "b01-f10-r1006",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 10,
+      "room_id": 6,
+      "room_number": 1006
+    },
+    {
+      "name": "b01-f10-r1007",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 10,
+      "room_id": 7,
+      "room_number": 1007
+    },
+    {
+      "name": "b01-f10-r1008",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 10,
+      "room_id": 8,
+      "room_number": 1008
+    },
+    {
+      "name": "b01-f10-r1009",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 10,
+      "room_id": 9,
+      "room_number": 1009
+    },
+    {
+      "name": "b01-f10-r1010",
+      "deviceProfile": "MQTT-ThermalSensor",
+      "protocol": "MQTT",
+      "floor": 10,
+      "room_id": 10,
+      "room_number": 1010
+    },
+    {
+      "name": "b01-f10-r1011",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 10,
+      "room_id": 11,
+      "room_number": 1011
+    },
+    {
+      "name": "b01-f10-r1012",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 10,
+      "room_id": 12,
+      "room_number": 1012
+    },
+    {
+      "name": "b01-f10-r1013",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 10,
+      "room_id": 13,
+      "room_number": 1013
+    },
+    {
+      "name": "b01-f10-r1014",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 10,
+      "room_id": 14,
+      "room_number": 1014
+    },
+    {
+      "name": "b01-f10-r1015",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 10,
+      "room_id": 15,
+      "room_number": 1015
+    },
+    {
+      "name": "b01-f10-r1016",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 10,
+      "room_id": 16,
+      "room_number": 1016
+    },
+    {
+      "name": "b01-f10-r1017",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 10,
+      "room_id": 17,
+      "room_number": 1017
+    },
+    {
+      "name": "b01-f10-r1018",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 10,
+      "room_id": 18,
+      "room_number": 1018
+    },
+    {
+      "name": "b01-f10-r1019",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 10,
+      "room_id": 19,
+      "room_number": 1019
+    },
+    {
+      "name": "b01-f10-r1020",
+      "deviceProfile": "CoAP-ThermalSensor",
+      "protocol": "CoAP",
+      "floor": 10,
+      "room_id": 20,
+      "room_number": 1020
+    }
+  ],
+  "assets": [
+    {
+      "name": "Campus-B01",
+      "type": "Campus",
+      "parent": null
+    },
+    {
+      "name": "Building-01",
+      "type": "Building",
+      "parent": "Campus-B01"
+    },
+    {
+      "name": "Floor-01",
+      "type": "Floor",
+      "parent": "Building-01"
+    },
+    {
+      "name": "Floor-02",
+      "type": "Floor",
+      "parent": "Building-01"
+    },
+    {
+      "name": "Floor-03",
+      "type": "Floor",
+      "parent": "Building-01"
+    },
+    {
+      "name": "Floor-04",
+      "type": "Floor",
+      "parent": "Building-01"
+    },
+    {
+      "name": "Floor-05",
+      "type": "Floor",
+      "parent": "Building-01"
+    },
+    {
+      "name": "Floor-06",
+      "type": "Floor",
+      "parent": "Building-01"
+    },
+    {
+      "name": "Floor-07",
+      "type": "Floor",
+      "parent": "Building-01"
+    },
+    {
+      "name": "Floor-08",
+      "type": "Floor",
+      "parent": "Building-01"
+    },
+    {
+      "name": "Floor-09",
+      "type": "Floor",
+      "parent": "Building-01"
+    },
+    {
+      "name": "Floor-10",
+      "type": "Floor",
+      "parent": "Building-01"
+    },
+    {
+      "name": "b01-f01-r101",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r102",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r103",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r104",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r105",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r106",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r107",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r108",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r109",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r110",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r111",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r112",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r113",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r114",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r115",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r116",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r117",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r118",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r119",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f01-r120",
+      "type": "Room",
+      "parent": "Floor-01"
+    },
+    {
+      "name": "b01-f02-r201",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r202",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r203",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r204",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r205",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r206",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r207",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r208",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r209",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r210",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r211",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r212",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r213",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r214",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r215",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r216",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r217",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r218",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r219",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f02-r220",
+      "type": "Room",
+      "parent": "Floor-02"
+    },
+    {
+      "name": "b01-f03-r301",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r302",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r303",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r304",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r305",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r306",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r307",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r308",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r309",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r310",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r311",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r312",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r313",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r314",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r315",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r316",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r317",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r318",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r319",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f03-r320",
+      "type": "Room",
+      "parent": "Floor-03"
+    },
+    {
+      "name": "b01-f04-r401",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r402",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r403",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r404",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r405",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r406",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r407",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r408",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r409",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r410",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r411",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r412",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r413",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r414",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r415",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r416",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r417",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r418",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r419",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f04-r420",
+      "type": "Room",
+      "parent": "Floor-04"
+    },
+    {
+      "name": "b01-f05-r501",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r502",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r503",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r504",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r505",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r506",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r507",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r508",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r509",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r510",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r511",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r512",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r513",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r514",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r515",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r516",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r517",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r518",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r519",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f05-r520",
+      "type": "Room",
+      "parent": "Floor-05"
+    },
+    {
+      "name": "b01-f06-r601",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r602",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r603",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r604",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r605",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r606",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r607",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r608",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r609",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r610",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r611",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r612",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r613",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r614",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r615",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r616",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r617",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r618",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r619",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f06-r620",
+      "type": "Room",
+      "parent": "Floor-06"
+    },
+    {
+      "name": "b01-f07-r701",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r702",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r703",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r704",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r705",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r706",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r707",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r708",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r709",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r710",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r711",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r712",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r713",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r714",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r715",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r716",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r717",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r718",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r719",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f07-r720",
+      "type": "Room",
+      "parent": "Floor-07"
+    },
+    {
+      "name": "b01-f08-r801",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r802",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r803",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r804",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r805",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r806",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r807",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r808",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r809",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r810",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r811",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r812",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r813",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r814",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r815",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r816",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r817",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r818",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r819",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f08-r820",
+      "type": "Room",
+      "parent": "Floor-08"
+    },
+    {
+      "name": "b01-f09-r901",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r902",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r903",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r904",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r905",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r906",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r907",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r908",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r909",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r910",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r911",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r912",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r913",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r914",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r915",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r916",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r917",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r918",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r919",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f09-r920",
+      "type": "Room",
+      "parent": "Floor-09"
+    },
+    {
+      "name": "b01-f10-r1001",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1002",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1003",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1004",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1005",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1006",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1007",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1008",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1009",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1010",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1011",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1012",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1013",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1014",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1015",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1016",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1017",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1018",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1019",
+      "type": "Room",
+      "parent": "Floor-10"
+    },
+    {
+      "name": "b01-f10-r1020",
+      "type": "Room",
+      "parent": "Floor-10"
+    }
+  ],
+  "relations": [
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Campus-B01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "Building-01"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Building-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Building-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Building-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Building-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Building-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Building-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Building-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Building-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Building-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Building-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r101"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r102"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r103"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r104"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r105"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r106"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r107"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r108"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r109"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r110"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r111"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r112"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r113"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r114"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r115"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r116"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r117"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r118"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r119"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-01"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r120"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r201"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r202"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r203"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r204"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r205"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r206"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r207"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r208"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r209"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r210"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r211"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r212"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r213"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r214"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r215"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r216"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r217"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r218"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r219"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-02"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r220"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r301"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r302"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r303"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r304"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r305"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r306"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r307"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r308"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r309"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r310"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r311"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r312"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r313"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r314"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r315"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r316"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r317"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r318"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r319"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-03"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r320"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r401"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r402"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r403"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r404"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r405"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r406"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r407"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r408"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r409"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r410"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r411"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r412"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r413"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r414"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r415"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r416"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r417"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r418"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r419"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-04"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r420"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r501"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r502"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r503"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r504"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r505"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r506"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r507"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r508"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r509"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r510"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r511"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r512"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r513"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r514"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r515"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r516"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r517"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r518"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r519"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-05"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r520"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r601"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r602"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r603"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r604"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r605"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r606"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r607"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r608"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r609"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r610"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r611"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r612"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r613"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r614"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r615"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r616"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r617"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r618"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r619"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-06"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r620"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r701"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r702"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r703"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r704"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r705"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r706"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r707"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r708"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r709"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r710"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r711"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r712"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r713"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r714"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r715"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r716"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r717"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r718"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r719"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-07"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r720"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r801"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r802"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r803"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r804"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r805"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r806"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r807"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r808"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r809"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r810"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r811"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r812"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r813"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r814"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r815"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r816"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r817"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r818"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r819"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-08"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r820"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r901"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r902"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r903"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r904"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r905"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r906"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r907"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r908"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r909"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r910"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r911"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r912"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r913"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r914"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r915"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r916"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r917"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r918"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r919"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-09"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r920"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1001"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1002"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1003"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1004"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1005"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1006"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1007"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1008"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1009"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1010"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1011"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1012"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1013"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1014"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1015"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1016"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1017"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1018"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1019"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "Floor-10"
+      },
+      "to": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1020"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r101"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r101"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r102"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r102"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r103"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r103"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r104"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r104"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r105"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r105"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r106"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r106"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r107"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r107"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r108"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r108"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r109"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r109"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r110"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r110"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r111"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r111"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r112"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r112"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r113"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r113"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r114"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r114"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r115"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r115"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r116"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r116"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r117"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r117"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r118"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r118"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r119"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r119"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f01-r120"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f01-r120"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r201"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r201"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r202"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r202"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r203"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r203"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r204"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r204"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r205"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r205"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r206"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r206"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r207"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r207"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r208"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r208"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r209"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r209"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r210"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r210"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r211"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r211"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r212"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r212"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r213"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r213"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r214"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r214"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r215"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r215"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r216"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r216"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r217"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r217"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r218"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r218"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r219"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r219"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f02-r220"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f02-r220"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r301"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r301"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r302"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r302"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r303"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r303"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r304"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r304"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r305"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r305"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r306"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r306"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r307"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r307"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r308"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r308"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r309"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r309"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r310"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r310"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r311"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r311"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r312"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r312"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r313"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r313"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r314"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r314"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r315"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r315"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r316"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r316"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r317"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r317"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r318"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r318"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r319"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r319"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f03-r320"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f03-r320"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r401"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r401"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r402"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r402"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r403"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r403"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r404"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r404"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r405"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r405"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r406"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r406"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r407"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r407"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r408"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r408"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r409"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r409"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r410"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r410"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r411"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r411"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r412"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r412"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r413"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r413"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r414"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r414"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r415"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r415"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r416"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r416"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r417"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r417"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r418"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r418"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r419"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r419"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f04-r420"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f04-r420"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r501"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r501"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r502"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r502"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r503"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r503"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r504"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r504"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r505"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r505"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r506"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r506"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r507"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r507"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r508"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r508"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r509"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r509"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r510"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r510"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r511"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r511"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r512"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r512"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r513"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r513"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r514"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r514"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r515"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r515"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r516"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r516"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r517"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r517"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r518"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r518"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r519"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r519"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f05-r520"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f05-r520"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r601"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r601"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r602"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r602"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r603"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r603"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r604"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r604"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r605"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r605"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r606"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r606"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r607"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r607"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r608"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r608"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r609"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r609"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r610"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r610"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r611"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r611"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r612"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r612"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r613"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r613"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r614"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r614"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r615"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r615"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r616"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r616"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r617"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r617"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r618"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r618"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r619"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r619"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f06-r620"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f06-r620"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r701"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r701"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r702"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r702"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r703"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r703"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r704"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r704"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r705"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r705"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r706"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r706"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r707"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r707"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r708"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r708"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r709"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r709"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r710"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r710"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r711"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r711"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r712"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r712"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r713"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r713"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r714"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r714"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r715"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r715"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r716"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r716"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r717"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r717"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r718"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r718"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r719"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r719"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f07-r720"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f07-r720"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r801"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r801"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r802"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r802"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r803"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r803"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r804"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r804"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r805"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r805"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r806"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r806"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r807"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r807"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r808"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r808"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r809"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r809"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r810"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r810"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r811"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r811"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r812"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r812"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r813"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r813"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r814"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r814"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r815"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r815"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r816"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r816"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r817"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r817"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r818"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r818"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r819"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r819"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f08-r820"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f08-r820"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r901"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r901"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r902"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r902"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r903"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r903"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r904"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r904"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r905"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r905"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r906"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r906"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r907"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r907"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r908"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r908"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r909"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r909"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r910"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r910"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r911"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r911"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r912"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r912"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r913"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r913"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r914"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r914"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r915"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r915"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r916"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r916"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r917"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r917"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r918"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r918"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r919"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r919"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f09-r920"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f09-r920"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1001"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1001"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1002"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1002"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1003"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1003"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1004"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1004"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1005"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1005"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1006"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1006"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1007"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1007"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1008"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1008"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1009"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1009"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1010"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1010"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1011"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1011"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1012"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1012"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1013"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1013"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1014"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1014"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1015"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1015"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1016"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1016"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1017"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1017"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1018"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1018"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1019"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1019"
+      },
+      "type": "Contains"
+    },
+    {
+      "from": {
+        "entityType": "ASSET",
+        "name": "b01-f10-r1020"
+      },
+      "to": {
+        "entityType": "DEVICE",
+        "name": "b01-f10-r1020"
+      },
+      "type": "Contains"
+    }
+  ],
+  "notes": "UUIDs are assigned by ThingsBoard on provision; use scripts/provision_tb.py to push live."
+}

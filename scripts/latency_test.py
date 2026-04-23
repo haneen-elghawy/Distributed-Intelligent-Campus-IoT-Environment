@@ -1,6 +1,6 @@
 """Measure MQTT command → telemetry RTT (ThingsBoard-style path via HiveMQ).
 
-Records time from QoS 2 ``cmd`` publish until the matching ``hvac_mode`` appears on
+Records time from ``cmd`` publish (QoS from ``LATENCY_CMD_QOS``) until the matching ``hvac_mode`` appears on
 ``telemetry``. Alternates **ECO** / **HEATING** each iteration so each sample reflects a
 state change (avoids counting stale telemetry).
 
@@ -23,11 +23,14 @@ Environment (optional)::
     This script no longer falls back to ``HIVEMQ_BROKER`` from ``.env`` (that is ``hivemq`` for in-container use only).
     LATENCY_CMD_QOS: 1 (default) for reliable RTT with gmqtt+HiveMQ; 2 to match the course spec
     (QoS-2 command path) but may be less stable in this benchmark.
+    LATENCY_CONNECT_RETRIES (default 20), LATENCY_CONNECT_RETRY_S (default 1.0): retry when the broker
+    returns "connection refused" (common for a few seconds right after ``docker compose up``).
 """
 from __future__ import annotations
 
 import argparse
 import asyncio
+import errno
 import json
 import logging
 import os
@@ -55,6 +58,34 @@ ITERATIONS = int(os.getenv("LATENCY_ITERATIONS", "20"))
 GAP_S = float(os.getenv("LATENCY_GAP_S", "2"))
 RTT_TARGET_MS = float(os.getenv("RTT_TARGET_MS", "500"))
 WAIT_S = float(os.getenv("LATENCY_WAIT_S", "30"))
+CONNECT_RETRIES = max(1, int(os.getenv("LATENCY_CONNECT_RETRIES", "20")))
+CONNECT_RETRY_S = max(0.0, float(os.getenv("LATENCY_CONNECT_RETRY_S", "1.0")))
+
+
+def _is_broker_refused(exc: BaseException) -> bool:
+    if isinstance(exc, ConnectionRefusedError):
+        return True
+    s = f"{type(exc).__name__} {exc!s}".lower()
+    if "refused" in s or "10061" in s or "1225" in s:
+        return True
+    w = getattr(exc, "winerror", None)
+    if w in (10061, 1225):
+        return True
+    no = getattr(exc, "errno", None)
+    if not os.name == "nt" and no == errno.ECONNREFUSED:
+        return True
+    return False
+
+
+def _connect_refused_help(broker: str, port: int) -> str:
+    return (
+        f"Could not open TCP to MQTT broker {broker}:{port} (connection refused). "
+        "On the project host, HiveMQ should listen on 1883. Typical fixes: "
+        "(1) Start Docker Desktop. "
+        f"(2) In this repo, run:  docker compose up -d  "
+        f"(3) Wait until:  docker ps  shows campus-hivemq with 0.0.0.0:{port}->1883. "
+        f"(4) If the container exits, see:  docker logs campus-hivemq"
+    )
 
 
 def _mqtt_version_from_env() -> int:
@@ -125,13 +156,33 @@ async def run_latency_test(
     vnum = "5.0" if _mqtt_version_from_env() == MQTTv50 else "3.1.1"
     print(f"MQTT RTT: broker={BROKER}:{port} user={USER!r} version={vnum} cmd_qos={CMD_QOS} topics cmd={CMD_TOPIC!r} tel={TEL_TOPIC!r}", flush=True)
 
-    await client.connect(
-        BROKER,
-        port,
-        ssl=ssl_ctx if use_tls else False,
-        keepalive=60,
-        version=_mqtt_version_from_env(),
-    )
+    version = _mqtt_version_from_env()
+    for attempt in range(CONNECT_RETRIES):
+        try:
+            await client.connect(
+                BROKER,
+                port,
+                ssl=ssl_ctx if use_tls else False,
+                keepalive=60,
+                version=version,
+            )
+            break
+        except (OSError, ConnectionError) as e:
+            if not _is_broker_refused(e):
+                raise
+            if attempt < CONNECT_RETRIES - 1:
+                if attempt == 0:
+                    print(
+                        f"Broker {BROKER}:{port} refused the connection (Docker/HiveMQ still starting, or not running). "
+                        f"Will retry {CONNECT_RETRIES} times, {CONNECT_RETRY_S}s apart...",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                await asyncio.sleep(CONNECT_RETRY_S)
+            else:
+                help_msg = _connect_refused_help(BROKER, port)
+                print(help_msg, file=sys.stderr)
+                raise ConnectionError(help_msg) from e
     client.subscribe(TEL_TOPIC, qos=1)
     await asyncio.sleep(0.3)  # allow SUBACK / session to settle
     if not _client_ok(client):
@@ -170,7 +221,7 @@ async def run_latency_test(
         client.publish(
             CMD_TOPIC,
             json.dumps({"hvac_mode": mode, "target_temp": 22.0}),
-            qos=2,
+            qos=CMD_QOS,
         )
         matched = False
         deadline = t0 + WAIT_S

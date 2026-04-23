@@ -34,3 +34,5 @@ hivemq/certs/*.srl
 node-red/gateway-*/node_modules
 phase2guide.part2.md
 docs/thingsboard_step11.md
+docs/phase2_steps_7_14_status.md
+docs/thingsboard_step12.md

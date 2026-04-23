@@ -1,4 +1,4 @@
-"""Provision 200 campus devices + Campus→Building→Floor→Room assets in ThingsBoard CE via REST.
+"""Provision 200 room devices + 10 floor-summary devices + Campus→Building→Floor→Room assets in ThingsBoard CE via REST.
 
 Prerequisites (UI — Step 11a)
 -----------------------------
@@ -40,6 +40,7 @@ TB_VERIFY_SSL = os.getenv("TB_VERIFY_SSL", "true").lower() in ("1", "true", "yes
 
 PROFILE_MQTT = "MQTT-ThermalSensor"
 PROFILE_COAP = "CoAP-ThermalSensor"
+PROFILE_FLOOR = "FloorSummary"  # optional; falls back to PROFILE_MQTT (see ``docs/thingsboard_step11.md``)
 
 
 # ---------------------------------------------------------------------------
@@ -108,6 +109,30 @@ def get_profile_id(session: requests.Session, token: str, name: str) -> dict[str
         f'Device profile "{name}" not found. '
         f'Create it in the UI (Step 11a) and re-run.'
     )
+
+
+def get_profile_id_optional(
+    session: requests.Session, token: str, name: str
+) -> dict[str, Any] | None:
+    """Return profile id dict or None if the named profile does not exist."""
+    page = 0
+    while True:
+        r = session.get(
+            f"{TB_URL}/api/deviceProfiles",
+            params={"pageSize": 50, "page": page, "sortProperty": "name", "sortOrder": "ASC"},
+            headers=auth_headers(token),
+            timeout=60,
+        )
+        if not r.ok:
+            raise _req_exc(r, f"List device profiles (page {page})")
+        payload = r.json()
+        for p in payload.get("data", []):
+            if p.get("name") == name:
+                return {"id": p["id"]["id"], "entityType": "DEVICE_PROFILE"}
+        if not payload.get("hasNext", False):
+            break
+        page += 1
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -352,6 +377,24 @@ def provision_all_devices(
             total += 1
             print(f"  [OK] [{total:>3}/200] {node_id}  ({profile_name})  id={dev['id']['id']}")
 
+    # Step 12 (floor-summary MQTT topic) — same device names the uplink converter uses
+    print("\nCreating floor-summary devices (b01-f01-floor-summary ... b01-f10-floor-summary)...")
+    fl_prof = get_profile_id_optional(session, token, PROFILE_FLOOR)
+    if fl_prof:
+        fl_name = PROFILE_FLOOR
+    else:
+        fl_prof = mqtt_prof
+        fl_name = PROFILE_MQTT
+        print(
+            f"  [note] No device profile {PROFILE_FLOOR!r} — using {PROFILE_MQTT!r} for floor-summary. "
+            f"Optional: create {PROFILE_FLOOR!r} in the UI and re-run --devices-only."
+        )
+    for floor in range(1, 11):
+        node_id = f"b01-f{floor:02d}-floor-summary"
+        dev = create_device(session, token, node_id, fl_name, fl_prof)
+        devices[node_id] = dev
+        print(f"  [OK] [{200 + floor}/210] {node_id}  ({fl_name})  id={dev['id']['id']}")
+
     return devices
 
 
@@ -541,7 +584,7 @@ def purge_campus(session: requests.Session, token: str) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="ThingsBoard CE campus provisioning")
     parser.add_argument("--devices-only", action="store_true",
-                        help="Only create/update 200 devices")
+                        help="Only create/update 210 devices (200 rooms + 10 floor-summary)")
     parser.add_argument("--assets-only",  action="store_true",
                         help="Only create assets & relations (devices must already exist)")
     parser.add_argument("--purge", action="store_true",
@@ -577,7 +620,7 @@ def main() -> int:
             purge_campus(session, token)
             devs = provision_all_devices(session, token)
             create_asset_hierarchy(session, token, devs)
-            print("\n[OK] All done! 200 devices and full asset hierarchy provisioned.")
+            print("\n[OK] All done! 210 devices (200 rooms + 10 floor-summary) and full asset hierarchy provisioned.")
             return 0
 
         if args.purge:
@@ -615,7 +658,7 @@ def main() -> int:
         print(f"\n[ERROR] HTTP error: {e}", file=sys.stderr)
         return 1
 
-    print("\n[OK] All done! 200 devices and full asset hierarchy provisioned.")
+    print("\n[OK] All done! 210 devices (200 rooms + 10 floor-summary) and full asset hierarchy provisioned.")
     return 0
 
 
