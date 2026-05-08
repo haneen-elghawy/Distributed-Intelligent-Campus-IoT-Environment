@@ -19,6 +19,8 @@ from dataclasses import dataclass
 from statistics import mean
 from typing import Any
 
+from dotenv import load_dotenv
+load_dotenv(override=True)
 import gmqtt
 import httpx
 
@@ -38,6 +40,8 @@ TB_PASSWORD = os.getenv("TB_PASSWORD", "tenant")
 
 HIVEMQ_HOST = os.getenv("HIVEMQ_HOST", "localhost")
 HIVEMQ_PORT = int(os.getenv("HIVEMQ_PORT", "1883"))
+HIVEMQ_USER = os.getenv("HIVEMQ_USER", "thingsboard")
+HIVEMQ_PASS = os.getenv("HIVEMQ_PASS", "tb_super_pass")
 
 SUB_TOPIC = "campus/+/+/+/telemetry"
 
@@ -107,6 +111,7 @@ def parse_floor(topic: str) -> int | None:
 class MQTTManager:
     def __init__(self):
         self.client = gmqtt.Client("p3-floor-aggregator")
+        self.client.set_auth_credentials(HIVEMQ_USER, HIVEMQ_PASS)
         self.connected = asyncio.Event()
         self.stop = asyncio.Event()
 
@@ -172,7 +177,24 @@ async def main():
         # start MQTT safely
         mqtt_task = asyncio.create_task(mqtt.connect_loop())
 
-        assets = {}  # keep your TB mapping here if needed
+        assets = {}
+        for floor_id in range(1, 11):
+            name = f"Floor-{floor_id:02d}"
+            try:
+                resp = await tb_request(
+                    tb,
+                    cache,
+                    "GET",
+                    "/api/tenant/assets",
+                    params={"pageSize": 1, "page": 0, "textSearch": name},
+                )
+                data = resp.json().get("data", [])
+                if data:
+                    assets[floor_id] = data[0]["id"]["id"]
+                else:
+                    logger.warning("Floor asset not found: %s", name)
+            except Exception as e:
+                logger.warning("Error resolving %s: %s", name, e)
         logger.info("Resolved %d floor assets", len(assets))
 
         try:
@@ -197,7 +219,7 @@ async def main():
                             tb,
                             cache,
                             "POST",
-                            f"/api/plugins/telemetry/ASSET/{floor}/timeseries/ANY",
+                            f"/api/plugins/telemetry/ASSET/{assets.get(floor, floor)}/timeseries/ANY",
                             json=summary,
                         )
                     except Exception as e:

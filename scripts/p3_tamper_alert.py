@@ -26,12 +26,18 @@ logging.basicConfig(
 )
 logger = logging.getLogger("p3_tamper_alert")
 
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
+
 TB_URL = os.getenv("TB_URL", "http://localhost:9090").rstrip("/")
 TB_USERNAME = os.getenv("TB_USERNAME", "tenant@thingsboard.org")
 TB_PASSWORD = os.getenv("TB_PASSWORD", "tenant")
 
 HIVEMQ_HOST = os.getenv("HIVEMQ_HOST", "localhost")
 HIVEMQ_PORT = int(os.getenv("HIVEMQ_PORT", "1883"))
+HIVEMQ_USER = os.getenv("HIVEMQ_USER", "thingsboard")
+HIVEMQ_PASS = os.getenv("HIVEMQ_PASS", "tb_super_pass")
 
 CSV_PATH = Path("thingsboard") / "campus_devices.csv"
 
@@ -194,6 +200,7 @@ async def main() -> None:
             raise ThingsBoardError("No device_ids resolved from ThingsBoard; cannot start.")
 
         mqtt = gmqtt.Client(f"p3-tamper-alert-{os.getpid()}")
+        mqtt.set_auth_credentials(HIVEMQ_USER, HIVEMQ_PASS)
 
         def on_connect(_client, _flags, _rc, _props):
             _client.subscribe(SUB_TOPIC, qos=1)

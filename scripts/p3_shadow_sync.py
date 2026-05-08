@@ -29,6 +29,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger("p3_shadow_sync")
 
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
+
 TB_URL = os.getenv("TB_URL", "http://localhost:9090").rstrip("/")
 TB_USERNAME = os.getenv("TB_USERNAME", "tenant@thingsboard.org")
 TB_PASSWORD = os.getenv("TB_PASSWORD", "tenant")
@@ -38,6 +42,8 @@ TB_MQTT_PORT = int(os.getenv("TB_MQTT_PORT", "1884"))
 
 HIVEMQ_HOST = os.getenv("HIVEMQ_HOST", "localhost")
 HIVEMQ_PORT = int(os.getenv("HIVEMQ_PORT", "1883"))
+HIVEMQ_USER = os.getenv("HIVEMQ_USER", "thingsboard")
+HIVEMQ_PASS = os.getenv("HIVEMQ_PASS", "tb_super_pass")
 
 CSV_PATH = Path("thingsboard") / "campus_devices.csv"
 

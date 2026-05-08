@@ -20,8 +20,14 @@ sys.path.insert(0, str(ROOT))
 import gmqtt
 from src.engine.ota import sign_payload
 
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
+
 HIVEMQ_HOST = os.getenv("HIVEMQ_HOST", "localhost")
 HIVEMQ_PORT = int(os.getenv("HIVEMQ_PORT", "1883"))
+HIVEMQ_USER = os.getenv("HIVEMQ_USER", "thingsboard")
+HIVEMQ_PASS = os.getenv("HIVEMQ_PASS", "tb_super_pass")
 BUILDING = "b01"
 
 
@@ -62,6 +68,7 @@ def build_payload(args):
 
 async def publish(topic, payload):
     client = gmqtt.Client(f"p3-ota-publisher-{os.getpid()}")
+    client.set_auth_credentials(HIVEMQ_USER, HIVEMQ_PASS)
     await client.connect(HIVEMQ_HOST, HIVEMQ_PORT, keepalive=10)
     client.publish(topic, json.dumps(payload), qos=1)
     await asyncio.sleep(0.5)

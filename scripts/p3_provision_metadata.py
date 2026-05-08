@@ -23,6 +23,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger("p3_provision_metadata")
 
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
+
 TB_URL = os.getenv("TB_URL", "http://localhost:9090").rstrip("/")
 TB_USERNAME = os.getenv("TB_USERNAME", "tenant@thingsboard.org")
 TB_PASSWORD = os.getenv("TB_PASSWORD", "tenant")
@@ -216,7 +220,7 @@ def main() -> None:
                 logger.warning("Skipping invalid CSV row %d: %r", idx, row)
                 continue
 
-            asset_name = f"Room-{room_key}"
+            asset_name = room_key
             try:
                 asset_id = find_first_asset_id(client, token_cache, asset_name)
                 if not asset_id:
@@ -244,4 +248,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
 
