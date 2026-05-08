@@ -136,6 +136,10 @@ class MqttNode:
         _cmd = cmd_topic(self.room.building_id, self.room.floor_id, self.room.room_id)
         self.client.subscribe(_cmd, qos=2)
 
+        # ── Phase 3 OTA ──
+        from ..engine.ota_handler import subscribe_ota
+        subscribe_ota(self.client, self.room)
+
         # Announce online presence (retained so late subscribers see it)
         _status = status_topic(self.room.building_id, self.room.floor_id, self.room.room_id)
         self.client.publish(
@@ -239,6 +243,13 @@ class MqttNode:
             topic.encode() + (payload if isinstance(payload, bytes) else payload.encode())
         ).hexdigest()
         if self._is_duplicate(msg_key):
+            return 0
+
+        if isinstance(topic, bytes):
+            topic = topic.decode("utf-8")
+        if "/ota" in topic and not topic.endswith("/ota/report"):
+            from ..engine.ota_handler import handle_ota_message
+            handle_ota_message(self.client, topic, payload, self.room)
             return 0
 
         # --- Decode ---
