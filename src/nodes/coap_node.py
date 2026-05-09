@@ -49,11 +49,20 @@ class CoapNode:
 
     async def start(self) -> None:
         """Bind UDP port and expose CoAP resources."""
-        self._protocol = await run_coap_server(self.room, self.telemetry)
-        logger.info(
-            "CoAP node %s started on port %d",
-            self.room.node_id, self.room.coap_port,
-        )
+        try:
+            self._protocol = await run_coap_server(self.room, self.telemetry)
+            logger.info(
+                "CoAP node %s started on port %d",
+                self.room.node_id, self.room.coap_port,
+            )
+        except Exception as e:
+            self._protocol = None
+            logger.warning(
+                "CoAP node %s failed to bind on port %d: %s",
+                self.room.node_id,
+                self.room.coap_port,
+                e,
+            )
 
     async def stop(self) -> None:
         """Shut down the aiocoap server context."""

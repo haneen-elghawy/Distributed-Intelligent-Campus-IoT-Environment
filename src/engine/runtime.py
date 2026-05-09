@@ -228,17 +228,21 @@ async def main() -> None:
 
     # Build node objects (no I/O yet; start() happens inside coroutines)
     mqtt_nodes = [MqttNode(r) for r in mqtt_rooms]
-    coap_nodes = [CoapNode(r) for r in coap_rooms]
+    coap_disabled = os.getenv("COAP_ALERTS_ENABLED", "true").lower() == "false"
+    if coap_disabled:
+        coap_nodes = []
+        logger.info("COAP_ALERTS_ENABLED=false -> skipping CoAP node startup")
+    else:
+        coap_nodes = [CoapNode(r) for r in coap_rooms]
 
     logger.info(
         "Launching %d MQTT nodes + %d CoAP nodes concurrently",
         len(mqtt_nodes), len(coap_nodes),
     )
 
-    tasks: list[asyncio.coroutine] = (
-        [run_mqtt_node(n) for n in mqtt_nodes] +
-        [run_coap_node(n) for n in coap_nodes]
-    )
+    tasks: list[asyncio.coroutine] = [run_mqtt_node(n) for n in mqtt_nodes]
+    if coap_nodes:
+        tasks += [run_coap_node(n) for n in coap_nodes]
 
     try:
         await asyncio.gather(*tasks)

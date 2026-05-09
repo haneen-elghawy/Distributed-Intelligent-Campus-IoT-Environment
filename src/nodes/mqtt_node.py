@@ -106,23 +106,11 @@ class MqttNode:
             self.room.building_id, self.room.floor_id, self.room.room_id
         )
 
-        self.client = Client(
-            client_id,
-            will_message=Client.Will(
-                topic=will_topic,
-                message=_lwt_payload(self.room),
-                qos=1,
-                retain=True,
-            ),
-        )
+        self.client = Client(client_id)
 
-        # Per-floor credentials  ─  env: MQTT_USER_FLOOR01 / MQTT_PASS_FLOOR01
-        floor_label = f"floor{self.room.floor_id:02d}"
-        env_user = f"MQTT_USER_{floor_label.upper()}"
-        env_pass = f"MQTT_PASS_{floor_label.upper()}"
         self.client.set_auth_credentials(
-            username=os.getenv(env_user, floor_label),
-            password=os.getenv(env_pass, f"{floor_label}pass"),
+            username=os.getenv("HIVEMQ_USER", "thingsboard"),
+            password=os.getenv("HIVEMQ_PASS", "tb_super_pass"),
         )
 
         self.client.on_message = self._on_message
@@ -320,3 +308,4 @@ class MqttNode:
             return True
         self._seen_msg_ids[msg_key] = now
         return False
+

@@ -26,7 +26,7 @@ def init_db(db_path=None):
     path = _get_db_path(db_path)
     _ensure_parent_dir(path)
 
-    with sqlite3.connect(path) as conn:
+    with sqlite3.connect(path, timeout=30) as conn:
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS rooms (
@@ -47,7 +47,7 @@ def is_db_empty(db_path=None):
     path = _get_db_path(db_path)
     _ensure_parent_dir(path)
 
-    with sqlite3.connect(path) as conn:
+    with sqlite3.connect(path, timeout=30) as conn:
         row = conn.execute("SELECT COUNT(*) FROM rooms").fetchone()
         return (row[0] if row else 0) == 0
 
@@ -56,7 +56,7 @@ def initialize_defaults(rooms, db_path=None):
     path = _get_db_path(db_path)
     _ensure_parent_dir(path)
 
-    with sqlite3.connect(path) as conn:
+    with sqlite3.connect(path, timeout=30) as conn:
         conn.executemany(
             """
             INSERT OR REPLACE INTO rooms (
@@ -87,7 +87,7 @@ def load_previous_state(rooms, db_path=None):
     path = _get_db_path(db_path)
     _ensure_parent_dir(path)
 
-    with sqlite3.connect(path) as conn:
+    with sqlite3.connect(path, timeout=30) as conn:
         rows = conn.execute(
             """
             SELECT room_id, last_temp, last_humidity, hvac_mode, target_temp, last_update
@@ -125,7 +125,7 @@ def persist_room_state(room, db_path=None):
     path = _get_db_path(db_path)
     _ensure_parent_dir(path)
 
-    with sqlite3.connect(path) as conn:
+    with sqlite3.connect(path, timeout=30) as conn:
         conn.execute(
             """
             INSERT OR REPLACE INTO rooms (

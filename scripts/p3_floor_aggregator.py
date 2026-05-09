@@ -19,8 +19,6 @@ from dataclasses import dataclass
 from statistics import mean
 from typing import Any
 
-from dotenv import load_dotenv
-load_dotenv(override=True)
 import gmqtt
 import httpx
 
@@ -110,7 +108,7 @@ def parse_floor(topic: str) -> int | None:
 # -----------------------------
 class MQTTManager:
     def __init__(self):
-        self.client = gmqtt.Client("p3-floor-aggregator")
+        self.client = gmqtt.Client(f"p3-floor-aggregator-{int(time.time())}")
         self.client.set_auth_credentials(HIVEMQ_USER, HIVEMQ_PASS)
         self.connected = asyncio.Event()
         self.stop = asyncio.Event()
@@ -149,13 +147,19 @@ class MQTTManager:
             try:
                 if not self.connected.is_set():
                     logger.info("Connecting MQTT %s:%s", HIVEMQ_HOST, HIVEMQ_PORT)
-                    await self.client.connect(HIVEMQ_HOST, HIVEMQ_PORT, keepalive=30)
-
-                await asyncio.sleep(2)
-
+                    try:
+                        await self.client.connect(HIVEMQ_HOST, HIVEMQ_PORT, keepalive=60)
+                        await asyncio.sleep(1)
+                    except Exception as e:
+                        logger.warning("MQTT connect error: %s", e)
+                        await asyncio.sleep(5)
+                else:
+                    await asyncio.sleep(5)
+            except asyncio.CancelledError:
+                break
             except Exception as e:
-                logger.warning("MQTT connect error: %s", e)
-                await asyncio.sleep(3)
+                logger.warning("connect_loop error: %s", e)
+                await asyncio.sleep(5)
 
     async def disconnect(self):
         self.stop.set()
