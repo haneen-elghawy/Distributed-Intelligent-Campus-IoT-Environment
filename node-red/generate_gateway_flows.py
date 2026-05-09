@@ -278,13 +278,15 @@ const floorRooms = flow.get('floor_rooms') || {};
 const temps = Object.values(floorRooms).map(r => r.temperature).filter(v => v != null);
 const humids = Object.values(floorRooms).map(r => r.humidity).filter(v => v != null);
 const occupied = Object.values(floorRooms).filter(r => r.occupancy === true).length;
+const total = Object.keys(floorRooms).length;
 const summary = {
     floor: process.env.FLOOR,
     ts: Date.now(),
-    avg_temperature: temps.length ? (temps.reduce((a,b)=>a+b,0)/temps.length).toFixed(1) : null,
-    avg_humidity: humids.length ? (humids.reduce((a,b)=>a+b,0)/humids.length).toFixed(1) : null,
+    avg_temperature: temps.length ? Number((temps.reduce((a,b)=>a+b,0)/temps.length).toFixed(1)) : null,
+    avg_humidity: humids.length ? Number((humids.reduce((a,b)=>a+b,0)/humids.length).toFixed(1)) : null,
     occupied_rooms: occupied,
-    total_rooms: Object.keys(floorRooms).length
+    total_rooms: total,
+    occupancy_rate: total > 0 ? Number((occupied / total).toFixed(4)) : 0
 };
 msg.payload = summary;
 msg.topic = `campus/b01/f${process.env.FLOOR}/floor-summary`;
