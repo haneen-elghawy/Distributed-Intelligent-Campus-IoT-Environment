@@ -4,7 +4,7 @@
   "mobileHide": false,
   "mobileOrder": null,
   "configuration": {
-    "description": "SWAPD453 \u2014 Fleet grid, floor summary, and threshold alarms. Re-export from UI after import if you adjust aliases. Source: repo scripts/build_campus_noc_dashboard.py",
+    "description": "SWAPD453 \u2014 Fleet grid, floor summary, and threshold alarms. Spatial polygon config in thingsboard/floor_polygons.json. Re-export from UI after import if you adjust aliases. Source: repo scripts/build_campus_noc_dashboard.py",
     "widgets": {
       "a1b2c3d4-e5f6-4789-a01b-2c3d4e5f6a00": {
         "id": "a1b2c3d4-e5f6-4789-a01b-2c3d4e5f6a00",
@@ -256,6 +256,22 @@
                     "columnSelectionToDisplay": "enabled"
                   },
                   "_hash": 0.0869388326294162
+                },
+                {
+                  "name": "occupancy_rate",
+                  "type": "timeseries",
+                  "label": "Occupancy rate",
+                  "color": "#ff9800",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.4219218196852704,
+                  "units": "",
+                  "decimals": 4
                 }
               ]
             }
@@ -317,7 +333,7 @@
                 "label": "Created",
                 "color": "#2196f3",
                 "settings": {},
-                "_hash": 0.4219218196852704
+                "_hash": 0.5449414806032167
               },
               {
                 "name": "type",
@@ -325,7 +341,7 @@
                 "label": "Type",
                 "color": "#f44336",
                 "settings": {},
-                "_hash": 0.0297972194380703
+                "_hash": 0.2204406220406967
               },
               {
                 "name": "severity",
@@ -333,7 +349,7 @@
                 "label": "Severity",
                 "color": "#ffc107",
                 "settings": {},
-                "_hash": 0.2186379748036034
+                "_hash": 0.5892656838759087
               },
               {
                 "name": "status",
@@ -341,7 +357,7 @@
                 "label": "Status",
                 "color": "#607d8b",
                 "settings": {},
-                "_hash": 0.5053552881033624
+                "_hash": 0.8094304566778266
               }
             ]
           },
@@ -356,6 +372,161 @@
           },
           "alarmsMaxCountLoad": 0,
           "alarmsFetchSize": 100
+        }
+      },
+      "f6a7b8c9-d0e1-4234-f56a-7b8c9d0e1f00": {
+        "id": "f6a7b8c9-d0e1-4234-f56a-7b8c9d0e1f00",
+        "type": "latest",
+        "sizeX": 12,
+        "sizeY": 8,
+        "typeFullFqn": "system.cards.entities_table",
+        "config": {
+          "timewindow": {
+            "displayValue": "",
+            "selectedTab": 0,
+            "realtime": {
+              "realtimeType": 1,
+              "interval": 1000,
+              "timewindowMs": 86400000,
+              "quickInterval": "CURRENT_DAY"
+            },
+            "history": {
+              "historyType": 0,
+              "interval": 1000,
+              "timewindowMs": 60000
+            },
+            "aggregation": {
+              "type": "NONE",
+              "limit": 200
+            }
+          },
+          "showTitle": true,
+          "backgroundColor": "rgb(255, 255, 255)",
+          "color": "rgba(0, 0, 0, 0.87)",
+          "padding": "4px",
+          "settings": {
+            "enableSearch": true,
+            "displayPagination": true,
+            "defaultPageSize": 20,
+            "defaultSortOrder": "entityName",
+            "displayEntityName": true,
+            "displayEntityType": false,
+            "enableSelectColumnDisplay": false,
+            "enableStickyHeader": true,
+            "enableStickyAction": false,
+            "entitiesTitle": "Sync View",
+            "entityNameColumnTitle": "Device"
+          },
+          "title": "Fleet synchronization status",
+          "dropShadow": true,
+          "enableFullscreen": true,
+          "titleStyle": {
+            "fontSize": "16px",
+            "fontWeight": 400,
+            "padding": "5px 10px 5px 10px"
+          },
+          "useDashboardTimewindow": false,
+          "showLegend": false,
+          "datasources": [
+            {
+              "type": "entity",
+              "name": null,
+              "entityAliasId": "d4e5f6a7-b8c9-4012-d34e-5f6a7b8c9d0a",
+              "filterId": null,
+              "dataKeys": [
+                {
+                  "name": "last_seen",
+                  "type": "attribute",
+                  "label": "Last Seen",
+                  "color": "#607d8b",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.0297972194380703
+                },
+                {
+                  "name": "desired_hvac_mode",
+                  "type": "attribute",
+                  "label": "Desired HVAC",
+                  "color": "#3f51b5",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.2186379748036034
+                },
+                {
+                  "name": "reported_hvac_mode",
+                  "type": "attribute",
+                  "label": "Reported HVAC",
+                  "color": "#4caf50",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.5053552881033624
+                },
+                {
+                  "name": "desired_lighting_dimmer",
+                  "type": "attribute",
+                  "label": "Desired Dimmer",
+                  "color": "#3f51b5",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.0265359696838636
+                },
+                {
+                  "name": "reported_lighting_dimmer",
+                  "type": "attribute",
+                  "label": "Reported Dimmer",
+                  "color": "#4caf50",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.1988376506866485
+                },
+                {
+                  "name": "sync_status",
+                  "type": "attribute",
+                  "label": "Sync Status",
+                  "color": "#f44336",
+                  "settings": {
+                    "columnWidth": "0px",
+                    "useCellStyleFunction": false,
+                    "useCellContentFunction": false,
+                    "defaultColumnVisibility": "visible",
+                    "columnSelectionToDisplay": "enabled"
+                  },
+                  "_hash": 0.6498844377795232
+                }
+              ]
+            }
+          ],
+          "showTitleIcon": false,
+          "actions": {
+            "headerButton": [],
+            "actionCellButton": [],
+            "rowClick": []
+          }
         }
       }
     },
@@ -383,6 +554,12 @@
                 "sizeY": 7,
                 "row": 8,
                 "col": 12
+              },
+              "f6a7b8c9-d0e1-4234-f56a-7b8c9d0e1f00": {
+                "sizeX": 24,
+                "sizeY": 7,
+                "row": 15,
+                "col": 0
               }
             },
             "gridSettings": {
@@ -417,7 +594,15 @@
         }
       }
     },
-    "filters": {},
+    "filters": {
+      "syncStatus": {
+        "key": {
+          "type": "ENTITY_FIELD",
+          "key": "name"
+        },
+        "valueType": "STRING"
+      }
+    },
     "timewindow": {
       "displayValue": "",
       "selectedTab": 0,
