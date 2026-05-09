@@ -15,6 +15,7 @@ OUT = ROOT / "thingsboard" / "dashboard_campus_noc.json"
 W_FLEET = "a1b2c3d4-e5f6-4789-a01b-2c3d4e5f6a00"
 W_FLOOR = "b2c3d4e5-f6a7-4890-b12c-3d4e5f6a7b00"
 W_ALARM = "c3d4e5f6-a7b8-4901-c23d-4e5f6a7b8c00"
+W_SYNC = "f6a7b8c9-d0e1-4234-f56a-7b8c9d0e1f00"
 A_FLEET = "d4e5f6a7-b8c9-4012-d34e-5f6a7b8c9d0a"
 A_FLOOR = "e5f6a7b8-c9d0-4123-e45f-6a7b8c9d0e1a"
 
@@ -222,6 +223,15 @@ def main() -> None:
         data_key("avg_temperature", "Avg temp", "timeseries", "#4caf50", "°C", 1),
         data_key("avg_humidity", "Avg humidity", "timeseries", "#2196f3", "%", 0),
         data_key("occupied_rooms", "Occupied", "timeseries", "#607d8b"),
+        data_key("occupancy_rate", "Occupancy rate", "timeseries", "#ff9800", "", 4),
+    ]
+    sync_keys = [
+        data_key("last_seen", "Last Seen", "attribute", "#607d8b"),
+        data_key("desired_hvac_mode", "Desired HVAC", "attribute", "#3f51b5"),
+        data_key("reported_hvac_mode", "Reported HVAC", "attribute", "#4caf50"),
+        data_key("desired_lighting_dimmer", "Desired Dimmer", "attribute", "#3f51b5"),
+        data_key("reported_lighting_dimmer", "Reported Dimmer", "attribute", "#4caf50"),
+        data_key("sync_status", "Sync Status", "attribute", "#f44336"),
     ]
 
     dashboard = {
@@ -231,6 +241,7 @@ def main() -> None:
         "mobileOrder": None,
         "configuration": {
             "description": "SWAPD453 — Fleet grid, floor summary, and threshold alarms. "
+            "Spatial polygon config in thingsboard/floor_polygons.json. "
             "Re-export from UI after import if you adjust aliases. "
             "Source: repo scripts/build_campus_noc_dashboard.py",
             "widgets": {
@@ -249,6 +260,13 @@ def main() -> None:
                     floor_keys,
                 ),
                 W_ALARM: widget_alarms(W_ALARM, A_FLEET),
+                W_SYNC: widget_entities_table(
+                    W_SYNC,
+                    "Fleet synchronization status",
+                    A_FLEET,
+                    "Sync View",
+                    sync_keys,
+                ),
             },
             "states": {
                 "default": {
@@ -274,6 +292,12 @@ def main() -> None:
                                     "sizeY": 7,
                                     "row": 8,
                                     "col": 12,
+                                },
+                                W_SYNC: {
+                                    "sizeX": 24,
+                                    "sizeY": 7,
+                                    "row": 15,
+                                    "col": 0,
                                 },
                             },
                             "gridSettings": {
@@ -309,7 +333,15 @@ def main() -> None:
                     },
                 },
             },
-            "filters": {},
+            "filters": {
+                "syncStatus": {
+                    "key": {
+                        "type": "ENTITY_FIELD",
+                        "key": "name",
+                    },
+                    "valueType": "STRING",
+                }
+            },
             "timewindow": {
                 "displayValue": "",
                 "selectedTab": 0,

@@ -79,9 +79,16 @@ class Room:
         self.coap_port = None    # UDP port; set only for CoAP rooms
         self.node_id = None      # unique string e.g. "b01-f02-r011"
 
+        # Phase 3 OTA
+        self.config_version: str = "1.0"
+
     @property
     def room_key(self):
         return f"{self.building_id}-f{self.floor_id:02d}-r{self.floor_id * 100 + self.room_id:03d}"
+
+    @property
+    def room_number(self) -> int:
+        return self.floor_id * 100 + self.room_id
 
     def update_occupancy(self, hour):
         # Deterministic occupancy schedule instead of stochastic sampling.
