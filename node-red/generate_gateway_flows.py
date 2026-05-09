@@ -2,13 +2,40 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
+from dotenv import dotenv_values
+
 ROOT = Path(__file__).resolve().parent
+WORKSPACE_ROOT = ROOT.parent
 NUM_FLOORS = 10
 MQTT_PER_FLOOR = 10
 COAP_PER_FLOOR = 10
 COAP_BASE = 5683
+DOTENV = dotenv_values(WORKSPACE_ROOT / ".env")
+
+
+def _env(name: str, default: str = "") -> str:
+    value = os.getenv(name)
+    if value is not None and str(value).strip():
+        return str(value).strip()
+    dot = DOTENV.get(name)
+    if dot is not None and str(dot).strip():
+        return str(dot).strip()
+    return default
+
+
+def _mqtt_credentials_for_floor(floor: int) -> tuple[str, str]:
+    floor_key = f"FLOOR{floor:02d}"
+    user = _env(f"MQTT_USER_{floor_key}", _env("HIVEMQ_USER"))
+    password = _env(f"MQTT_PASS_{floor_key}", _env("HIVEMQ_PASS"))
+    if not user or not password:
+        raise RuntimeError(
+            f"Missing MQTT credentials for floor {floor:02d}. "
+            f"Set MQTT_USER_{floor_key}/MQTT_PASS_{floor_key} or HIVEMQ_USER/HIVEMQ_PASS."
+        )
+    return user, password
 
 
 def coap_ports_for_floor(floor: int) -> list[tuple[int, int, int]]:
@@ -31,6 +58,13 @@ def flows_for_floor(floor: int) -> list[dict]:
     tab_id = f"tab-floor{ff}"
     broker_id = f"broker-{ff}"
     coap_ports = coap_ports_for_floor(floor)
+    coap_start_port = coap_ports[0][0]
+    mqtt_host = "hivemq"
+    mqtt_port = _env("HIVEMQ_PORT", "1883")
+    coap_scheme = _env("COAP_SCHEME", "coap")
+    sim_engine_host = _env("SIM_ENGINE_HOST", "sim-engine")
+    coap_listen_port = _env("COAP_LISTEN_PORT", "5686")
+    mqtt_user, mqtt_pass = _mqtt_credentials_for_floor(floor)
 
     nodes: list[dict] = [
         {
@@ -44,9 +78,9 @@ def flows_for_floor(floor: int) -> list[dict]:
             "id": broker_id,
             "type": "mqtt-broker",
             "name": "HiveMQ",
-            "broker": "$(HIVEMQ_HOST)",
-            "port": "$(HIVEMQ_PORT)",
-            "clientid": "nodered-gw-f$(FLOOR)",
+            "broker": mqtt_host,
+            "port": mqtt_port,
+            "clientid": f"nodered-gw-f{ff}",
             "autoConnect": True,
             "usetls": False,
             "protocolVersion": "4",
@@ -69,8 +103,8 @@ def flows_for_floor(floor: int) -> list[dict]:
             "willPayloadType": "str",
             "sessionExpiry": "",
             "credentials": {
-                "user": "$(MQTT_USER)",
-                "password": "$(MQTT_PASS)",
+                "user": mqtt_user,
+                "password": mqtt_pass,
             },
         },
     ]
@@ -157,7 +191,7 @@ return msg;
         bridge_id = f"fn-bridge-{ff}-{i}"
         mq_out_t = f"mqtt-out-bridge-{ff}-{i}"
         y = y0 + i * 70
-        url = f"$(COAP_SCHEME)://$(SIM_ENGINE_HOST):{port}/f{ff}/r{rnum:03d}/telemetry"
+        url = f"{coap_scheme}://{sim_engine_host}:{port}/f{ff}/r{rnum:03d}/telemetry"
         nodes += [
             {
                 "id": inj_id,
@@ -209,12 +243,12 @@ rooms[p.node_id] = {
 };
 flow.set('floor_rooms', rooms);
 const r = p.node_id.split('-r')[1];
-const f = process.env.FLOOR;
+const f = '%s';
 msg.topic = `campus/b01/f${f}/r${r}/telemetry`;
 msg.qos = 1;
 msg.payload = p;
 return msg;
-""".strip(),
+""".strip() % ff,
                 "outputs": 1,
                 "timeout": 0,
                 "noerr": 0,
@@ -280,7 +314,7 @@ const humids = Object.values(floorRooms).map(r => r.humidity).filter(v => v != n
 const occupied = Object.values(floorRooms).filter(r => r.occupancy === true).length;
 const total = Object.keys(floorRooms).length;
 const summary = {
-    floor: process.env.FLOOR,
+    floor: '%s',
     ts: Date.now(),
     avg_temperature: temps.length ? Number((temps.reduce((a,b)=>a+b,0)/temps.length).toFixed(1)) : null,
     avg_humidity: humids.length ? Number((humids.reduce((a,b)=>a+b,0)/humids.length).toFixed(1)) : null,
@@ -289,9 +323,9 @@ const summary = {
     occupancy_rate: total > 0 ? Number((occupied / total).toFixed(4)) : 0
 };
 msg.payload = summary;
-msg.topic = `campus/b01/f${process.env.FLOOR}/floor-summary`;
+msg.topic = `campus/b01/f%s/floor-summary`;
 return msg;
-""".strip(),
+""".strip() % (ff, ff),
             "outputs": 1,
             "timeout": 0,
             "noerr": 0,
@@ -359,8 +393,8 @@ if (parts.length < 5) return null;
 const roomStr = parts[3];
 const floorStr = parts[2];
 const rfull = parseInt(roomStr.replace(/^r/, ''), 10);
-const roomNum = rfull % 100;
-const coapStart = parseInt(process.env.COAP_PORT_START || '5683', 10);
+const roomNum = rfull %% 100;
+const coapStart = %d;
 const coapPort = coapStart + (roomNum - 11);
 let parsedPayload = msg.payload;
 if (Buffer.isBuffer(parsedPayload)) {
@@ -386,14 +420,17 @@ const cmdContext = {
 };
 flow.set('last_cmd_context', cmdContext);
 if (roomNum >= 11 && roomNum <= 20) {
-    const coapScheme = process.env.COAP_SCHEME || 'coap';
-    msg.url = `${coapScheme}://${process.env.SIM_ENGINE_HOST}:${coapPort}/${floorStr}/${roomStr}/actuators/hvac`;
+    msg.url = `%s://%s:${coapPort}/${floorStr}/${roomStr}/actuators/hvac`;
     msg.method = 'PUT';
     msg.payload = JSON.stringify(parsedPayload);
-    return [msg, null];
+    const immediate = RED.util.cloneMessage(msg);
+    immediate.statusCode = '2.04';
+    return [msg, immediate];
 }
-return [null, null];
-""".strip(),
+const immediate = RED.util.cloneMessage(msg);
+immediate.statusCode = '2.04';
+return [null, immediate];
+""".strip() % (coap_start_port, coap_scheme, sim_engine_host),
             "outputs": 2,
             "timeout": 0,
             "noerr": 0,
@@ -402,7 +439,7 @@ return [null, null];
             "libs": [],
             "x": 380,
             "y": y_cmd,
-            "wires": [[coap_put], []],
+            "wires": [[coap_put], [fn_ack]],
         },
         {
             "id": coap_put,
@@ -531,8 +568,8 @@ const text = (msg.status && msg.status.text) ? String(msg.status.text) : '';
 if (!text.toLowerCase().includes('disconnect') && !text.toLowerCase().includes('lost')) {
     return null;
 }
-const F = process.env.FLOOR;
-const start = parseInt(process.env.COAP_PORT_START || '5683', 10);
+const F = '%s';
+const start = %d;
 const rooms = flow.get('floor_rooms') || {};
 for (let roomId = 11; roomId <= 20; roomId++) {
     const rnum = parseInt(F, 10) * 100 + roomId;
@@ -541,14 +578,14 @@ for (let roomId = 11; roomId <= 20; roomId++) {
     if (rec && rec.occupancy === false) {
         const port = start + (roomId - 11);
         node.send({
-            url: `${process.env.COAP_SCHEME || 'coap'}://${process.env.SIM_ENGINE_HOST}:${port}/f${F}/r${rnum}/actuators/hvac`,
+            url: `%s://%s:${port}/f${F}/r${rnum}/actuators/hvac`,
             method: 'PUT',
             payload: JSON.stringify({ hvac_mode: 'OFF' }),
         });
     }
 }
 return null;
-""".strip(),
+""".strip() % (ff, coap_start_port, coap_scheme, sim_engine_host),
             "outputs": 1,
             "timeout": 0,
             "noerr": 0,
@@ -587,7 +624,7 @@ return null;
             "id": srv_al,
             "type": "coap-server",
             "name": "Gateway alert listener",
-            "port": "$(COAP_LISTEN_PORT)",
+            "port": coap_listen_port,
         },
         {
             "id": coap_in_al,

@@ -23,7 +23,8 @@ from campus_naming import parse_room_key
 
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
+# Keep runtime/exported env vars authoritative (important in containers).
+load_dotenv(override=False)
 
 
 def _required_env(name):

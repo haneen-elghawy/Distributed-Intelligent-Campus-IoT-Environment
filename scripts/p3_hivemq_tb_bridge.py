@@ -71,19 +71,37 @@ class Bridge:
         logger.info("HiveMQ connected rc=%s", rc)
         self.connected.set()
         client.subscribe("campus/+/+/+/telemetry", qos=0)
+        client.subscribe("campus/+/+/+/floor-summary", qos=0)
+        client.subscribe("campus/+/+/+/sync-status", qos=1)
+        client.subscribe("campus/+/+/+/ota/report", qos=1)
 
     def _on_message(self, client, topic, payload, qos, props):
         parts = topic.split("/")
-        if len(parts) != 5:
+        if len(parts) not in (5, 6):
             return
-        room_key = f"{parts[1]}-{parts[2]}-{parts[3]}"
+        room_key = f"{parts[1]}-{parts[2]}-{parts[3]}" if len(parts) >= 4 else ""
         try:
             data = json.loads(payload)
         except Exception:
             return
-        tb = {k: v for k, v in data.items()
-              if k in ("temperature","humidity","occupancy","light_level",
-                       "lighting_dimmer","hvac_mode","hvac_status","ts")}
+        tail = parts[-1]
+        if tail == "telemetry":
+            tb = {k: v for k, v in data.items()
+                  if k in ("temperature","humidity","occupancy","light_level",
+                           "lighting_dimmer","hvac_mode","hvac_status","ts")}
+        elif tail == "floor-summary":
+            tb = {k: v for k, v in data.items()
+                  if k in ("avg_temperature", "avg_humidity", "occupied_rooms", "total_rooms", "occupancy_rate", "floor", "ts")}
+        elif tail == "sync-status":
+            tb = {k: v for k, v in data.items()
+                  if k in ("last_seen", "desired_hvac_mode", "reported_hvac_mode",
+                           "desired_lighting_dimmer", "reported_lighting_dimmer",
+                           "sync_status", "current_version", "config_version")}
+        elif len(parts) == 6 and parts[4] == "ota" and tail == "report":
+            tb = {k: v for k, v in data.items()
+                  if k in ("version", "rejected", "reason", "topic", "timestamp")}
+        else:
+            tb = {}
         if tb:
             try:
                 self._queue.put_nowait((room_key, tb))

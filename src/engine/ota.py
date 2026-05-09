@@ -1,11 +1,16 @@
 """Phase 3.2 — OTA configuration application + SHA-256 verification."""
 
+import hmac
 import hashlib
 import json
 import logging
+import os
 import time
+import uuid
 
 logger = logging.getLogger("engine.ota")
+SIGNING_KEY = os.getenv("OTA_SIGNING_KEY", "dev-ota-signing-key-change-me").encode("utf-8")
+MAX_AGE_SECONDS = int(os.getenv("OTA_MAX_AGE_SECONDS", "600"))
 
 APPLICABLE_PARAMS = {
     "alpha", "beta",
@@ -22,9 +27,18 @@ def canonical_hash(data):
     return hashlib.sha256(blob).hexdigest()
 
 
+def canonical_hmac(data):
+    clean = {k: v for k, v in data.items() if k not in ("_sig", "_hmac")} if isinstance(data, dict) else data
+    blob = json.dumps(clean, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hmac.new(SIGNING_KEY, blob, hashlib.sha256).hexdigest()
+
+
 def sign_payload(data):
-    out = {k: v for k, v in data.items() if k != "_sig"}
+    out = {k: v for k, v in data.items() if k not in ("_sig", "_hmac")}
+    out.setdefault("issued_at", int(time.time()))
+    out.setdefault("nonce", uuid.uuid4().hex)
     out["_sig"] = canonical_hash(out)
+    out["_hmac"] = canonical_hmac(out)
     return out
 
 
@@ -37,10 +51,25 @@ def verify_payload(data):
     expected = canonical_hash(data)
     if sig != expected:
         return False, f"hash mismatch (got {sig[:8]}.., expected {expected[:8]}..)"
+    mac = data.get("_hmac")
+    if not mac:
+        return False, "missing _hmac"
+    expected_hmac = canonical_hmac(data)
+    if not hmac.compare_digest(str(mac), expected_hmac):
+        return False, "hmac mismatch"
     if "version" not in data:
         return False, "missing version"
     if "params" not in data or not isinstance(data["params"], dict):
         return False, "missing or invalid params"
+    issued_at = data.get("issued_at")
+    if not isinstance(issued_at, (int, float)):
+        return False, "missing or invalid issued_at"
+    age = time.time() - float(issued_at)
+    if age < -60 or age > MAX_AGE_SECONDS:
+        return False, f"stale update age={age:.1f}s"
+    nonce = data.get("nonce")
+    if not isinstance(nonce, str) or not nonce.strip():
+        return False, "missing nonce"
     return True, "ok"
 
 

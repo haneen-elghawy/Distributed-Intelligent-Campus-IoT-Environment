@@ -106,6 +106,9 @@ class ShadowSyncClient:
         await self.client.connect(self.broker, self.port)
         self.client.subscribe("campus/b01/+/+/response", qos=1)
         self.client.subscribe("campus/b01/+/+/cmd-response", qos=1)
+        # Allow SUBSCRIBE packets to flush before first command publish to avoid
+        # early ACK races on fast local brokers.
+        await asyncio.sleep(0.5)
 
     async def disconnect(self) -> None:
         await self.client.disconnect()

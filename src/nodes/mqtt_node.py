@@ -35,6 +35,7 @@ from ..utils.topics import (
     status_topic,
     telemetry_topic,
 )
+from ..engine.ota_handler import handle_ota_message, subscribe_ota
 
 if TYPE_CHECKING:
     from src.models.room import Room
@@ -131,15 +132,16 @@ class MqttNode:
             self.room.building_id, self.room.floor_id, self.room.room_id
         )
 
-        self.client = Client(
-            client_id,
-            will_message=Client.Will(
-                topic=will_topic,
-                message=_lwt_payload(self.room),
-                qos=1,
-                retain=True,
-            ),
-        )
+        self.client = Client(client_id)
+        # gmqtt 0.7.x does not expose Client.Will; configure LWT via set_config.
+        self.client.set_config({
+            "will_message": {
+                "topic": will_topic,
+                "payload": _lwt_payload(self.room),
+                "qos": 1,
+                "retain": True,
+            }
+        })
 
         # Per-floor credentials  ─  env: MQTT_USER_FLOOR01 / MQTT_PASS_FLOOR01
         # Backward compatibility: falls back to global HIVEMQ_USER/HIVEMQ_PASS.
@@ -161,6 +163,8 @@ class MqttNode:
         # Subscribe to command topic at QoS 2 (Exactly Once)
         _cmd = cmd_topic(self.room.building_id, self.room.floor_id, self.room.room_id)
         self.client.subscribe(_cmd, qos=2)
+        # Subscribe OTA scopes (broadcast / floor / room)
+        subscribe_ota(self.client, self.room)
 
         # Announce online presence (retained so late subscribers see it)
         _status = status_topic(self.room.building_id, self.room.floor_id, self.room.room_id)
@@ -280,6 +284,10 @@ class MqttNode:
             return 0
 
         room = self.room
+        # OTA topics are processed by the secure OTA handler (hash/HMAC verification).
+        if "/ota" in topic:
+            handle_ota_message(self.client, topic, payload, room)
+            return 0
 
         # HVAC mode
         if "hvac_mode" in data:

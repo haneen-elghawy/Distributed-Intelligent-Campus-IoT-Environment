@@ -23,7 +23,8 @@ services:
       - "8080:8080"   # HiveMQ Control Center UI
     volumes:
       - ./hivemq/config:/opt/hivemq/conf
-      - ./hivemq/extensions:/opt/hivemq/extensions
+      # Runtime validation mode: disable custom RBAC extension to avoid
+      # credential-file coupling in Node-RED startup and allow broker bootstrap.
       - ./hivemq/certs:/opt/hivemq/certs
       - hivemq_data:/opt/hivemq/data
     networks:

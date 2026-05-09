@@ -1,0 +1,22 @@
+{
+  "rooms": {
+    "b01-f01-r101": {
+      "desired_hvac_mode": "cool",
+      "desired_target_temp": 22.0,
+      "desired_lighting_dimmer": 35,
+      "desired_version": 1,
+      "sync_status": "OUT_OF_SYNC",
+      "last_seen": 1778332861808,
+      "last_error": "ack_timeout"
+    },
+    "b01-f01-r111": {
+      "desired_hvac_mode": "COOLING",
+      "desired_target_temp": 22.0,
+      "desired_lighting_dimmer": 35,
+      "desired_version": 5,
+      "sync_status": "OUT_OF_SYNC",
+      "last_seen": 1778335194763,
+      "last_error": "ack_timeout"
+    }
+  }
+}

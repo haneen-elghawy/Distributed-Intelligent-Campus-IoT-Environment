@@ -24,7 +24,8 @@ except ModuleNotFoundError as exc:
 from campus_naming import canonical_floor_summary_key, is_canonical_room_key
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
+# Keep runtime/exported env vars authoritative (important in containers).
+load_dotenv(override=False)
 
 TB_URL = os.getenv("TB_URL", "http://localhost:9090").rstrip("/")
 TB_USERNAME = os.getenv("TB_USERNAME", "").strip()
@@ -109,7 +110,8 @@ def main() -> None:
         raise RuntimeError("Missing TB_USERNAME/TB_PASSWORD")
     results = VerifyResults(errors=[], warnings=[])
 
-    with httpx.Client(timeout=30) as client:
+    # Ignore ambient proxy variables that can break local Docker/localhost traffic.
+    with httpx.Client(timeout=30, trust_env=False) as client:
         login = client.post(f"{TB_URL}/api/auth/login", json={"username": TB_USERNAME, "password": TB_PASSWORD})
         login.raise_for_status()
         token = login.json()["token"]

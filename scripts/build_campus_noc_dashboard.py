@@ -16,6 +16,7 @@ W_FLEET = "a1b2c3d4-e5f6-4789-a01b-2c3d4e5f6a00"
 W_FLOOR = "b2c3d4e5-f6a7-4890-b12c-3d4e5f6a7b00"
 W_ALARM = "c3d4e5f6-a7b8-4901-c23d-4e5f6a7b8c00"
 W_SYNC = "f6a7b8c9-d0e1-4234-f56a-7b8c9d0e1f00"
+W_VERSION = "a7b8c9d0-e1f2-4345-a67b-8c9d0e1f2001"
 A_FLEET = "d4e5f6a7-b8c9-4012-d34e-5f6a7b8c9d0a"
 A_FLOOR = "e5f6a7b8-c9d0-4123-e45f-6a7b8c9d0e1a"
 
@@ -232,6 +233,16 @@ def main() -> None:
         data_key("desired_lighting_dimmer", "Desired Dimmer", "attribute", "#3f51b5"),
         data_key("reported_lighting_dimmer", "Reported Dimmer", "attribute", "#4caf50"),
         data_key("sync_status", "Sync Status", "attribute", "#f44336"),
+        data_key("current_version", "Current Version", "attribute", "#ff9800"),
+        data_key("config_version", "Target Version", "attribute", "#3f51b5"),
+    ]
+    version_keys = [
+        data_key("current_version", "Current Version", "attribute", "#ff9800"),
+        data_key("config_version", "Target Version", "attribute", "#3f51b5"),
+        data_key("sync_status", "Sync Status", "attribute", "#f44336"),
+        data_key("last_seen", "Last Seen", "attribute", "#607d8b"),
+        data_key("ota_rejected", "Last OTA Rejected", "timeseries", "#e91e63"),
+        data_key("ota_reason", "Last OTA Reason", "timeseries", "#795548"),
     ]
 
     dashboard = {
@@ -267,6 +278,13 @@ def main() -> None:
                     "Sync View",
                     sync_keys,
                 ),
+                W_VERSION: widget_entities_table(
+                    W_VERSION,
+                    "Fleet evolution status",
+                    A_FLEET,
+                    "Versioning",
+                    version_keys,
+                ),
             },
             "states": {
                 "default": {
@@ -297,6 +315,12 @@ def main() -> None:
                                     "sizeX": 24,
                                     "sizeY": 7,
                                     "row": 15,
+                                    "col": 0,
+                                },
+                                W_VERSION: {
+                                    "sizeX": 24,
+                                    "sizeY": 7,
+                                    "row": 22,
                                     "col": 0,
                                 },
                             },

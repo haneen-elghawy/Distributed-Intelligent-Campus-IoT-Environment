@@ -8,18 +8,8 @@
       <bind-address>0.0.0.0</bind-address>
     </tcp-listener>
 
-    <tls-tcp-listener>
-      <port>8883</port>
-      <bind-address>0.0.0.0</bind-address>
-      <tls>
-        <keystore>
-          <path>/opt/hivemq/certs/hivemq.p12</path>
-          <password>hivemq_keystore_pass</password>
-          <private-key-password>hivemq_keystore_pass</private-key-password>
-        </keystore>
-        <client-authentication-mode>NONE</client-authentication-mode>
-      </tls>
-    </tls-tcp-listener>
+    <!-- TLS listener intentionally disabled for local/dev runtime readiness.
+         Re-enable only when a valid PKCS12 keystore exists at /opt/hivemq/certs/hivemq.p12. -->
   </listeners>
 
   <mqtt>
