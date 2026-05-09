@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 import httpx
-from tb_entity_lookup import EntityLookupError, exact_entity_id_from_page
+from tb_entity_lookup import EntityLookupError, resolve_exact_entity_id_sync
 
 logging.basicConfig(
     level=logging.INFO,
@@ -128,16 +128,23 @@ def tb_request(
     return resp
 
 
-def find_first_asset_id(client: httpx.Client, token_cache: TokenCache, name: str) -> str | None:
-    resp = tb_request(
-        client,
-        token_cache,
-        "GET",
-        "/api/tenant/assets",
-        params={"pageSize": 100, "page": 0, "textSearch": name},
-        what=f"Find asset {name!r}",
+def find_exact_asset_id(client: httpx.Client, token_cache: TokenCache, name: str) -> str:
+    def _fetch_page(page: int) -> dict[str, Any]:
+        resp = tb_request(
+            client,
+            token_cache,
+            "GET",
+            "/api/tenant/assets",
+            params={"pageSize": 100, "page": page, "textSearch": name},
+            what=f"Find asset {name!r} (page {page})",
+        )
+        return resp.json()
+
+    return resolve_exact_entity_id_sync(
+        expected_name=name,
+        entity_label="asset",
+        fetch_page=_fetch_page,
     )
-    return exact_entity_id_from_page(resp.json(), expected_name=name, entity_label="asset") or None
 
 
 def deterministic_metadata(*, floor: int, room_id: int) -> dict[str, Any]:
@@ -190,10 +197,7 @@ def main() -> None:
 
             asset_name = room_key
             try:
-                asset_id = find_first_asset_id(client, token_cache, asset_name)
-                if not asset_id:
-                    logger.warning("Asset not found: %s", asset_name)
-                    continue
+                asset_id = find_exact_asset_id(client, token_cache, asset_name)
 
                 body = deterministic_metadata(floor=floor, room_id=room_id)
                 tb_request(

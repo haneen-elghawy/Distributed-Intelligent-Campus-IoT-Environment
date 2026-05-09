@@ -21,7 +21,7 @@ from typing import Any
 
 import gmqtt
 import httpx
-from tb_entity_lookup import EntityLookupError, exact_entity_id_from_page
+from tb_entity_lookup import EntityLookupError, resolve_exact_entity_id_async
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO"),
@@ -193,24 +193,24 @@ async def main():
         for floor_id in range(1, 11):
             name = f"Floor-{floor_id:02d}"
             try:
-                resp = await tb_request(
-                    tb,
-                    cache,
-                    "GET",
-                    "/api/tenant/assets",
-                    params={"pageSize": 100, "page": 0, "textSearch": name},
-                )
-                asset_id = exact_entity_id_from_page(
-                    resp.json(),
+                async def _fetch_page(page: int) -> dict[str, Any]:
+                    resp = await tb_request(
+                        tb,
+                        cache,
+                        "GET",
+                        "/api/tenant/assets",
+                        params={"pageSize": 100, "page": page, "textSearch": name},
+                    )
+                    return resp.json()
+
+                asset_id = await resolve_exact_entity_id_async(
                     expected_name=name,
                     entity_label="asset",
+                    fetch_page=_fetch_page,
                 )
-                if asset_id:
-                    assets[floor_id] = asset_id
-                else:
-                    logger.warning("Floor asset not found: %s", name)
+                assets[floor_id] = asset_id
             except EntityLookupError as e:
-                logger.error("Ambiguous floor asset lookup for %s: %s", name, e)
+                logger.error("Deterministic floor asset lookup failed for %s: %s", name, e)
             except Exception as e:
                 logger.warning("Error resolving %s: %s", name, e)
         logger.info("Resolved %d floor assets", len(assets))

@@ -19,7 +19,7 @@ from typing import Any
 
 import gmqtt
 import httpx
-from tb_entity_lookup import EntityLookupError, exact_entity_id_from_page
+from tb_entity_lookup import EntityLookupError, resolve_exact_entity_id_async
 
 logging.basicConfig(
     level=logging.INFO,
@@ -151,16 +151,23 @@ async def resolve_device_id(
     token_cache: TokenCache,
     *,
     device_name: str,
-) -> str | None:
-    resp = await tb_request(
-        tb,
-        token_cache,
-        "GET",
-        "/api/tenant/devices",
-        params={"pageSize": 100, "page": 0, "textSearch": device_name},
-        what=f"Find device {device_name!r}",
+) -> str:
+    async def _fetch_page(page: int) -> dict[str, Any]:
+        resp = await tb_request(
+            tb,
+            token_cache,
+            "GET",
+            "/api/tenant/devices",
+            params={"pageSize": 100, "page": page, "textSearch": device_name},
+            what=f"Find device {device_name!r} (page {page})",
+        )
+        return resp.json()
+
+    return await resolve_exact_entity_id_async(
+        expected_name=device_name,
+        entity_label="device",
+        fetch_page=_fetch_page,
     )
-    return exact_entity_id_from_page(resp.json(), expected_name=device_name, entity_label="device") or None
 
 
 def _as_bool(v: Any) -> bool:
@@ -191,12 +198,9 @@ async def main() -> None:
             device_name = f"{room_key}"
             try:
                 device_id = await resolve_device_id(tb, token_cache, device_name=device_name)
-                if not device_id:
-                    logger.warning("Device not found in ThingsBoard: %s", device_name)
-                    continue
                 room_key_to_device_id[room_key] = device_id
             except EntityLookupError as e:
-                logger.error("Ambiguous device resolution for %s: %s", device_name, e)
+                logger.error("Deterministic device lookup failed for %s: %s", device_name, e)
             except Exception as e:
                 logger.warning("Failed resolving device_id for %s: %s", device_name, e)
 
