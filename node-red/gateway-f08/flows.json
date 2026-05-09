@@ -1035,7 +1035,7 @@
     "type": "function",
     "z": "tab-floor08",
     "name": "D: cmd-router",
-    "func": "const topic = msg.topic;\nconst parts = topic.split('/');\nif (parts.length < 5) return null;\nconst roomStr = parts[3];\nconst floorStr = parts[2];\nconst rfull = parseInt(roomStr.replace(/^r/, ''), 10);\nconst roomNum = rfull % 100;\nconst coapStart = parseInt(process.env.COAP_PORT_START || '5683', 10);\nconst coapPort = coapStart + (roomNum - 11);\nflow.set('last_cmd_topic', topic);\nif (roomNum >= 11 && roomNum <= 20) {\n    const coapScheme = process.env.COAP_SCHEME || 'coap';\n    msg.url = `${coapScheme}://${process.env.SIM_ENGINE_HOST}:${coapPort}/${floorStr}/${roomStr}/actuators/hvac`;\n    msg.method = 'PUT';\n    if (typeof msg.payload === 'object') {\n        msg.payload = JSON.stringify(msg.payload);\n    }\n    return [msg, null];\n}\nreturn [null, null];",
+    "func": "const topic = msg.topic;\nconst parts = topic.split('/');\nif (parts.length < 5) return null;\nconst roomStr = parts[3];\nconst floorStr = parts[2];\nconst rfull = parseInt(roomStr.replace(/^r/, ''), 10);\nconst roomNum = rfull % 100;\nconst coapStart = parseInt(process.env.COAP_PORT_START || '5683', 10);\nconst coapPort = coapStart + (roomNum - 11);\nlet parsedPayload = msg.payload;\nif (Buffer.isBuffer(parsedPayload)) {\n    parsedPayload = parsedPayload.toString();\n}\nif (typeof parsedPayload === 'string') {\n    try { parsedPayload = JSON.parse(parsedPayload); } catch (e) { parsedPayload = {}; }\n}\nif (!parsedPayload || typeof parsedPayload !== 'object') {\n    parsedPayload = {};\n}\nconst cmdId = parsedPayload.cmd_id || parsedPayload.command_id || null;\nconst correlationId = parsedPayload.correlation_id || cmdId || null;\nconst cmdContext = {\n    topic,\n    floor: floorStr,\n    room: roomStr,\n    room_id: `b01-${floorStr}-${roomStr}`,\n    cmd_id: cmdId,\n    correlation_id: correlationId,\n    payload: parsedPayload,\n    ts: Date.now(),\n};\nflow.set('last_cmd_context', cmdContext);\nif (roomNum >= 11 && roomNum <= 20) {\n    const coapScheme = process.env.COAP_SCHEME || 'coap';\n    msg.url = `${coapScheme}://${process.env.SIM_ENGINE_HOST}:${coapPort}/${floorStr}/${roomStr}/actuators/hvac`;\n    msg.method = 'PUT';\n    msg.payload = JSON.stringify(parsedPayload);\n    return [msg, null];\n}\nreturn [null, null];",
     "outputs": 2,
     "timeout": 0,
     "noerr": 0,
@@ -1073,9 +1073,9 @@
     "id": "fn-ack-08",
     "type": "function",
     "z": "tab-floor08",
-    "name": "D: cmd-response",
-    "func": "const t = flow.get('last_cmd_topic');\nif (!t) return null;\nconst parts = t.split('/');\nconst roomStr = parts[3];\nconst floorStr = parts[2];\nmsg.topic = `campus/b01/${floorStr}/${roomStr}/cmd-response`;\nconst code = msg.statusCode;\nconst ok = code == null || String(code).startsWith('2.');\nmsg.payload = { ok, coap_status: code, ts: Date.now() };\nreturn msg;",
-    "outputs": 1,
+    "name": "D: ack-builder",
+    "func": "const ctx = flow.get('last_cmd_context');\nif (!ctx || !ctx.floor || !ctx.room) return null;\nconst code = msg.statusCode;\nconst ok = code == null || String(code).startsWith('2.');\nconst applied = {};\nconst p = (ctx.payload && typeof ctx.payload === 'object') ? ctx.payload : {};\nif (Object.prototype.hasOwnProperty.call(p, 'hvac_mode')) applied.hvac_mode = p.hvac_mode;\nif (Object.prototype.hasOwnProperty.call(p, 'target_temp')) applied.target_temp = p.target_temp;\nif (Object.prototype.hasOwnProperty.call(p, 'lighting_dimmer')) applied.lighting_dimmer = p.lighting_dimmer;\nconst ackPayload = {\n    cmd_id: ctx.cmd_id || null,\n    correlation_id: ctx.correlation_id || null,\n    room_id: ctx.room_id,\n    status: ok ? 'ok' : 'error',\n    timestamp: Date.now(),\n    coap_status: code == null ? null : String(code),\n    applied_actuators: applied\n};\nconst canonical = RED.util.cloneMessage(msg);\ncanonical.topic = `campus/b01/${ctx.floor}/${ctx.room}/response`;\ncanonical.payload = ackPayload;\nconst legacy = RED.util.cloneMessage(msg);\nlegacy.topic = `campus/b01/${ctx.floor}/${ctx.room}/cmd-response`;\nlegacy.payload = {\n    ok,\n    coap_status: ackPayload.coap_status,\n    ts: ackPayload.timestamp,\n    cmd_id: ackPayload.cmd_id,\n    correlation_id: ackPayload.correlation_id,\n    room_id: ackPayload.room_id\n};\nreturn [canonical, legacy];",
+    "outputs": 2,
     "timeout": 0,
     "noerr": 0,
     "initialize": "",
@@ -1086,6 +1086,9 @@
     "wires": [
       [
         "mqtt-ack-08"
+      ],
+      [
+        "mqtt-ack-legacy-08"
       ]
     ]
   },
@@ -1093,7 +1096,7 @@
     "id": "mqtt-ack-08",
     "type": "mqtt out",
     "z": "tab-floor08",
-    "name": "D: cmd-response MQTT",
+    "name": "D: response MQTT",
     "topic": "",
     "qos": "1",
     "retain": "false",
@@ -1105,6 +1108,24 @@
     "broker": "broker-08",
     "x": 1100,
     "y": 1020,
+    "wires": []
+  },
+  {
+    "id": "mqtt-ack-legacy-08",
+    "type": "mqtt out",
+    "z": "tab-floor08",
+    "name": "D: legacy cmd-response MQTT",
+    "topic": "",
+    "qos": "1",
+    "retain": "false",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-08",
+    "x": 1130,
+    "y": 1060,
     "wires": []
   },
   {

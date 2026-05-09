@@ -60,7 +60,7 @@ services:
     env_file: .env
     environment:
       HIVEMQ_BROKER: hivemq
-      HIVEMQ_PORT_PLAIN: 1883
+      HIVEMQ_PORT: ${HIVEMQ_PORT:-1883}
     volumes:
       - sim_data:/app/data
       - ./hivemq/certs:/app/hivemq/certs:ro
@@ -75,6 +75,8 @@ services:
       - "5683-5782:5683-5782/udp"
 
   # ─── Floor Gateways (Node-RED) ───────────────────────────────────────────
+  # Required vars (preferred): MQTT_USER_FLOOR01..10 and MQTT_PASS_FLOOR01..10
+  # Backward compatibility: each floor can fall back to HIVEMQ_USER/HIVEMQ_PASS.
   gateway-f01:
     image: nodered/node-red:latest
     container_name: campus-gateway-f01
@@ -86,8 +88,8 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5683"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor01
-      MQTT_PASS: floor01pass
+      MQTT_USER: ${MQTT_USER_FLOOR01:-${HIVEMQ_USER:?Set HIVEMQ_USER or MQTT_USER_FLOOR01 in .env}}
+      MQTT_PASS: ${MQTT_PASS_FLOOR01:-${HIVEMQ_PASS:?Set HIVEMQ_PASS or MQTT_PASS_FLOOR01 in .env}}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f01:/data
@@ -109,8 +111,8 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5693"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor02
-      MQTT_PASS: floor02pass
+      MQTT_USER: ${MQTT_USER_FLOOR02:-${HIVEMQ_USER:?Set HIVEMQ_USER or MQTT_USER_FLOOR02 in .env}}
+      MQTT_PASS: ${MQTT_PASS_FLOOR02:-${HIVEMQ_PASS:?Set HIVEMQ_PASS or MQTT_PASS_FLOOR02 in .env}}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f02:/data
@@ -132,8 +134,8 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5703"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor03
-      MQTT_PASS: floor03pass
+      MQTT_USER: ${MQTT_USER_FLOOR03:-${HIVEMQ_USER:?Set HIVEMQ_USER or MQTT_USER_FLOOR03 in .env}}
+      MQTT_PASS: ${MQTT_PASS_FLOOR03:-${HIVEMQ_PASS:?Set HIVEMQ_PASS or MQTT_PASS_FLOOR03 in .env}}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f03:/data
@@ -155,8 +157,8 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5713"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor04
-      MQTT_PASS: floor04pass
+      MQTT_USER: ${MQTT_USER_FLOOR04:-${HIVEMQ_USER:?Set HIVEMQ_USER or MQTT_USER_FLOOR04 in .env}}
+      MQTT_PASS: ${MQTT_PASS_FLOOR04:-${HIVEMQ_PASS:?Set HIVEMQ_PASS or MQTT_PASS_FLOOR04 in .env}}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f04:/data
@@ -178,8 +180,8 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5723"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor05
-      MQTT_PASS: floor05pass
+      MQTT_USER: ${MQTT_USER_FLOOR05:-${HIVEMQ_USER:?Set HIVEMQ_USER or MQTT_USER_FLOOR05 in .env}}
+      MQTT_PASS: ${MQTT_PASS_FLOOR05:-${HIVEMQ_PASS:?Set HIVEMQ_PASS or MQTT_PASS_FLOOR05 in .env}}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f05:/data
@@ -201,8 +203,8 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5733"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor06
-      MQTT_PASS: floor06pass
+      MQTT_USER: ${MQTT_USER_FLOOR06:-${HIVEMQ_USER:?Set HIVEMQ_USER or MQTT_USER_FLOOR06 in .env}}
+      MQTT_PASS: ${MQTT_PASS_FLOOR06:-${HIVEMQ_PASS:?Set HIVEMQ_PASS or MQTT_PASS_FLOOR06 in .env}}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f06:/data
@@ -224,8 +226,8 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5743"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor07
-      MQTT_PASS: floor07pass
+      MQTT_USER: ${MQTT_USER_FLOOR07:-${HIVEMQ_USER:?Set HIVEMQ_USER or MQTT_USER_FLOOR07 in .env}}
+      MQTT_PASS: ${MQTT_PASS_FLOOR07:-${HIVEMQ_PASS:?Set HIVEMQ_PASS or MQTT_PASS_FLOOR07 in .env}}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f07:/data
@@ -247,8 +249,8 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5753"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor08
-      MQTT_PASS: floor08pass
+      MQTT_USER: ${MQTT_USER_FLOOR08:-${HIVEMQ_USER:?Set HIVEMQ_USER or MQTT_USER_FLOOR08 in .env}}
+      MQTT_PASS: ${MQTT_PASS_FLOOR08:-${HIVEMQ_PASS:?Set HIVEMQ_PASS or MQTT_PASS_FLOOR08 in .env}}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f08:/data
@@ -270,8 +272,8 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5763"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor09
-      MQTT_PASS: floor09pass
+      MQTT_USER: ${MQTT_USER_FLOOR09:-${HIVEMQ_USER:?Set HIVEMQ_USER or MQTT_USER_FLOOR09 in .env}}
+      MQTT_PASS: ${MQTT_PASS_FLOOR09:-${HIVEMQ_PASS:?Set HIVEMQ_PASS or MQTT_PASS_FLOOR09 in .env}}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f09:/data
@@ -293,8 +295,8 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5773"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor10
-      MQTT_PASS: floor10pass
+      MQTT_USER: ${MQTT_USER_FLOOR10:-${HIVEMQ_USER:?Set HIVEMQ_USER or MQTT_USER_FLOOR10 in .env}}
+      MQTT_PASS: ${MQTT_PASS_FLOOR10:-${HIVEMQ_PASS:?Set HIVEMQ_PASS or MQTT_PASS_FLOOR10 in .env}}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f10:/data

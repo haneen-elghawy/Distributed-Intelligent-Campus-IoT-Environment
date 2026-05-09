@@ -327,6 +327,7 @@ return msg;
     coap_put = f"coap-put-{ff}"
     fn_ack = f"fn-ack-{ff}"
     mq_ack = f"mqtt-ack-{ff}"
+    mq_ack_legacy = f"mqtt-ack-legacy-{ff}"
     nodes += [
         {
             "id": mq_in_cmd,
@@ -359,14 +360,34 @@ const rfull = parseInt(roomStr.replace(/^r/, ''), 10);
 const roomNum = rfull % 100;
 const coapStart = parseInt(process.env.COAP_PORT_START || '5683', 10);
 const coapPort = coapStart + (roomNum - 11);
-flow.set('last_cmd_topic', topic);
+let parsedPayload = msg.payload;
+if (Buffer.isBuffer(parsedPayload)) {
+    parsedPayload = parsedPayload.toString();
+}
+if (typeof parsedPayload === 'string') {
+    try { parsedPayload = JSON.parse(parsedPayload); } catch (e) { parsedPayload = {}; }
+}
+if (!parsedPayload || typeof parsedPayload !== 'object') {
+    parsedPayload = {};
+}
+const cmdId = parsedPayload.cmd_id || parsedPayload.command_id || null;
+const correlationId = parsedPayload.correlation_id || cmdId || null;
+const cmdContext = {
+    topic,
+    floor: floorStr,
+    room: roomStr,
+    room_id: `b01-${floorStr}-${roomStr}`,
+    cmd_id: cmdId,
+    correlation_id: correlationId,
+    payload: parsedPayload,
+    ts: Date.now(),
+};
+flow.set('last_cmd_context', cmdContext);
 if (roomNum >= 11 && roomNum <= 20) {
     const coapScheme = process.env.COAP_SCHEME || 'coap';
     msg.url = `${coapScheme}://${process.env.SIM_ENGINE_HOST}:${coapPort}/${floorStr}/${roomStr}/actuators/hvac`;
     msg.method = 'PUT';
-    if (typeof msg.payload === 'object') {
-        msg.payload = JSON.stringify(msg.payload);
-    }
+    msg.payload = JSON.stringify(parsedPayload);
     return [msg, null];
 }
 return [null, null];
@@ -399,20 +420,42 @@ return [null, null];
             "id": fn_ack,
             "type": "function",
             "z": tab_id,
-            "name": "D: cmd-response",
+            "name": "D: ack-builder",
             "func": r"""
-const t = flow.get('last_cmd_topic');
-if (!t) return null;
-const parts = t.split('/');
-const roomStr = parts[3];
-const floorStr = parts[2];
-msg.topic = `campus/b01/${floorStr}/${roomStr}/cmd-response`;
+const ctx = flow.get('last_cmd_context');
+if (!ctx || !ctx.floor || !ctx.room) return null;
 const code = msg.statusCode;
 const ok = code == null || String(code).startsWith('2.');
-msg.payload = { ok, coap_status: code, ts: Date.now() };
-return msg;
+const applied = {};
+const p = (ctx.payload && typeof ctx.payload === 'object') ? ctx.payload : {};
+if (Object.prototype.hasOwnProperty.call(p, 'hvac_mode')) applied.hvac_mode = p.hvac_mode;
+if (Object.prototype.hasOwnProperty.call(p, 'target_temp')) applied.target_temp = p.target_temp;
+if (Object.prototype.hasOwnProperty.call(p, 'lighting_dimmer')) applied.lighting_dimmer = p.lighting_dimmer;
+const ackPayload = {
+    cmd_id: ctx.cmd_id || null,
+    correlation_id: ctx.correlation_id || null,
+    room_id: ctx.room_id,
+    status: ok ? 'ok' : 'error',
+    timestamp: Date.now(),
+    coap_status: code == null ? null : String(code),
+    applied_actuators: applied
+};
+const canonical = RED.util.cloneMessage(msg);
+canonical.topic = `campus/b01/${ctx.floor}/${ctx.room}/response`;
+canonical.payload = ackPayload;
+const legacy = RED.util.cloneMessage(msg);
+legacy.topic = `campus/b01/${ctx.floor}/${ctx.room}/cmd-response`;
+legacy.payload = {
+    ok,
+    coap_status: ackPayload.coap_status,
+    ts: ackPayload.timestamp,
+    cmd_id: ackPayload.cmd_id,
+    correlation_id: ackPayload.correlation_id,
+    room_id: ackPayload.room_id
+};
+return [canonical, legacy];
 """.strip(),
-            "outputs": 1,
+            "outputs": 2,
             "timeout": 0,
             "noerr": 0,
             "initialize": "",
@@ -420,13 +463,13 @@ return msg;
             "libs": [],
             "x": 860,
             "y": y_cmd,
-            "wires": [[mq_ack]],
+            "wires": [[mq_ack], [mq_ack_legacy]],
         },
         {
             "id": mq_ack,
             "type": "mqtt out",
             "z": tab_id,
-            "name": "D: cmd-response MQTT",
+            "name": "D: response MQTT",
             "topic": "",
             "qos": "1",
             "retain": "false",
@@ -438,6 +481,24 @@ return msg;
             "broker": broker_id,
             "x": 1100,
             "y": y_cmd,
+            "wires": [],
+        },
+        {
+            "id": mq_ack_legacy,
+            "type": "mqtt out",
+            "z": tab_id,
+            "name": "D: legacy cmd-response MQTT",
+            "topic": "",
+            "qos": "1",
+            "retain": "false",
+            "respTopic": "",
+            "contentType": "",
+            "userProps": "",
+            "correl": "",
+            "expiry": "",
+            "broker": broker_id,
+            "x": 1130,
+            "y": y_cmd + 40,
             "wires": [],
         },
     ]

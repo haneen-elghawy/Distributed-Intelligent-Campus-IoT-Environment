@@ -54,6 +54,22 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _DEFAULT_CA = _REPO_ROOT / "hivemq" / "certs" / "ca.crt"
 
 
+def _require_env(*names: str) -> str:
+    """Return first non-empty env value from names, else fail-fast.
+
+    The first name is treated as canonical; later names are compatibility fallbacks.
+    """
+    for name in names:
+        value = os.getenv(name)
+        if value and value.strip():
+            return value
+    joined = ", ".join(names)
+    raise RuntimeError(
+        f"Missing required environment variable(s): {joined}. "
+        "Set the canonical key or one of the documented compatibility fallbacks."
+    )
+
+
 # ---------------------------------------------------------------------------
 # Topic helpers
 # ---------------------------------------------------------------------------
@@ -101,6 +117,15 @@ class MqttNode:
 
     async def start(self) -> None:
         """Build the client, connect, subscribe, announce online."""
+        broker = _require_env("HIVEMQ_BROKER")
+        port_raw = _require_env("HIVEMQ_PORT")
+        try:
+            port = int(port_raw)
+        except ValueError as exc:
+            raise RuntimeError(
+                f"Invalid HIVEMQ_PORT='{port_raw}'. Expected an integer broker port."
+            ) from exc
+
         client_id = f"campus-mqtt-{self.room.node_id}"
         will_topic = status_topic(
             self.room.building_id, self.room.floor_id, self.room.room_id
@@ -117,12 +142,13 @@ class MqttNode:
         )
 
         # Per-floor credentials  ─  env: MQTT_USER_FLOOR01 / MQTT_PASS_FLOOR01
+        # Backward compatibility: falls back to global HIVEMQ_USER/HIVEMQ_PASS.
         floor_label = f"floor{self.room.floor_id:02d}"
         env_user = f"MQTT_USER_{floor_label.upper()}"
         env_pass = f"MQTT_PASS_{floor_label.upper()}"
         self.client.set_auth_credentials(
-            username=os.getenv(env_user, floor_label),
-            password=os.getenv(env_pass, f"{floor_label}pass"),
+            username=_require_env(env_user, "HIVEMQ_USER"),
+            password=_require_env(env_pass, "HIVEMQ_PASS"),
         )
 
         self.client.on_message = self._on_message
@@ -130,7 +156,7 @@ class MqttNode:
         ssl_context = None
         if USE_TLS:
             ssl_context = ssl.create_default_context(cafile=str(_DEFAULT_CA))
-        await self.client.connect(BROKER, PORT, keepalive=30, ssl=ssl_context)
+        await self.client.connect(broker, port, keepalive=30, ssl=ssl_context)
 
         # Subscribe to command topic at QoS 2 (Exactly Once)
         _cmd = cmd_topic(self.room.building_id, self.room.floor_id, self.room.room_id)
@@ -151,7 +177,7 @@ class MqttNode:
 
         logger.info(
             "MQTT node %s connected → broker=%s:%d tls=%s  cmd=%s",
-            self.room.node_id, BROKER, PORT, USE_TLS, _cmd,
+            self.room.node_id, broker, port, USE_TLS, _cmd,
         )
 
     async def disconnect(self) -> None:
