@@ -22,6 +22,7 @@ from uuid import uuid4
 
 import gmqtt
 import httpx
+from tb_entity_lookup import EntityLookupError, exact_entity_id_from_page
 
 logging.basicConfig(
     level=logging.INFO,
@@ -33,17 +34,27 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
+
+def _required_env(name: str) -> str:
+    value = os.getenv(name, "").strip()
+    if not value:
+        raise RuntimeError(f"Required environment variable missing: {name}")
+    return value
+
+
 TB_URL = os.getenv("TB_URL", "http://localhost:9090").rstrip("/")
-TB_USERNAME = os.getenv("TB_USERNAME", "tenant@thingsboard.org")
-TB_PASSWORD = os.getenv("TB_PASSWORD", "tenant")
+TB_USERNAME = _required_env("TB_USERNAME")
+TB_PASSWORD = _required_env("TB_PASSWORD")
 
 TB_HOST = os.getenv("TB_HOST", "localhost")
 TB_MQTT_PORT = int(os.getenv("TB_MQTT_PORT", "1884"))
 
 HIVEMQ_HOST = os.getenv("HIVEMQ_HOST", "localhost")
 HIVEMQ_PORT = int(os.getenv("HIVEMQ_PORT", "1883"))
-HIVEMQ_USER = os.getenv("HIVEMQ_USER", "thingsboard")
-HIVEMQ_PASS = os.getenv("HIVEMQ_PASS", "tb_super_pass")
+HIVEMQ_USER = _required_env("HIVEMQ_USER")
+HIVEMQ_PASS = _required_env("HIVEMQ_PASS")
+ACK_TIMEOUT_SECONDS = float(os.getenv("SYNC_ACK_TIMEOUT_SECONDS", "10"))
+SYNC_MAX_RETRIES = int(os.getenv("SYNC_MAX_RETRIES", "2"))
 
 CSV_PATH = Path("thingsboard") / "campus_devices.csv"
 
@@ -162,14 +173,13 @@ async def resolve_device_id(
         token_cache,
         "GET",
         "/api/tenant/devices",
-        params={"pageSize": 1, "page": 0, "textSearch": device_name},
+        params={"pageSize": 100, "page": 0, "textSearch": device_name},
         what=f"Find device {device_name!r}",
     )
-    data = resp.json()
-    items = data.get("data") or []
-    if not items:
+    device_id = exact_entity_id_from_page(resp.json(), expected_name=device_name, entity_label="device")
+    if not device_id:
         raise ThingsBoardError(f"Device not found: {device_name!r}")
-    return items[0]["id"]["id"]
+    return device_id
 
 
 async def resolve_access_token(
@@ -206,11 +216,12 @@ class HiveResponseRouter:
         self._pending_by_topic: dict[str, list[asyncio.Future[dict[str, Any]]]] = {}
         self._lock = asyncio.Lock()
 
-    async def register(self, *, cmd_id: str, response_topic: str) -> asyncio.Future[dict[str, Any]]:
+    async def register(self, *, cmd_id: str, response_topics: list[str]) -> asyncio.Future[dict[str, Any]]:
         fut: asyncio.Future[dict[str, Any]] = asyncio.get_running_loop().create_future()
         async with self._lock:
             self._pending_by_cmd[cmd_id] = fut
-            self._pending_by_topic.setdefault(response_topic, []).append(fut)
+            for response_topic in response_topics:
+                self._pending_by_topic.setdefault(response_topic, []).append(fut)
         return fut
 
     async def resolve_from_message(self, topic: str, payload: Any) -> None:
@@ -221,8 +232,36 @@ class HiveResponseRouter:
             return
 
         cmd_id = data.get("cmd_id")
+        status = data.get("status")
+        room_id = data.get("room_id")
+        correlation_id = data.get("correlation_id")
+        ts = data.get("timestamp")
+        has_strict_schema = (
+            isinstance(cmd_id, str)
+            and bool(cmd_id)
+            and isinstance(status, str)
+            and bool(status)
+            and isinstance(room_id, str)
+            and bool(room_id)
+            and isinstance(correlation_id, str)
+            and bool(correlation_id)
+            and isinstance(ts, (int, float))
+        )
+        if not has_strict_schema:
+            # Backward compatibility for legacy Node-RED cmd-response payload:
+            # { ok, coap_status, ts } with topic campus/.../cmd-response
+            if topic.endswith("/cmd-response"):
+                data = {
+                    "status": "ok" if bool(data.get("ok")) else "error",
+                    "timestamp": int(data.get("ts") or time.time() * 1000),
+                    "hvac_mode": data.get("hvac_mode"),
+                    "lighting_dimmer": data.get("lighting_dimmer"),
+                }
+            else:
+                return
+
         async with self._lock:
-            if cmd_id and cmd_id in self._pending_by_cmd:
+            if has_strict_schema and cmd_id in self._pending_by_cmd:
                 fut = self._pending_by_cmd.pop(cmd_id)
                 if not fut.done():
                     fut.set_result(data)
@@ -238,16 +277,17 @@ class HiveResponseRouter:
             if not q and topic in self._pending_by_topic:
                 self._pending_by_topic.pop(topic, None)
 
-    async def cancel(self, *, cmd_id: str, response_topic: str) -> None:
+    async def cancel(self, *, cmd_id: str, response_topics: list[str]) -> None:
         async with self._lock:
             fut = self._pending_by_cmd.pop(cmd_id, None)
             if fut and not fut.done():
                 fut.cancel()
-            lst = self._pending_by_topic.get(response_topic)
-            if lst:
-                self._pending_by_topic[response_topic] = [f for f in lst if f is not fut]
-                if not self._pending_by_topic[response_topic]:
-                    self._pending_by_topic.pop(response_topic, None)
+            for response_topic in response_topics:
+                lst = self._pending_by_topic.get(response_topic)
+                if lst:
+                    self._pending_by_topic[response_topic] = [f for f in lst if f is not fut]
+                    if not self._pending_by_topic[response_topic]:
+                        self._pending_by_topic.pop(response_topic, None)
 
 
 async def post_device_client_attrs(
@@ -310,6 +350,8 @@ async def main() -> None:
                         access_token=access_token,
                     )
                 )
+            except EntityLookupError as e:
+                logger.error("Ambiguous device resolution for %s: %s", device_name, e)
             except Exception as e:
                 logger.warning("Failed resolving TB device for %s: %s", device_name, e)
 
@@ -318,10 +360,12 @@ async def main() -> None:
 
         # Shared HiveMQ client for all publishing + response listening
         hive = gmqtt.Client(f"p3-shadow-hive-{os.getpid()}")
+        hive.set_auth_credentials(HIVEMQ_USER, HIVEMQ_PASS)
 
         def hive_on_connect(_client, _flags, _rc, _props):
             _client.subscribe("campus/+/+/+/response", qos=1)
-            logger.info("HiveMQ connected; subscribed to campus/+/+/+/response")
+            _client.subscribe("campus/+/+/+/cmd-response", qos=1)  # backward compatibility
+            logger.info("HiveMQ connected; subscribed to response topics")
 
         def hive_on_message(_client, topic, payload, qos, properties):
             asyncio.get_running_loop().create_task(router.resolve_from_message(topic, payload))
@@ -364,33 +408,79 @@ async def main() -> None:
             building, floor_seg, room_seg = parse_room_key(info.room_key)
             cmd_topic = f"campus/{building}/{floor_seg}/{room_seg}/cmd"
             response_topic = f"campus/{building}/{floor_seg}/{room_seg}/response"
+            legacy_response_topic = f"campus/{building}/{floor_seg}/{room_seg}/cmd-response"
+            response_topics = [response_topic, legacy_response_topic]
             cmd_id = str(uuid4())
+            desired_version = int(time.time() * 1000)
             cmd = dict(desired)
             cmd["cmd_id"] = cmd_id
+            cmd["correlation_id"] = cmd_id
+            cmd["room_id"] = info.room_key
+            cmd["timestamp"] = desired_version
 
-            fut = await router.register(cmd_id=cmd_id, response_topic=response_topic)
+            fut = await router.register(cmd_id=cmd_id, response_topics=response_topics)
             hive.publish(cmd_topic, json.dumps(cmd), qos=1)
 
             try:
-                resp = await asyncio.wait_for(fut, timeout=10.0)
+                resp = await asyncio.wait_for(fut, timeout=ACK_TIMEOUT_SECONDS)
                 reported: dict[str, Any] = {}
                 if "hvac_mode" in desired:
                     reported["reported_hvac_mode"] = resp.get("hvac_mode")
                 if "lighting_dimmer" in desired:
                     reported["reported_lighting_dimmer"] = resp.get("lighting_dimmer")
                 reported["sync_status"] = "IN_SYNC"
+                reported["desired_hvac_mode"] = desired.get("hvac_mode")
+                reported["desired_lighting_dimmer"] = desired.get("lighting_dimmer")
+                reported["desired_version"] = desired_version
+                reported["reported_version"] = int(resp.get("timestamp") or time.time() * 1000)
+                reported["last_seen"] = int(time.time() * 1000)
 
                 await post_device_client_attrs(tb, token_cache, device_id=info.device_id, attrs=reported)
                 logger.info("[SYNC] %s: desired=%s reported=%s status=IN_SYNC", info.room_key, desired, reported)
             except asyncio.TimeoutError:
-                await router.cancel(cmd_id=cmd_id, response_topic=response_topic)
-                await post_device_client_attrs(
-                    tb,
-                    token_cache,
-                    device_id=info.device_id,
-                    attrs={"sync_status": "OUT_OF_SYNC"},
-                )
-                logger.warning("[SYNC] %s: desired=%s status=OUT_OF_SYNC (timeout)", info.room_key, desired)
+                retry_ok = False
+                for _ in range(SYNC_MAX_RETRIES - 1):
+                    retry_cmd_id = str(uuid4())
+                    retry_cmd = dict(cmd)
+                    retry_cmd["cmd_id"] = retry_cmd_id
+                    retry_cmd["correlation_id"] = retry_cmd_id
+                        retry_fut = await router.register(cmd_id=retry_cmd_id, response_topics=response_topics)
+                    hive.publish(cmd_topic, json.dumps(retry_cmd), qos=1)
+                    try:
+                        retry_resp = await asyncio.wait_for(retry_fut, timeout=ACK_TIMEOUT_SECONDS)
+                        await post_device_client_attrs(
+                            tb,
+                            token_cache,
+                            device_id=info.device_id,
+                            attrs={
+                                "reported_hvac_mode": retry_resp.get("hvac_mode"),
+                                "reported_lighting_dimmer": retry_resp.get("lighting_dimmer"),
+                                "desired_hvac_mode": desired.get("hvac_mode"),
+                                "desired_lighting_dimmer": desired.get("lighting_dimmer"),
+                                "sync_status": "IN_SYNC",
+                                "desired_version": desired_version,
+                                "reported_version": int(retry_resp.get("timestamp") or time.time() * 1000),
+                                "last_seen": int(time.time() * 1000),
+                            },
+                        )
+                        retry_ok = True
+                        break
+                    except asyncio.TimeoutError:
+                        await router.cancel(cmd_id=retry_cmd_id, response_topics=response_topics)
+                if not retry_ok:
+                    await router.cancel(cmd_id=cmd_id, response_topics=response_topics)
+                    await post_device_client_attrs(
+                        tb,
+                        token_cache,
+                        device_id=info.device_id,
+                        attrs={
+                            "desired_hvac_mode": desired.get("hvac_mode"),
+                            "desired_lighting_dimmer": desired.get("lighting_dimmer"),
+                            "desired_version": desired_version,
+                            "sync_status": "OUT_OF_SYNC",
+                        },
+                    )
+                    logger.warning("[SYNC] %s: desired=%s status=OUT_OF_SYNC (timeout)", info.room_key, desired)
             except Exception as e:
                 logger.warning("[SYNC] %s: error=%s", info.room_key, e)
 

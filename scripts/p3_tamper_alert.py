@@ -19,6 +19,7 @@ from typing import Any
 
 import gmqtt
 import httpx
+from tb_entity_lookup import EntityLookupError, exact_entity_id_from_page
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,14 +31,22 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
+
+def _required_env(name: str) -> str:
+    value = os.getenv(name, "").strip()
+    if not value:
+        raise RuntimeError(f"Required environment variable missing: {name}")
+    return value
+
+
 TB_URL = os.getenv("TB_URL", "http://localhost:9090").rstrip("/")
-TB_USERNAME = os.getenv("TB_USERNAME", "tenant@thingsboard.org")
-TB_PASSWORD = os.getenv("TB_PASSWORD", "tenant")
+TB_USERNAME = _required_env("TB_USERNAME")
+TB_PASSWORD = _required_env("TB_PASSWORD")
 
 HIVEMQ_HOST = os.getenv("HIVEMQ_HOST", "localhost")
 HIVEMQ_PORT = int(os.getenv("HIVEMQ_PORT", "1883"))
-HIVEMQ_USER = os.getenv("HIVEMQ_USER", "thingsboard")
-HIVEMQ_PASS = os.getenv("HIVEMQ_PASS", "tb_super_pass")
+HIVEMQ_USER = _required_env("HIVEMQ_USER")
+HIVEMQ_PASS = _required_env("HIVEMQ_PASS")
 
 CSV_PATH = Path("thingsboard") / "campus_devices.csv"
 
@@ -148,14 +157,10 @@ async def resolve_device_id(
         token_cache,
         "GET",
         "/api/tenant/devices",
-        params={"pageSize": 1, "page": 0, "textSearch": device_name},
+        params={"pageSize": 100, "page": 0, "textSearch": device_name},
         what=f"Find device {device_name!r}",
     )
-    data = resp.json()
-    items = data.get("data") or []
-    if not items:
-        return None
-    return items[0]["id"]["id"]
+    return exact_entity_id_from_page(resp.json(), expected_name=device_name, entity_label="device") or None
 
 
 def _as_bool(v: Any) -> bool:
@@ -190,6 +195,8 @@ async def main() -> None:
                     logger.warning("Device not found in ThingsBoard: %s", device_name)
                     continue
                 room_key_to_device_id[room_key] = device_id
+            except EntityLookupError as e:
+                logger.error("Ambiguous device resolution for %s: %s", device_name, e)
             except Exception as e:
                 logger.warning("Failed resolving device_id for %s: %s", device_name, e)
 
@@ -242,6 +249,9 @@ async def main() -> None:
                         "sensor_id": sensor_id,
                         "timestamp": ts,
                         "topic": msg.get("topic", "unknown"),
+                        "correlation_id": str(msg.get("correlation_id") or msg.get("cmd_id") or ""),
+                        "producer_id": str(msg.get("producer_id") or ""),
+                        "source_ip": str(msg.get("source_ip") or ""),
                     },
                 }
                 try:

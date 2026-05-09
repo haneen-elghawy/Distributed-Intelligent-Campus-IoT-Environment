@@ -32,6 +32,7 @@ from gmqtt import Client
 from ..utils.topics import (
     alert_topic,
     cmd_topic,
+    mqtt_base,
     status_topic,
     telemetry_topic,
 )
@@ -40,6 +41,13 @@ if TYPE_CHECKING:
     from src.models.room import Room
 
 logger = logging.getLogger("nodes.mqtt_node")
+
+
+def _required_env(name: str) -> str:
+    value = os.getenv(name, "").strip()
+    if not value:
+        raise RuntimeError(f"Required environment variable missing: {name}")
+    return value
 
 # ---------------------------------------------------------------------------
 # Module-level config (overridable via .env)
@@ -109,8 +117,8 @@ class MqttNode:
         self.client = Client(client_id)
 
         self.client.set_auth_credentials(
-            username=os.getenv("HIVEMQ_USER", "thingsboard"),
-            password=os.getenv("HIVEMQ_PASS", "tb_super_pass"),
+            username=_required_env("HIVEMQ_USER"),
+            password=_required_env("HIVEMQ_PASS"),
         )
 
         self.client.on_message = self._on_message
@@ -286,6 +294,25 @@ class MqttNode:
                 pass
 
         room.sync_actuator_state()
+        cmd_id = str(data.get("cmd_id") or "")
+        correlation_id = str(data.get("correlation_id") or cmd_id or "")
+        if self.client and cmd_id:
+            base = mqtt_base(self.room.building_id, self.room.floor_id, self.room.room_id)
+            self.client.publish(
+                f"{base}/response",
+                json.dumps(
+                    {
+                        "cmd_id": cmd_id,
+                        "correlation_id": correlation_id,
+                        "room_id": self.room.node_id,
+                        "status": "ok",
+                        "hvac_mode": self.room.hvac_mode,
+                        "lighting_dimmer": self.room.lighting_dimmer,
+                        "timestamp": int(time.time() * 1000),
+                    }
+                ),
+                qos=1,
+            )
         return 0
 
     # ------------------------------------------------------------------

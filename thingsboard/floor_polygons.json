@@ -1,0 +1,20 @@
+{
+  "legend": {
+    "temperature_range_c": [18, 30],
+    "color_function_js": "function tempToColor(t){const min=18,max=30;const x=Math.max(0,Math.min(1,(t-min)/(max-min)));const r=Math.round(255*x);const b=Math.round(255*(1-x));return `rgb(${r},80,${b})`;}"
+  },
+  "tooltip_template": {
+    "title": "${room}",
+    "lines": [
+      "Temp: ${temperature} C",
+      "Occupancy: ${occupancy}",
+      "HVAC: ${hvac_mode}",
+      "Last Seen: ${last_seen}"
+    ]
+  },
+  "floor01": [
+    {"room": "b01-f01-r101", "polygon": [[20,20],[180,20],[180,100],[20,100]]},
+    {"room": "b01-f01-r102", "polygon": [[200,20],[360,20],[360,100],[200,100]]},
+    {"room": "b01-f01-r103", "polygon": [[380,20],[540,20],[540,100],[380,100]]}
+  ]
+}

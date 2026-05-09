@@ -72,6 +72,7 @@ if (tail === "floor-summary") {
           avg_humidity: data.avg_humidity != null ? parseFloat(data.avg_humidity) : null,
           occupied_rooms: data.occupied_rooms,
           total_rooms: data.total_rooms,
+          occupancy_rate: data.occupancy_rate != null ? parseFloat(data.occupancy_rate) : null,
           floor: data.floor,
         },
       },

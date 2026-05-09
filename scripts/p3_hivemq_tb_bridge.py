@@ -9,12 +9,12 @@ logging.basicConfig(level="INFO", format="%(asctime)s | p3_bridge | %(levelname)
 logger = logging.getLogger("p3_bridge")
 
 TB_URL      = os.getenv("TB_URL", "http://localhost:9090").rstrip("/")
-TB_USERNAME = os.getenv("TB_USERNAME", "tenant@campus.io")
-TB_PASSWORD = os.getenv("TB_PASSWORD", "tenant")
+TB_USERNAME = os.getenv("TB_USERNAME", "").strip()
+TB_PASSWORD = os.getenv("TB_PASSWORD", "").strip()
 HIVEMQ_HOST = os.getenv("HIVEMQ_HOST", "localhost")
 HIVEMQ_PORT = int(os.getenv("HIVEMQ_PORT", "1883"))
-HIVEMQ_USER = os.getenv("HIVEMQ_USER", "thingsboard")
-HIVEMQ_PASS = os.getenv("HIVEMQ_PASS", "tb_super_pass")
+HIVEMQ_USER = os.getenv("HIVEMQ_USER", "").strip()
+HIVEMQ_PASS = os.getenv("HIVEMQ_PASS", "").strip()
 
 _tokens: dict[str, str] = {}   # room_key -> TB access token
 _tb_token = {"token": "", "ts": 0.0}
@@ -112,6 +112,8 @@ class Bridge:
 
 
 async def main():
+    if not TB_USERNAME or not TB_PASSWORD or not HIVEMQ_USER or not HIVEMQ_PASS:
+        raise RuntimeError("Missing required credentials: TB_USERNAME/TB_PASSWORD/HIVEMQ_USER/HIVEMQ_PASS")
     _load_registry()
     bridge = Bridge()
     await bridge.run()

@@ -284,7 +284,8 @@ const summary = {
     avg_temperature: temps.length ? (temps.reduce((a,b)=>a+b,0)/temps.length).toFixed(1) : null,
     avg_humidity: humids.length ? (humids.reduce((a,b)=>a+b,0)/humids.length).toFixed(1) : null,
     occupied_rooms: occupied,
-    total_rooms: Object.keys(floorRooms).length
+    total_rooms: Object.keys(floorRooms).length,
+    occupancy_rate: Object.keys(floorRooms).length > 0 ? Number((occupied / Object.keys(floorRooms).length).toFixed(4)) : 0
 };
 msg.payload = summary;
 msg.topic = `campus/b01/f${process.env.FLOOR}/floor-summary`;
@@ -360,6 +361,11 @@ const roomNum = rfull % 100;
 const coapStart = parseInt(process.env.COAP_PORT_START || '5683', 10);
 const coapPort = coapStart + (roomNum - 11);
 flow.set('last_cmd_topic', topic);
+let body = msg.payload;
+if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch (e) { body = {}; }
+}
+flow.set('last_cmd_payload', body && typeof body === 'object' ? body : {});
 if (roomNum >= 11 && roomNum <= 20) {
     const coapScheme = process.env.COAP_SCHEME || 'coap';
     msg.url = `${coapScheme}://${process.env.SIM_ENGINE_HOST}:${coapPort}/${floorStr}/${roomStr}/actuators/hvac`;
@@ -399,17 +405,30 @@ return [null, null];
             "id": fn_ack,
             "type": "function",
             "z": tab_id,
-            "name": "D: cmd-response",
+            "name": "D: response",
             "func": r"""
 const t = flow.get('last_cmd_topic');
 if (!t) return null;
+const p = flow.get('last_cmd_payload') || {};
 const parts = t.split('/');
 const roomStr = parts[3];
 const floorStr = parts[2];
-msg.topic = `campus/b01/${floorStr}/${roomStr}/cmd-response`;
+msg.topic = `campus/b01/${floorStr}/${roomStr}/response`;
 const code = msg.statusCode;
 const ok = code == null || String(code).startsWith('2.');
-msg.payload = { ok, coap_status: code, ts: Date.now() };
+const roomId = `b01-${floorStr}-${roomStr}`;
+const cmdId = String(p.cmd_id || p.correlation_id || `coap-${Date.now()}`);
+const correlationId = String(p.correlation_id || p.cmd_id || cmdId);
+msg.payload = {
+    cmd_id: cmdId,
+    correlation_id: correlationId,
+    room_id: roomId,
+    status: ok ? "ok" : "error",
+    coap_status: code,
+    hvac_mode: p.hvac_mode,
+    lighting_dimmer: p.lighting_dimmer,
+    timestamp: Date.now()
+};
 return msg;
 """.strip(),
             "outputs": 1,
@@ -426,7 +445,7 @@ return msg;
             "id": mq_ack,
             "type": "mqtt out",
             "z": tab_id,
-            "name": "D: cmd-response MQTT",
+            "name": "D: response MQTT",
             "topic": "",
             "qos": "1",
             "retain": "false",

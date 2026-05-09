@@ -21,6 +21,7 @@ from typing import Any
 
 import gmqtt
 import httpx
+from tb_entity_lookup import EntityLookupError, exact_entity_id_from_page
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO"),
@@ -29,17 +30,24 @@ logging.basicConfig(
 
 logger = logging.getLogger("p3_floor_aggregator")
 
+
+def _required_env(name: str) -> str:
+    value = os.getenv(name, "").strip()
+    if not value:
+        raise RuntimeError(f"Required environment variable missing: {name}")
+    return value
+
 # -----------------------------
 # ENV
 # -----------------------------
 TB_URL = os.getenv("TB_URL", "http://localhost:9090").rstrip("/")
-TB_USERNAME = os.getenv("TB_USERNAME", "tenant@thingsboard.org")
-TB_PASSWORD = os.getenv("TB_PASSWORD", "tenant")
+TB_USERNAME = _required_env("TB_USERNAME")
+TB_PASSWORD = _required_env("TB_PASSWORD")
 
 HIVEMQ_HOST = os.getenv("HIVEMQ_HOST", "localhost")
 HIVEMQ_PORT = int(os.getenv("HIVEMQ_PORT", "1883"))
-HIVEMQ_USER = os.getenv("HIVEMQ_USER", "thingsboard")
-HIVEMQ_PASS = os.getenv("HIVEMQ_PASS", "tb_super_pass")
+HIVEMQ_USER = _required_env("HIVEMQ_USER")
+HIVEMQ_PASS = _required_env("HIVEMQ_PASS")
 
 SUB_TOPIC = "campus/+/+/+/telemetry"
 
@@ -190,13 +198,19 @@ async def main():
                     cache,
                     "GET",
                     "/api/tenant/assets",
-                    params={"pageSize": 1, "page": 0, "textSearch": name},
+                    params={"pageSize": 100, "page": 0, "textSearch": name},
                 )
-                data = resp.json().get("data", [])
-                if data:
-                    assets[floor_id] = data[0]["id"]["id"]
+                asset_id = exact_entity_id_from_page(
+                    resp.json(),
+                    expected_name=name,
+                    entity_label="asset",
+                )
+                if asset_id:
+                    assets[floor_id] = asset_id
                 else:
                     logger.warning("Floor asset not found: %s", name)
+            except EntityLookupError as e:
+                logger.error("Ambiguous floor asset lookup for %s: %s", name, e)
             except Exception as e:
                 logger.warning("Error resolving %s: %s", name, e)
         logger.info("Resolved %d floor assets", len(assets))
@@ -219,11 +233,15 @@ async def main():
                     }
 
                     try:
+                        asset_id = assets.get(floor)
+                        if not asset_id:
+                            logger.warning("Skipping floor %s publish: missing exact floor asset mapping", floor)
+                            continue
                         await tb_request(
                             tb,
                             cache,
                             "POST",
-                            f"/api/plugins/telemetry/ASSET/{assets.get(floor, floor)}/timeseries/ANY",
+                            f"/api/plugins/telemetry/ASSET/{asset_id}/timeseries/ANY",
                             json=summary,
                         )
                     except Exception as e:

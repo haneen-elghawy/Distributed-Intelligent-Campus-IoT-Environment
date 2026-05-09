@@ -29,6 +29,11 @@ services:
     networks:
       - campus-net
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "sh", "-c", "echo > /dev/tcp/127.0.0.1/1883"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
 
   # ─── ThingsBoard Cloud Layer ─────────────────────────────────────────────
   thingsboard:
@@ -49,6 +54,11 @@ services:
     networks:
       - campus-net
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "sh", "-c", "echo > /dev/tcp/127.0.0.1/9090"]
+      interval: 10s
+      timeout: 5s
+      retries: 24
 
   # ─── Python World Engine ─────────────────────────────────────────────────
   sim-engine:
@@ -60,14 +70,15 @@ services:
     env_file: .env
     environment:
       HIVEMQ_BROKER: hivemq
-      HIVEMQ_PORT_PLAIN: 1883
+      HIVEMQ_PORT: 1883
     volumes:
       - sim_data:/app/data
       - ./hivemq/certs:/app/hivemq/certs:ro
     networks:
       - campus-net
     depends_on:
-      - hivemq
+      hivemq:
+        condition: service_healthy
     command: python -m src
     restart: unless-stopped
     # Expose CoAP UDP ports for all 100 CoAP rooms (5683-5782)
@@ -86,16 +97,18 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5683"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor01
-      MQTT_PASS: floor01pass
+      MQTT_USER: ${HIVEMQ_USER}
+      MQTT_PASS: ${HIVEMQ_PASS}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f01:/data
     networks:
       - campus-net
     depends_on:
-      - hivemq
-      - sim-engine
+      hivemq:
+        condition: service_healthy
+      sim-engine:
+        condition: service_started
     restart: unless-stopped
 
   gateway-f02:
@@ -109,16 +122,18 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5693"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor02
-      MQTT_PASS: floor02pass
+      MQTT_USER: ${HIVEMQ_USER}
+      MQTT_PASS: ${HIVEMQ_PASS}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f02:/data
     networks:
       - campus-net
     depends_on:
-      - hivemq
-      - sim-engine
+      hivemq:
+        condition: service_healthy
+      sim-engine:
+        condition: service_started
     restart: unless-stopped
 
   gateway-f03:
@@ -132,16 +147,18 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5703"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor03
-      MQTT_PASS: floor03pass
+      MQTT_USER: ${HIVEMQ_USER}
+      MQTT_PASS: ${HIVEMQ_PASS}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f03:/data
     networks:
       - campus-net
     depends_on:
-      - hivemq
-      - sim-engine
+      hivemq:
+        condition: service_healthy
+      sim-engine:
+        condition: service_started
     restart: unless-stopped
 
   gateway-f04:
@@ -155,16 +172,18 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5713"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor04
-      MQTT_PASS: floor04pass
+      MQTT_USER: ${HIVEMQ_USER}
+      MQTT_PASS: ${HIVEMQ_PASS}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f04:/data
     networks:
       - campus-net
     depends_on:
-      - hivemq
-      - sim-engine
+      hivemq:
+        condition: service_healthy
+      sim-engine:
+        condition: service_started
     restart: unless-stopped
 
   gateway-f05:
@@ -178,16 +197,18 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5723"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor05
-      MQTT_PASS: floor05pass
+      MQTT_USER: ${HIVEMQ_USER}
+      MQTT_PASS: ${HIVEMQ_PASS}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f05:/data
     networks:
       - campus-net
     depends_on:
-      - hivemq
-      - sim-engine
+      hivemq:
+        condition: service_healthy
+      sim-engine:
+        condition: service_started
     restart: unless-stopped
 
   gateway-f06:
@@ -201,16 +222,18 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5733"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor06
-      MQTT_PASS: floor06pass
+      MQTT_USER: ${HIVEMQ_USER}
+      MQTT_PASS: ${HIVEMQ_PASS}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f06:/data
     networks:
       - campus-net
     depends_on:
-      - hivemq
-      - sim-engine
+      hivemq:
+        condition: service_healthy
+      sim-engine:
+        condition: service_started
     restart: unless-stopped
 
   gateway-f07:
@@ -224,16 +247,18 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5743"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor07
-      MQTT_PASS: floor07pass
+      MQTT_USER: ${HIVEMQ_USER}
+      MQTT_PASS: ${HIVEMQ_PASS}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f07:/data
     networks:
       - campus-net
     depends_on:
-      - hivemq
-      - sim-engine
+      hivemq:
+        condition: service_healthy
+      sim-engine:
+        condition: service_started
     restart: unless-stopped
 
   gateway-f08:
@@ -247,16 +272,18 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5753"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor08
-      MQTT_PASS: floor08pass
+      MQTT_USER: ${HIVEMQ_USER}
+      MQTT_PASS: ${HIVEMQ_PASS}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f08:/data
     networks:
       - campus-net
     depends_on:
-      - hivemq
-      - sim-engine
+      hivemq:
+        condition: service_healthy
+      sim-engine:
+        condition: service_started
     restart: unless-stopped
 
   gateway-f09:
@@ -270,16 +297,18 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5763"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor09
-      MQTT_PASS: floor09pass
+      MQTT_USER: ${HIVEMQ_USER}
+      MQTT_PASS: ${HIVEMQ_PASS}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f09:/data
     networks:
       - campus-net
     depends_on:
-      - hivemq
-      - sim-engine
+      hivemq:
+        condition: service_healthy
+      sim-engine:
+        condition: service_started
     restart: unless-stopped
 
   gateway-f10:
@@ -293,14 +322,16 @@ services:
       SIM_ENGINE_HOST: sim-engine
       COAP_PORT_START: "5773"
       COAP_LISTEN_PORT: "5686"
-      MQTT_USER: floor10
-      MQTT_PASS: floor10pass
+      MQTT_USER: ${HIVEMQ_USER}
+      MQTT_PASS: ${HIVEMQ_PASS}
       FLOWS: flows.json
     volumes:
       - ./node-red/gateway-f10:/data
     networks:
       - campus-net
     depends_on:
-      - hivemq
-      - sim-engine
+      hivemq:
+        condition: service_healthy
+      sim-engine:
+        condition: service_started
     restart: unless-stopped

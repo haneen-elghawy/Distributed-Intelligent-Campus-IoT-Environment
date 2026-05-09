@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 import httpx
+from tb_entity_lookup import EntityLookupError, exact_entity_id_from_page
 
 logging.basicConfig(
     level=logging.INFO,
@@ -27,9 +28,17 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
+
+def _required_env(name: str) -> str:
+    value = os.getenv(name, "").strip()
+    if not value:
+        raise RuntimeError(f"Required environment variable missing: {name}")
+    return value
+
+
 TB_URL = os.getenv("TB_URL", "http://localhost:9090").rstrip("/")
-TB_USERNAME = os.getenv("TB_USERNAME", "tenant@thingsboard.org")
-TB_PASSWORD = os.getenv("TB_PASSWORD", "tenant")
+TB_USERNAME = _required_env("TB_USERNAME")
+TB_PASSWORD = _required_env("TB_PASSWORD")
 
 CSV_PATH = Path("thingsboard") / "campus_devices.csv"
 
@@ -125,49 +134,10 @@ def find_first_asset_id(client: httpx.Client, token_cache: TokenCache, name: str
         token_cache,
         "GET",
         "/api/tenant/assets",
-        params={"pageSize": 1, "page": 0, "textSearch": name},
+        params={"pageSize": 100, "page": 0, "textSearch": name},
         what=f"Find asset {name!r}",
     )
-    data = resp.json()
-    items = data.get("data") or []
-    if not items:
-        return None
-    return items[0]["id"]["id"]
-
-
-def maybe_rename_campus_asset(client: httpx.Client, token_cache: TokenCache) -> None:
-    resp = tb_request(
-        client,
-        token_cache,
-        "GET",
-        "/api/tenant/assets",
-        params={"pageSize": 50, "page": 0, "textSearch": "Campus"},
-        what="Search Campus assets",
-    )
-    payload = resp.json()
-    assets = payload.get("data") or []
-    for a in assets:
-        name = a.get("name")
-        if name not in ("Campus", "ZC-Main-Campus"):
-            continue
-        if name == "ZC-Main-Campus":
-            logger.info("Campus asset already named ZC-Main-Campus (id=%s)", a["id"]["id"])
-            return
-
-        updated = dict(a)
-        updated["name"] = "ZC-Main-Campus"
-        tb_request(
-            client,
-            token_cache,
-            "POST",
-            "/api/asset",
-            json=updated,
-            what="Rename Campus asset to ZC-Main-Campus",
-        )
-        logger.info("Renamed Campus asset to ZC-Main-Campus (id=%s)", a["id"]["id"])
-        return
-
-    logger.info("No Campus/ZC-Main-Campus asset found to rename (skipping).")
+    return exact_entity_id_from_page(resp.json(), expected_name=name, entity_label="asset") or None
 
 
 def deterministic_metadata(*, floor: int, room_id: int) -> dict[str, Any]:
@@ -209,8 +179,6 @@ def main() -> None:
     tagged = 0
 
     with httpx.Client(timeout=60.0) as client:
-        maybe_rename_campus_asset(client, token_cache)
-
         for idx, row in enumerate(rooms, start=1):
             room_key = (row.get("name") or "").strip()
             try:
@@ -237,6 +205,8 @@ def main() -> None:
                     what=f"Post metadata for {asset_name}",
                 )
                 tagged += 1
+            except EntityLookupError as e:
+                logger.error("Ambiguous asset resolution for %s: %s", asset_name, e)
             except Exception as e:
                 logger.warning("Failed %s: %s", asset_name, e)
 
@@ -248,6 +218,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
 

@@ -24,10 +24,17 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
+
+def _required_env(name):
+    value = os.getenv(name, "").strip()
+    if not value:
+        sys.exit(f"missing required env: {name}")
+    return value
+
 HIVEMQ_HOST = os.getenv("HIVEMQ_HOST", "localhost")
 HIVEMQ_PORT = int(os.getenv("HIVEMQ_PORT", "1883"))
-HIVEMQ_USER = os.getenv("HIVEMQ_USER", "thingsboard")
-HIVEMQ_PASS = os.getenv("HIVEMQ_PASS", "tb_super_pass")
+HIVEMQ_USER = _required_env("HIVEMQ_USER")
+HIVEMQ_PASS = _required_env("HIVEMQ_PASS")
 BUILDING = "b01"
 
 
