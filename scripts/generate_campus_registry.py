@@ -15,6 +15,8 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from campus_naming import canonical_room_key
+
 ROOT = Path(__file__).resolve().parent.parent
 OUT_JSON = ROOT / "thingsboard" / "campus_registry_export.json"
 OUT_CSV = ROOT / "thingsboard" / "campus_devices.csv"
@@ -29,7 +31,7 @@ def main() -> None:
     for floor in range(1, NUM_FLOORS + 1):
         for room in range(1, MQTT_ROOMS + 1):
             rnum = floor * 100 + room
-            nid = f"b01-f{floor:02d}-r{rnum:03d}"
+            nid = canonical_room_key(floor, room)
             devices.append(
                 {
                     "name": nid,
@@ -42,7 +44,7 @@ def main() -> None:
             )
         for room in range(MQTT_ROOMS + 1, MQTT_ROOMS + COAP_ROOMS + 1):
             rnum = floor * 100 + room
-            nid = f"b01-f{floor:02d}-r{rnum:03d}"
+            nid = canonical_room_key(floor, room)
             devices.append(
                 {
                     "name": nid,

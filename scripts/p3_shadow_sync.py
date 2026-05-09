@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any
 
 from gmqtt import Client
+from campus_naming import parse_room_key
 
 
 def _require_env(name: str) -> str:
@@ -36,22 +37,14 @@ def _now_ms() -> int:
     return int(time.time() * 1000)
 
 
-def _parse_room_key(room_key: str) -> tuple[str, str]:
-    """Return (floor_topic, room_topic) from b01-fNN-rRRR."""
-    parts = room_key.split("-")
-    if len(parts) != 3 or not parts[1].startswith("f") or not parts[2].startswith("r"):
-        raise ValueError(f"Invalid room key: {room_key} (expected b01-fNN-rRRR)")
-    return parts[1], parts[2]
-
-
 def _cmd_topic(room_key: str) -> str:
-    floor, room = _parse_room_key(room_key)
-    return f"campus/b01/{floor}/{room}/cmd"
+    building, floor, room = parse_room_key(room_key)
+    return f"campus/{building}/{floor}/{room}/cmd"
 
 
 def _sync_topic(room_key: str) -> str:
-    floor, room = _parse_room_key(room_key)
-    return f"campus/b01/{floor}/{room}/sync-status"
+    building, floor, room = parse_room_key(room_key)
+    return f"campus/{building}/{floor}/{room}/sync-status"
 
 
 @dataclass

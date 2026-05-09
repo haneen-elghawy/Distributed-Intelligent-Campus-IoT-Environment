@@ -32,6 +32,7 @@ from typing import Any
 from urllib.parse import quote
 
 import requests
+from campus_naming import canonical_floor_summary_key, canonical_room_key
 
 TB_URL      = os.getenv("TB_URL",      "http://localhost:9090").rstrip("/")
 TB_USERNAME = os.getenv("TB_USERNAME", "tenant@campus.io")   # ← your tenant admin email
@@ -364,7 +365,7 @@ def provision_all_devices(
     for floor in range(1, 11):          # Floors 1–10
         for room in range(1, 21):       # Rooms 1–20
             room_num = floor * 100 + room
-            node_id  = f"b01-f{floor:02d}-r{room_num:03d}"
+            node_id = canonical_room_key(floor, room)
             if room <= 10:
                 profile_name = PROFILE_MQTT
                 prof_id      = mqtt_prof
@@ -390,7 +391,7 @@ def provision_all_devices(
             f"Optional: create {PROFILE_FLOOR!r} in the UI and re-run --devices-only."
         )
     for floor in range(1, 11):
-        node_id = f"b01-f{floor:02d}-floor-summary"
+        node_id = canonical_floor_summary_key(floor)
         dev = create_device(session, token, node_id, fl_name, fl_prof)
         devices[node_id] = dev
         print(f"  [OK] [{200 + floor}/210] {node_id}  ({fl_name})  id={dev['id']['id']}")
@@ -429,8 +430,7 @@ def create_asset_hierarchy(
     for floor in range(1, 11):
         fl = floor_assets[floor]
         for room in range(1, 21):
-            room_num = floor * 100 + room
-            node_id  = f"b01-f{floor:02d}-r{room_num:03d}"
+            node_id = canonical_room_key(floor, room)
 
             room_asset = create_asset(session, token, node_id, "Room", ap_id)
             # Floor → Room
@@ -634,8 +634,7 @@ def main() -> int:
             print("Loading existing devices...")
             for floor in range(1, 11):
                 for room in range(1, 21):
-                    room_num = floor * 100 + room
-                    node_id  = f"b01-f{floor:02d}-r{room_num:03d}"
+                    node_id = canonical_room_key(floor, room)
                     d = get_device_by_name(session, token, node_id)
                     if not d:
                         raise ThingsBoardError(

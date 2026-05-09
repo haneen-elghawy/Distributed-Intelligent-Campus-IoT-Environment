@@ -1,7 +1,7 @@
 """Phase 3 — Provision deterministic metadata to Room assets (SERVER_SCOPE).
 
 Reads `thingsboard/campus_devices.csv` and, for each room_key, finds the asset
-named `Room-<room_key>` and posts 5 server-scope attributes:
+named `<room_key>` (canonical `b01-fNN-rRRR`) and posts 5 server-scope attributes:
 square_footage, occupant_capacity, coordinates_x, coordinates_y, room_type.
 """
 

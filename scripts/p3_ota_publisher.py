@@ -19,6 +19,7 @@ sys.path.insert(0, str(ROOT))
 
 import gmqtt
 from src.engine.ota import sign_payload
+from campus_naming import parse_room_key
 
 from dotenv import load_dotenv
 
@@ -50,10 +51,11 @@ def topic_for_target(target):
         return f"campus/{BUILDING}/f{floor_id:02d}/ota"
     if target.startswith("room:"):
         room_key = target.split(":", 1)[1]
-        parts = room_key.split("-")
-        if len(parts) != 3:
+        try:
+            building, floor_part, room_part = parse_room_key(room_key)
+        except ValueError:
             sys.exit(f"invalid room key: {room_key!r}")
-        return f"campus/{parts[0]}/{parts[1]}/{parts[2]}/ota"
+        return f"campus/{building}/{floor_part}/{room_part}/ota"
     sys.exit(f"unknown target: {target!r}")
 
 
