@@ -1,5 +1,10 @@
 """Phase 3.2 — OTA configuration publisher CLI.
 
+.env / HiveMQ (load_dotenv then os.getenv):
+  HIVEMQ_HOST, HIVEMQ_PORT
+  HIVEMQ_USER, HIVEMQ_PASS — optional; MQTT_USER_FLOOR01 / MQTT_PASS_FLOOR01 as fallback (default floor01)
+  set_auth_credentials called only if resolved HIVEMQ_USER is non-empty, immediately before connect.
+
 Usage examples:
     python scripts/p3_ota_publisher.py --target broadcast --version 1.1 --alpha 0.02 --beta 0.6
     python scripts/p3_ota_publisher.py --target floor:05 --version 2.0 --alpha 0.03
@@ -26,17 +31,8 @@ from dotenv import load_dotenv
 # Keep runtime/exported env vars authoritative (important in containers).
 load_dotenv(override=False)
 
-
-def _required_env(name):
-    value = os.getenv(name, "").strip()
-    if not value:
-        sys.exit(f"missing required env: {name}")
-    return value
-
 HIVEMQ_HOST = os.getenv("HIVEMQ_HOST", "localhost")
 HIVEMQ_PORT = int(os.getenv("HIVEMQ_PORT", "1883"))
-HIVEMQ_USER = _required_env("HIVEMQ_USER")
-HIVEMQ_PASS = _required_env("HIVEMQ_PASS")
 BUILDING = "b01"
 
 
@@ -78,7 +74,10 @@ def build_payload(args):
 
 async def publish(topic, payload):
     client = gmqtt.Client(f"p3-ota-publisher-{os.getpid()}")
-    client.set_auth_credentials(HIVEMQ_USER, HIVEMQ_PASS)
+    hivemq_user = os.getenv("HIVEMQ_USER", os.getenv("MQTT_USER_FLOOR01", "floor01"))
+    hivemq_pass = os.getenv("HIVEMQ_PASS", os.getenv("MQTT_PASS_FLOOR01", "floor01pass"))
+    if hivemq_user:
+        client.set_auth_credentials(hivemq_user, hivemq_pass)
     await client.connect(HIVEMQ_HOST, HIVEMQ_PORT, keepalive=10)
     client.publish(topic, json.dumps(payload), qos=1)
     await asyncio.sleep(0.5)

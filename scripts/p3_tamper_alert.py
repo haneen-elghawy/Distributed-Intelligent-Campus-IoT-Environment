@@ -1,5 +1,10 @@
 """Phase 3 — OTA tamper alert monitor.
 
+.env / HiveMQ (load_dotenv then os.getenv):
+  HIVEMQ_HOST, HIVEMQ_PORT
+  HIVEMQ_USER, HIVEMQ_PASS — optional; MQTT_USER_FLOOR01 / MQTT_PASS_FLOOR01 as fallback (default floor01)
+  Credentials applied only if resolved HIVEMQ_USER is non-empty, immediately before connect.
+
 Subscribes to HiveMQ `campus/+/+/+/ota/report` and:
 - If rejected: fires a ThingsBoard CRITICAL alarm (OTA_TAMPER_ALERT)
 - If accepted: updates the device CLIENT_SCOPE attribute `current_version`
@@ -45,8 +50,6 @@ TB_PASSWORD = _required_env("TB_PASSWORD")
 
 HIVEMQ_HOST = os.getenv("HIVEMQ_HOST", "localhost")
 HIVEMQ_PORT = int(os.getenv("HIVEMQ_PORT", "1883"))
-HIVEMQ_USER = _required_env("HIVEMQ_USER")
-HIVEMQ_PASS = _required_env("HIVEMQ_PASS")
 
 CSV_PATH = Path("thingsboard") / "campus_devices.csv"
 
@@ -211,7 +214,6 @@ async def main() -> None:
             raise ThingsBoardError("No device_ids resolved from ThingsBoard; cannot start.")
 
         mqtt = gmqtt.Client(f"p3-tamper-alert-{os.getpid()}")
-        mqtt.set_auth_credentials(HIVEMQ_USER, HIVEMQ_PASS)
 
         def on_connect(_client, _flags, _rc, _props):
             _client.subscribe(SUB_TOPIC, qos=1)
@@ -282,6 +284,10 @@ async def main() -> None:
         mqtt.on_connect = on_connect
         mqtt.on_message = on_message
 
+        hivemq_user = os.getenv("HIVEMQ_USER", os.getenv("MQTT_USER_FLOOR01", "floor01"))
+        hivemq_pass = os.getenv("HIVEMQ_PASS", os.getenv("MQTT_PASS_FLOOR01", "floor01pass"))
+        if hivemq_user:
+            mqtt.set_auth_credentials(hivemq_user, hivemq_pass)
         await mqtt.connect(HIVEMQ_HOST, HIVEMQ_PORT, keepalive=15)
         try:
             while True:

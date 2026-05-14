@@ -5,6 +5,11 @@ Fixes:
 - duplicate connections
 - gmqtt lifecycle bugs
 - ThingsBoard asset mapping stability
+
+.env / HiveMQ (read via os.getenv; use a .env file or export in the shell):
+  HIVEMQ_HOST, HIVEMQ_PORT
+  HIVEMQ_USER, HIVEMQ_PASS — optional; if HIVEMQ_USER is set after resolution, MQTT auth is used
+  MQTT_USER_FLOOR01, MQTT_PASS_FLOOR01 — fallback when HIVEMQ_* unset (code defaults floor01 / floor01pass)
 """
 
 from __future__ import annotations
@@ -21,7 +26,10 @@ from typing import Any
 
 import gmqtt
 import httpx
+from dotenv import load_dotenv
 from tb_entity_lookup import EntityLookupError, resolve_exact_entity_id_async
+
+load_dotenv(override=False)
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO"),
@@ -46,8 +54,6 @@ TB_PASSWORD = _required_env("TB_PASSWORD")
 
 HIVEMQ_HOST = os.getenv("HIVEMQ_HOST", "localhost")
 HIVEMQ_PORT = int(os.getenv("HIVEMQ_PORT", "1883"))
-HIVEMQ_USER = _required_env("HIVEMQ_USER")
-HIVEMQ_PASS = _required_env("HIVEMQ_PASS")
 
 SUB_TOPIC = "campus/+/+/+/telemetry"
 
@@ -117,7 +123,6 @@ def parse_floor(topic: str) -> int | None:
 class MQTTManager:
     def __init__(self):
         self.client = gmqtt.Client(f"p3-floor-aggregator-{int(time.time())}")
-        self.client.set_auth_credentials(HIVEMQ_USER, HIVEMQ_PASS)
         self.connected = asyncio.Event()
         self.stop = asyncio.Event()
 
@@ -156,6 +161,10 @@ class MQTTManager:
                 if not self.connected.is_set():
                     logger.info("Connecting MQTT %s:%s", HIVEMQ_HOST, HIVEMQ_PORT)
                     try:
+                        hivemq_user = os.getenv("HIVEMQ_USER", os.getenv("MQTT_USER_FLOOR01", "floor01"))
+                        hivemq_pass = os.getenv("HIVEMQ_PASS", os.getenv("MQTT_PASS_FLOOR01", "floor01pass"))
+                        if hivemq_user:
+                            self.client.set_auth_credentials(hivemq_user, hivemq_pass)
                         await self.client.connect(HIVEMQ_HOST, HIVEMQ_PORT, keepalive=60)
                         await asyncio.sleep(1)
                     except Exception as e:
