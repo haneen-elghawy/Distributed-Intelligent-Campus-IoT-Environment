@@ -18,6 +18,14 @@ if (!nodeId && parts.length >= 4) {
     nodeId = parts[1] + "-" + parts[2] + "-" + parts[3];
   }
 }
+// Guard against malformed payloads that would create a stray "floor-summary" device.
+if (nodeId === "floor-summary" && parts.length >= 3) {
+  nodeId = parts[1] + "-" + parts[2] + "-floor-summary";
+}
+// Ignore malformed names that are neither room devices nor floor-summary devices.
+if (nodeId && !/^b\d{2}-f\d{2}-(r\d{3}|floor-summary)$/.test(nodeId)) {
+  return null;
+}
 
 var devType = "MQTT-ThermalSensor";
 if (parts.length >= 5 && parts[4] === "floor-summary") {

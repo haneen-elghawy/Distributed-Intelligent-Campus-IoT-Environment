@@ -71,15 +71,21 @@ class Bridge:
         logger.info("HiveMQ connected rc=%s", rc)
         self.connected.set()
         client.subscribe("campus/+/+/+/telemetry", qos=0)
-        client.subscribe("campus/+/+/+/floor-summary", qos=0)
+        # Floor summaries are published as: campus/{bldg}/{floor}/floor-summary
+        client.subscribe("campus/+/+/floor-summary", qos=0)
         client.subscribe("campus/+/+/+/sync-status", qos=1)
         client.subscribe("campus/+/+/+/ota/report", qos=1)
 
     def _on_message(self, client, topic, payload, qos, props):
         parts = topic.split("/")
-        if len(parts) not in (5, 6):
+        if len(parts) not in (4, 5, 6):
             return
-        room_key = f"{parts[1]}-{parts[2]}-{parts[3]}" if len(parts) >= 4 else ""
+        if len(parts) == 4 and parts[3] == "floor-summary":
+            room_key = f"{parts[1]}-{parts[2]}-floor-summary"
+        elif len(parts) >= 4:
+            room_key = f"{parts[1]}-{parts[2]}-{parts[3]}"
+        else:
+            room_key = ""
         try:
             data = json.loads(payload)
         except Exception:
