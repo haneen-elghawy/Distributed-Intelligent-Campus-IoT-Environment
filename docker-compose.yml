@@ -79,7 +79,7 @@ services:
   # Required vars (preferred): MQTT_USER_FLOOR01..10 and MQTT_PASS_FLOOR01..10
   # Backward compatibility: each floor can fall back to HIVEMQ_USER/HIVEMQ_PASS.
   gateway-f01:
-    image: nodered/node-red:latest
+    image: nodered/node-red:latest-debian
     container_name: campus-gateway-f01
     hostname: gateway-f01
     environment:
@@ -102,7 +102,7 @@ services:
     restart: unless-stopped
 
   gateway-f02:
-    image: nodered/node-red:latest
+    image: nodered/node-red:latest-debian
     container_name: campus-gateway-f02
     hostname: gateway-f02
     environment:
@@ -125,7 +125,7 @@ services:
     restart: unless-stopped
 
   gateway-f03:
-    image: nodered/node-red:latest
+    image: nodered/node-red:latest-debian
     container_name: campus-gateway-f03
     hostname: gateway-f03
     environment:
@@ -148,7 +148,7 @@ services:
     restart: unless-stopped
 
   gateway-f04:
-    image: nodered/node-red:latest
+    image: nodered/node-red:latest-debian
     container_name: campus-gateway-f04
     hostname: gateway-f04
     environment:
@@ -171,7 +171,7 @@ services:
     restart: unless-stopped
 
   gateway-f05:
-    image: nodered/node-red:latest
+    image: nodered/node-red:latest-debian
     container_name: campus-gateway-f05
     hostname: gateway-f05
     environment:
@@ -194,7 +194,7 @@ services:
     restart: unless-stopped
 
   gateway-f06:
-    image: nodered/node-red:latest
+    image: nodered/node-red:latest-debian
     container_name: campus-gateway-f06
     hostname: gateway-f06
     environment:
@@ -217,7 +217,7 @@ services:
     restart: unless-stopped
 
   gateway-f07:
-    image: nodered/node-red:latest
+    image: nodered/node-red:latest-debian
     container_name: campus-gateway-f07
     hostname: gateway-f07
     environment:
@@ -240,7 +240,7 @@ services:
     restart: unless-stopped
 
   gateway-f08:
-    image: nodered/node-red:latest
+    image: nodered/node-red:latest-debian
     container_name: campus-gateway-f08
     hostname: gateway-f08
     environment:
@@ -263,7 +263,7 @@ services:
     restart: unless-stopped
 
   gateway-f09:
-    image: nodered/node-red:latest
+    image: nodered/node-red:latest-debian
     container_name: campus-gateway-f09
     hostname: gateway-f09
     environment:
@@ -286,7 +286,7 @@ services:
     restart: unless-stopped
 
   gateway-f10:
-    image: nodered/node-red:latest
+    image: nodered/node-red:latest-debian
     container_name: campus-gateway-f10
     hostname: gateway-f10
     environment:
